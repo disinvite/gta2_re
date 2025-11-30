@@ -169,7 +169,7 @@ def build():
     env = os.environ.copy()
 
     (lib, include, path) = get_vc6_env()
-    env["PATH"] = path + ';' env.get("PATH", "")
+    env["PATH"] = path + ';' + env.get("PATH", "")
     env["LIB"] = lib + ';' + env.get("LIB", "")
     env["INCLUDE"] = include + ';' + env.get("INCLUDE", "")
 
