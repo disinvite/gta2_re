@@ -16,8 +16,7 @@ BUILD_FOLDER_NAME = "build_vc6"
 BUILD_DIRECTORY = os.path.join(CURRENT_DIRECTORY, BUILD_FOLDER_NAME)
 BIN_COMP_DIRECTORY = os.path.join(CURRENT_DIRECTORY, "Scripts", "bin_comp")
 
-CMAKE_GENERATE_JOM_CMD = f"cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF -DCMAKE_BUILD_TYPE=Release .. -G\"NMake Makefiles JOM\""
-
+CMAKE_GENERATE_JOM_CMD = f'cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF -DCMAKE_BUILD_TYPE=Release .. -G "NMake Makefiles JOM"'
 CMAKE_BUILD_CMD = "cmake --build . --target all" #  -- -j 1
 
 BUILD_CMDS = [CMAKE_GENERATE_JOM_CMD,
@@ -128,34 +127,31 @@ def get_vc6_env():
     vc6_root = os.path.join(CURRENT_DIRECTORY, "3rdParty", "gta2_re_compile_tools")
 
     lib = os.path.join(vc6_root, "VC98", "Lib")
-    include1 = os.path.join(vc6_root, "VC98", "ATL", "Include")
-    include2 = os.path.join(vc6_root, "VC98", "Include")
-    include3 = os.path.join(vc6_root, "VC98", "MFC", "Include")
 
-    path1 = os.path.join(vc6_root, "cmake-3.5.0-win32-x86", "bin")
-    path2 = os.path.join(vc6_root, "VC98", "bin")
-    path3 = os.path.join(vc6_root, "Common", "MSDev98", "Bin")
+    includes = [
+        os.path.join(vc6_root, "VC98", "ATL", "Include"),
+        os.path.join(vc6_root, "VC98", "Include"),
+        os.path.join(vc6_root, "VC98", "MFC", "Include"),
+    ]
+
+    paths = [
+        os.path.join(vc6_root, "cmake-3.5.0-win32-x86", "bin"),
+        os.path.join(vc6_root, "VC98", "bin"),
+        os.path.join(vc6_root, "Common", "MSDev98", "Bin"),
+    ]
 
     if platform.system() == "Windows":
-        path = f'{path1};{path2};{path3}'
-        include = f'{include1};{include2};{include3};'
+        path = ";".join(paths)
+        include = ";".join(includes)
     elif platform.system() == "Linux" or platform.system() == "Darwin":
         lib = as_wine_path(lib)
-        include1 = as_wine_path(include1)
-        include2 = as_wine_path(include2)
-        include3 = as_wine_path(include3)
+        includes = [as_wine_path(path) for path in includes]
 
         # escape ";"
-        path = fr'{path1}\;{path2}\;{path3}'
-        include = fr'{include1}\;{include2}\;{include3};'
+        path = r'\;'.join(paths)
+        include = r'\;'.join(includes)
 
-
-    vc6_cmds = list()
-    vc6_cmds.append(lib)
-    vc6_cmds.append(include)
-    vc6_cmds.append(path)
-
-    return vc6_cmds
+    return (lib, include, path)
 
 def convert_path(strPath):
     if os.name == "posix":
@@ -170,21 +166,20 @@ GUID_FILTER = "177f0c4a-1cd3-4de7-a32c-71dbbb9fa36d"
 
 def build():
     os.makedirs(BUILD_FOLDER_NAME, exist_ok=True)
+    env = os.environ.copy()
 
-    vc6_env = get_vc6_env()
-    lib, include, path = vc6_env
+    (lib, include, path) = get_vc6_env()
+    env["PATH"] = path + ';' env.get("PATH", "")
+    env["LIB"] = lib + ';' + env.get("LIB", "")
+    env["INCLUDE"] = include + ';' + env.get("INCLUDE", "")
 
     if platform.system() in ("Linux", "Darwin"):
         build_dir = as_wine_path(BUILD_DIRECTORY)
-        command = (
-            f"WINEDEBUG=-all "
-            f"export WINEPATH={path} "
-            f"export LIB={lib} "
-            f"export INCLUDE={include} "
-            f"wine cmd /c \"cd {build_dir} && {CMAKE_GENERATE_JOM_CMD} && {CMAKE_BUILD_CMD}\""
-        )
+        env["WINEDEBUG"] = "-all"
+        command = f'wine cmd /c "cd {build_dir} && {CMAKE_GENERATE_JOM_CMD} && {CMAKE_BUILD_CMD}"'
         p1 = subprocess.Popen(
             command,
+            env=env,
             cwd=BUILD_DIRECTORY,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -194,15 +189,13 @@ def build():
     else:  # Windows
         p1 = subprocess.Popen(
             "cmd",
+            env=env,
             cwd=BUILD_DIRECTORY,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True
         )
-        p1.stdin.write(f"set LIB={lib}\n")
-        p1.stdin.write(f"set INCLUDE={include}\n")
-        p1.stdin.write(f"set PATH={path};%PATH%\n")
         for build_cmd in BUILD_CMDS:
             p1.stdin.write(f"{build_cmd}\n")
         p1.stdin.write("exit /b %errorlevel%\n")
