@@ -169,13 +169,14 @@ def build():
     env = os.environ.copy()
 
     (lib, include, path) = get_vc6_env()
-    env["PATH"] = path + ';' + env.get("PATH", "")
-    env["LIB"] = lib + ';' + env.get("LIB", "")
-    env["INCLUDE"] = include + ';' + env.get("INCLUDE", "")
 
     if platform.system() in ("Linux", "Darwin"):
         build_dir = as_wine_path(BUILD_DIRECTORY)
         env["WINEDEBUG"] = "-all"
+        env["WINEPATH"] = path
+        env["LIB"] = lib
+        env["INCLUDE"] = include
+
         command = f'wine cmd /c "cd {build_dir} && {CMAKE_GENERATE_JOM_CMD} && {CMAKE_BUILD_CMD}"'
         p1 = subprocess.Popen(
             command,
@@ -187,6 +188,10 @@ def build():
             shell=True
         )
     else:  # Windows
+        env["PATH"] = path + ';' + env.get("PATH", "")
+        env["LIB"] = lib
+        env["INCLUDE"] = include
+
         p1 = subprocess.Popen(
             "cmd",
             env=env,
