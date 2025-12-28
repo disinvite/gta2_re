@@ -246,14 +246,8 @@ class Fix16
         return Fix16(sqrt(input.AsDouble()));
     }
 
-    EXPORT Fix16& FromInt_4369F0(s32 a2);
-    EXPORT Fix16& FromInt_45C4E0(u8 a2);
-    EXPORT Fix16& FromU16_4AE970(u16 a2);
-
     EXPORT Fix16 Max_44E540(Fix16& pLhs, Fix16& pRhs);
     EXPORT inline static Fix16 __stdcall Abs_436A50(Fix16& a2);
-    EXPORT inline static Fix16 __stdcall SquareRoot_436A70(Fix16& a2);
-    EXPORT Fix16 operator+(const Fix16& rhs) const;
 
     //MATCH_FUNC(0x436A20)
     Fix16 operator/(const Fix16& in)

@@ -15,34 +15,6 @@ DEFINE_GLOBAL_INIT(Ang16, word_669156, Ang16(720), 0x669156);
 DEFINE_GLOBAL_INIT(Ang16, word_667A7C, Ang16(360), 0x667A7C);
 DEFINE_GLOBAL_INIT(Ang16, word_66916C, Ang16(1080), 0x66916C);
 
-MATCH_FUNC(0x4369F0)
-Fix16& Fix16::FromInt_4369F0(s32 a2)
-{
-    mValue = a2 << 14;
-    return *this;
-}
-
-MATCH_FUNC(0x45C4E0)
-Fix16& Fix16::FromInt_45C4E0(u8 a2)
-{
-    mValue = a2 << 14;
-    return *this;
-}
-
-MATCH_FUNC(0x4AE970)
-Fix16& Fix16::FromU16_4AE970(u16 a2)
-{
-    mValue = a2 << 14;
-    return *this;
-}
-
-MATCH_FUNC(0x408660)
-Fix16 Fix16::operator+(const Fix16& rhs) const
-{
-    s32 value = mValue + rhs.mValue;
-    return Fix16(value, 0);
-}
-
 MATCH_FUNC(0x44E540)
 Fix16 Fix16::Max_44E540(Fix16& pLhs, Fix16& pRhs)
 {
@@ -78,12 +50,6 @@ inline Fix16 __stdcall Fix16::Abs_436A50(Fix16& input)
     {
         return -input;
     }
-}
-
-MATCH_FUNC(0x436A70)
-inline Fix16 __stdcall Fix16::SquareRoot_436A70(Fix16& input)
-{
-    return Fix16(sqrt(input.AsDouble()));
 }
 
 // 10.5 https://decomp.me/scratch/7a41K

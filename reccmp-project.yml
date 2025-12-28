@@ -9,6 +9,7 @@ targets:
       ignore_functions: []
     data-sources:
         - reccmp/ascii.csv
+        - reccmp/fix16.csv
         - reccmp/floats.csv
         - reccmp/library.csv
         - reccmp/functions.csv
