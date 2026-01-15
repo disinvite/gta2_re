@@ -5,7 +5,8 @@
 #include "Fix16.hpp"
 #include "Function.hpp"
 #include "Object_3C.hpp"
-#include "Ped_Unknown_4.hpp"
+#include "Ped.hpp"
+#include "Ped_List_4.hpp"
 #include "Pool.hpp"
 #include "ang16.hpp"
 #include "gtx_0x106C.hpp"
@@ -23,9 +24,11 @@ class Trailer;
 class Ped;
 class Char_8;
 class Hamburger_40;
-class Ped_Unknown_4;
+class Ped_List_4;
 class car_info;
 class infallible_turing;
+class Gang_144;
+class Player;
 
 EXTERN_GLOBAL(Fix16, dword_6777D0);
 
@@ -55,13 +58,13 @@ class Car_78
     EXPORT s16 sub_452DF0();
     EXPORT s16 sub_453470();
     EXPORT s32* sub_453590(s32* a2);
-    EXPORT char_type sub_4537D0();
-    EXPORT Car_BC* sub_4538B0();
-    EXPORT s32 sub_453990(s32 a2);
+    EXPORT void sub_4537D0();
+    EXPORT void sub_4538B0();
+    EXPORT void sub_453990(s32 a2);
     EXPORT Car_BC* sub_4539B0();
     EXPORT u8* sub_4539D0();
     EXPORT s32 sub_453A40();
-    EXPORT s16 sub_453BB0();
+    EXPORT void sub_453BB0();
     EXPORT void SetCar_453BF0(Car_BC* a2);
     EXPORT u8* sub_453C00();
     EXPORT s32 PoolAllocate();
@@ -79,10 +82,10 @@ class Car_78
     char_type field_A;
     char_type field_B;
     Car_78* mpNext;
-    s16 field_10;
+    Ang16 field_10;
     s16 field_12;
     s32 field_14;
-    s32 field_18;
+    Fix16 field_18;
     s32 field_1C;
     s32 field_20;
     s32 field_24_flags;
@@ -116,7 +119,7 @@ class Car_78
     s32 field_68;
     s32 field_6C;
     s32 field_70;
-    s32 field_74;
+    Fix16 field_74;
 };
 
 class Car_78_Pool
@@ -187,6 +190,9 @@ EXTERN_GLOBAL(Ang16, dword_6F804C);
 
 EXTERN_GLOBAL(Ang16, word_6F771E);
 
+EXTERN_GLOBAL(Fix16, dword_6F77C0);
+EXTERN_GLOBAL(Fix16, dword_6F77C4);
+
 class Car_6C
 {
   public:
@@ -216,6 +222,13 @@ class Car_6C
     EXPORT Car_BC* sub_444CF0(s32 car_model_type, Fix16 xpos, Fix16 ypos, Fix16 zpos);
     EXPORT Car_BC* GetNearestCarFromCoord_444F80(Fix16 x, Fix16 y, Fix16 z, Ped* pPed);
     EXPORT Car_BC* GetNearestEnterableCarFromCoord_444FA0(Fix16 x, Fix16 y, Fix16 z, Ped* pPed);
+    EXPORT Car_BC* DoGetNearestCarFromCoord_444FC0(Fix16 xpos,
+                                                   Fix16 ypos,
+                                                   Fix16 zpos,
+                                                   s32 bMatchDriverless,
+                                                   Ped* pPed,
+                                                   char_type bIgnorePedRestrictions);
+
     EXPORT Car_BC* sub_445210(Sprite* a1, u8 a2);
     EXPORT Car_BC* sub_4458B0(s32 arg0, s32 a3, s32 a4, s32 a2);
     EXPORT Car_BC* SpawnCarAt_446230(Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation, s32 car_info_idx, Fix16 maybe_w_scale);
@@ -225,8 +238,8 @@ class Car_6C
     EXPORT void sub_4466C0(s32 a2);
     EXPORT void sub_446760();
     EXPORT void CarsService_446790();
-    EXPORT bool sub_446870(s32 a2);
-    EXPORT u32 sub_446930(s32 a2);
+    EXPORT bool CanAlloc_446870(s32 a2);
+    EXPORT u32 CanAllocateOfType_446930(s32 a2);
     EXPORT Car_6C();
     EXPORT ~Car_6C();
 
@@ -308,6 +321,10 @@ class Trailer
     EXPORT char_type sub_4081D0();
     EXPORT s32 sub_408220();
 
+    void PoolAllocate()
+    {
+    }
+
     void PoolDeallocate()
     {
     }
@@ -330,7 +347,6 @@ class Trailer
     Car_BC* field_8_truck_cab;
     Car_BC* field_C_pCarOnTrailer;
 };
-
 
 static inline bool IsArmyModel(s32 idx1)
 {
@@ -370,11 +386,12 @@ class Car_BC
     EXPORT void sub_43A970();
     EXPORT void SetDriver(Ped* a2);
     EXPORT void sub_43A9F0();
-    EXPORT Car_BC* sub_43AA60();
-    EXPORT char_type sub_43AAF0(s32 a2);
-    EXPORT void sub_43ADC0(s32 a2);
+    EXPORT Car_BC* Deactivate_43AA60();
+    EXPORT char_type IsThreatToSearchingPed_43AAE0();
+    EXPORT char_type sub_43AAF0(Sprite* a2);
+    EXPORT void ProcessCarToCarImpact_43ADC0(Sprite* a2);
     EXPORT bool CanExitCar_43AF10();
-    EXPORT char_type sub_43AF40();
+    EXPORT void sub_43AF40();
     EXPORT void sub_43AF60();
     EXPORT char_type sub_43AFE0(s32 a2);
     EXPORT bool sub_43B140(s32 a2);
@@ -393,7 +410,7 @@ class Car_BC
     EXPORT bool sub_43B850(s32 a2);
     EXPORT void sub_43B870(s32 a2, s32 a3);
     EXPORT s32 sub_43BB90(u8 a1);
-    EXPORT char_type sub_43BBC0();
+    EXPORT void sub_43BBC0();
     EXPORT void SetupCarPhysicsAndSpriteBinding_43BC30();
     EXPORT void SetupCarPhysicsAndSpriteBinding_43BCA0();
     EXPORT void DeAllocateCarPhysics_43BD00();
@@ -420,22 +437,22 @@ class Car_BC
     EXPORT bool IsAreaDamaged_43D1C0(s32 damage_area);
     EXPORT void sub_43D2C0(char_type a2, s32 a3);
     EXPORT s32 sub_43D400();
-    EXPORT void sub_43D690(s32 a3, s32 a4, s32 a5);
+    EXPORT void ExplodeCar_43D690(s32 a3, Fix16 x, Fix16 y);
     EXPORT void sub_43D7B0(s32 a2);
     EXPORT void ExplodeCar_Unknown_43D840(s32 a2);
-    EXPORT s16 sub_43DA90(s16 a2, s32 a3);
+    EXPORT s16 sub_43DA90(s16 a2, Fix16_Point* a3);
     EXPORT void sub_43DB80();
     EXPORT void sub_43DBD0();
     EXPORT bool sub_43DC00();
     EXPORT bool sub_43DC80(s32 a2, s32 a3);
     EXPORT bool IsBeingCrushed_43DD50();
     EXPORT void sub_43DD60();
-    EXPORT char_type sub_43E560();
+    EXPORT char_type ManageDrowning_43E560();
     EXPORT Car_BC* GetCabOrSelf_43E8D0();
-    EXPORT Ped* sub_43E990();
-    EXPORT bool sub_43EA60(Object_2C* a2);
-    EXPORT char_type sub_43F130(s32 a2);
-    EXPORT u32* sub_440510(u32* a2);
+    EXPORT Ped* GetEffectiveDriver_43E990();
+    EXPORT bool OnObjectTouched_43EA60(Object_2C* a2);
+    EXPORT char_type HandleCarHitByObject_43F130(Object_2C* a2);
+    EXPORT Fix16 sub_440510();
     EXPORT char_type GetPassengersCount_440570();
     EXPORT void InitCarAIControl_440590();
     EXPORT void SpawnDriverPed();
@@ -444,12 +461,12 @@ class Car_BC
     EXPORT void ShowCarName_4406B0(Ped* pPed);
     EXPORT void sub_4406E0(Ped* a2);
     EXPORT void ClearDriver_4407F0();
-    EXPORT Sprite* sub_440840();
+    EXPORT Sprite* GetSprite_440840();
     EXPORT void sub_440AC0();
     EXPORT void sub_440B10();
-    EXPORT s32 sub_440B60();
+    EXPORT void PutMachineGunOnRoof_440B60();
     EXPORT void PutTV_Antenna_440BB0();
-    EXPORT char_type RotateRoofObjectTowardTarget_440C10(char_type a2);
+    EXPORT char_type RotateRoofObjectTowardTarget_440C10(Ang16 a2);
     EXPORT char_type HandleRoofTurretRotation_440D90(char_type a2);
     EXPORT void sub_440F90(char_type a2);
     EXPORT void GoToBlockTest_441030(u8 x, u8 y, u8 z, s32 maybe_direction);
@@ -497,7 +514,7 @@ class Car_BC
     EXPORT void sub_4425D0();
     EXPORT void sub_4426D0();
     EXPORT void DetachTrailer_442760();
-    EXPORT Car_BC* sub_4427A0(Car_BC* a2);
+    EXPORT void AttachTrailer_4427A0(Car_BC* pToFind);
     EXPORT s32 sub_442810();
     EXPORT void LightUpdate_442D10();
     EXPORT char_type sub_442D70();
@@ -506,7 +523,7 @@ class Car_BC
     EXPORT void sub_443330();
     EXPORT char_type sub_443360(s32 a2, s32 a3, s32 a4, s16 a5);
     EXPORT void sub_4435A0();
-    EXPORT s32 sub_4435B0();
+    EXPORT s32 GetCrashSoundCategory_4435B0();
     EXPORT void sub_4435F0();
     EXPORT Car_6C* sub_443710(s32 a2);
     EXPORT static s32 __stdcall get_car_weapon_cost_443A50(s32 weapon_kind);
@@ -514,7 +531,7 @@ class Car_BC
     EXPORT static void __stdcall sub_443AB0(Player* pPlayer, s32 weapon_cost);
     EXPORT void ResprayOrChangePlates(u8 remap);
     EXPORT void ResprayOrCleanPlates(u8 remap);
-    EXPORT void HandleShops_443C40(Object_2C *pObj);
+    EXPORT void HandleShops_443C40(Object_2C* pObj);
     EXPORT void sub_443D00(Fix16 xpos, Fix16 ypos, Fix16 zpos);
     EXPORT void IncrementCarStats_443D70(s32 car_type);
     EXPORT void IncrementAllocatedCarType_443DA0(s32 a2);
@@ -751,6 +768,11 @@ class Car_BC
         }
     }
 
+    bool sub_4214D0()
+    {
+        return field_88 == 7;
+    }
+
     bool IsGunJeep_411910()
     {
         return field_84_car_info_idx == car_model_enum::GUNJEEP;
@@ -783,9 +805,8 @@ class Car_BC
 
     bool sub_4215C0()
     {
-        return field_54_driver 
-            && field_54_driver->field_15C_player 
-            && field_54_driver->get_occupation_403980() != ped_ocupation_enum::empty;
+        return field_54_driver && field_54_driver->field_15C_player &&
+            field_54_driver->get_occupation_403980() != ped_ocupation_enum::empty;
     }
 
     Fix16 sub_421910(Fix16 value)
@@ -809,14 +830,22 @@ class Car_BC
     {
         return field_50_car_sprite->field_14_xpos.y;
     }
-    
+
     Fix16 get_z_41E450()
     {
         return field_50_car_sprite->field_1C_zpos;
     }
 
+    inline bool IsEmittingHorn_411970()
+    {
+        return field_A7_horn > 0 && field_A7_horn <= 0xF8u;
+    }
+
+    EXPORT char sub_444E40(Fix16 xpos, Fix16 ypos, Fix16 zpos);
+    EXPORT char sub_445EC0(Fix16 xpos, Fix16 ypos, s32 maybe_direction);
+
     struct_4 field_0_qq;
-    Ped_Unknown_4 field_4;
+    Ped_List_4 field_4_passengers_list;
     BitSet32 field_8_damaged_areas; // TODO: check if it's a bitset
     Car_Door_10 field_C_doors[4];
     Car_BC* mpNext;
@@ -828,7 +857,7 @@ class Car_BC
     Trailer* field_64_pTrailer;
     Fix16 field_68;
     s32 field_6C_maybe_id;
-    s32 field_70;
+    s32 field_70_exploder_ped_id;
     s16 field_74_damage;
     s16 field_76;
     u16 field_78_flags;
@@ -885,6 +914,11 @@ struct Car_BC_Pool
     void Remove(Car_BC* pCar)
     {
         field_0_pool.DeAllocate(pCar);
+    }
+
+    void UpdateNextPrev(Car_BC* pItem)
+    {
+        field_0_pool.UpdateNextPrev(pItem);
     }
 
     Pool<Car_BC, 306> field_0_pool;

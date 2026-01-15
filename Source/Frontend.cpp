@@ -378,10 +378,10 @@ void __stdcall Frontend::destroy_4AD070()
     Bink::Close2_513390();
 }
 
-STUB_FUNC(0x4B3170)
+WIP_FUNC(0x4B3170)
 void Frontend::sub_4B3170(u16 menu_page_idx)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     u16 v3; // bp
     u8 v4; // bl
     u8 v5; // al
@@ -477,7 +477,7 @@ void Frontend::sub_4B3170(u16 menu_page_idx)
         case MENUPAGE_AREA_COMPLETE:
             a2 = gLucid_hamilton_67E8E0.sub_4C5980();
             v51 = gLucid_hamilton_67E8E0.sub_4C59C0();
-            if (gLucid_hamilton_67E8E0.field_574 == 50)
+            if (gLucid_hamilton_67E8E0.field_574_secret_tokens_collected == 50)
             {
                 v51 = 3;
             }
@@ -590,9 +590,9 @@ void Frontend::sub_4B3170(u16 menu_page_idx)
             break;
 
         case MENUPAGE_MULTIPLAYER_RESULTS:
-            a2b = gLucid_hamilton_67E8E0.sub_4C5BF0();
+            a2b = gLucid_hamilton_67E8E0.GetMaxPlayers_4C5BF0();
             v15 = -1;
-            if (gLucid_hamilton_67E8E0.sub_4C5BC0() == 3)
+            if (gLucid_hamilton_67E8E0.GetMultiplayerGamemode_4C5BC0() == 3)
             {
                 for (u8 v16 = 0; v16 < 6; v16++)
                 {
@@ -607,8 +607,8 @@ void Frontend::sub_4B3170(u16 menu_page_idx)
                 gLucid_hamilton_67E8E0.sub_4C5C20();
             }
 
-            v65 = (unsigned __int8)gLucid_hamilton_67E8E0.sub_4C5BE0();
-            v68 = gLucid_hamilton_67E8E0.sub_4C5BC0();
+            v65 = (unsigned __int8)gLucid_hamilton_67E8E0.GetUserPlayerIdx_4C5BE0();
+            v68 = gLucid_hamilton_67E8E0.GetMultiplayerGamemode_4C5BC0();
             switch (v68)
             {
                 case FRAG_GAME_1:
@@ -653,7 +653,7 @@ void Frontend::sub_4B3170(u16 menu_page_idx)
                 else
                 {
                     *(v23 - 660) = 1;
-                    *v23 = gLucid_hamilton_67E8E0.sub_4C5BC0() != 3;
+                    *v23 = gLucid_hamilton_67E8E0.GetMultiplayerGamemode_4C5BC0() != 3;
                 }
                 ++v22;
                 v23 += 110;
@@ -715,15 +715,15 @@ void Frontend::sub_4B3170(u16 menu_page_idx)
                         {
                             if (v31 != v65 //  not this player (i.e. an opponent)
                                 && gYouthful_einstein_6F8450.field_20[v31] == 0 //  not quit?
-                                && (s16)(&gLucid_hamilton_67E8E0)->sub_4C5D60(a3a) > v30) // v30 = highest frag from opponents
+                                && (s16)(&gLucid_hamilton_67E8E0)->GetFragsForPlayerIdx_4C5D60(a3a) > v30) // v30 = highest frag from opponents
                             {
-                                v30 = (s16)(&gLucid_hamilton_67E8E0)->sub_4C5D60(a3a); // update highest frag
+                                v30 = (s16)(&gLucid_hamilton_67E8E0)->GetFragsForPlayerIdx_4C5D60(a3a); // update highest frag
                             }
                             ++v31;
                             ++a3a;
                         } while (a3a < a2b);
                     }
-                    v33 = (s16)gLucid_hamilton_67E8E0.sub_4C5D60(v65);
+                    v33 = (s16)gLucid_hamilton_67E8E0.GetFragsForPlayerIdx_4C5D60(v65);
                     break;
                 case POINTS_GAME_2:
                     a3b = 0;
@@ -734,15 +734,15 @@ void Frontend::sub_4B3170(u16 menu_page_idx)
                         {
                             if (v34 != v65 //  not you
                                 && gYouthful_einstein_6F8450.field_20[v34] == 0 //  not quit?
-                                && (s16)(&gLucid_hamilton_67E8E0)->sub_4C5CB0(a3b) > v30) // v30 = highest score from opponents
+                                && (s16)(&gLucid_hamilton_67E8E0)->GetPointsForPlayerIdx_4C5CB0(a3b) > v30) // v30 = highest score from opponents
                             {
-                                v30 = (s16)(&gLucid_hamilton_67E8E0)->sub_4C5CB0(a3b); // update highest opponent score
+                                v30 = (s16)(&gLucid_hamilton_67E8E0)->GetPointsForPlayerIdx_4C5CB0(a3b); // update highest opponent score
                             }
                             ++v34;
                             ++a3b;
                         } while (a3b < a2b);
                     }
-                    v33 = gLucid_hamilton_67E8E0.sub_4C5CB0(v65);
+                    v33 = gLucid_hamilton_67E8E0.GetPointsForPlayerIdx_4C5CB0(v65);
                     break;
                 case TAG_GAME_3:
                     if (v24)
@@ -997,7 +997,7 @@ s32 Frontend::sub_4AEDB0()
 }
 
 // https://decomp.me/scratch/ci11a
-STUB_FUNC(0x4B5430)
+WIP_FUNC(0x4B5430)
 void Frontend::sub_4B5430(score_table_line* pStrings,
                           u16 text_xpos,
                           u16 text_ypos,
@@ -1006,7 +1006,7 @@ void Frontend::sub_4B5430(score_table_line* pStrings,
                           u16 draw_kind,
                           u8 spacing_type)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     if (num_entries > 0)
     {
         u16 new_xpos;
@@ -1071,7 +1071,7 @@ EXTERN_GLOBAL(s32, gGTA2VersionMajor_708284);
 
 // sub_457920 in 9.6f
 // https://decomp.me/scratch/jchxT
-STUB_FUNC(0x4AD140)
+WIP_FUNC(0x4AD140)
 void Frontend::sub_4AD140()
 {
     const s32 v98 = gText_0x14_704DFC->field_10_lang_code != 'j' ? 14 : 16;
@@ -1509,7 +1509,7 @@ void Frontend::sub_4AD140()
 }
 
 // https://decomp.me/scratch/qV1ie switch "goto" issue
-STUB_FUNC(0x4B7AE0)
+WIP_FUNC(0x4B7AE0)
 void Frontend::sub_4B7AE0()
 {
     NOT_IMPLEMENTED;
@@ -1833,10 +1833,10 @@ void Frontend::sub_4B6780()
 }
 
 // https://decomp.me/scratch/3NE2J
-STUB_FUNC(0x4B7A10)
+WIP_FUNC(0x4B7A10)
 void Frontend::sub_4B7A10()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     timeGetTime();
     Frontend::read_menu_input_4AFEB0();
     bool bKeyPressed = false;
@@ -1889,10 +1889,10 @@ void Frontend::sub_4B7A10()
     }
 }
 
-STUB_FUNC(0x4AE2D0)
+WIP_FUNC(0x4AE2D0)
 void Frontend::UpdatePageFromUserInput_4AE2D0()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     MenuPage_0xBCA* pBorg; // ebx
     player_stats_0xA4* v3; // ebp
     u16 v4; // ax
@@ -2201,7 +2201,7 @@ void Frontend::SetWinMainStateToBootMap_4AE990()
 
 // It matches, but we need to get rid of goto's
 // https://decomp.me/scratch/LYZij
-STUB_FUNC(0x4B2F60)
+WIP_FUNC(0x4B2F60)
 void Frontend::sub_4B2F60()
 {
     //NOT_IMPLEMENTED;
@@ -2908,10 +2908,10 @@ void Frontend::sub_4ADFB0()
 
 // https://decomp.me/scratch/IOmk7
 // TODO: stop the tail merge... somehow
-STUB_FUNC(0x4B6E10)
+WIP_FUNC(0x4B6E10)
 void Frontend::DrawBackground_4B6E10()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     // todo
     BYTE tga_idx; // [esp+50h] [ebp-8h] BYREF
     BYTE not_used; // [esp+54h] [ebp-4h] BYREF
@@ -3082,10 +3082,10 @@ void Frontend::Load_tga_4B6520(u16 idx)
 }
 
 // https://decomp.me/scratch/MuqZh
-STUB_FUNC(0x4AF2A0)
+WIP_FUNC(0x4AF2A0)
 Frontend::Frontend()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     field_10D = 1;
 
     gText_0x14_704DFC = new text_0x14();
@@ -3342,10 +3342,10 @@ void Frontend::sub_4AF0E0()
     }
 }
 
-STUB_FUNC(0x4B0220)
+WIP_FUNC(0x4B0220)
 void Frontend::sub_4B0220()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     s16 v30; // ax
 
     // local_4 = (-(ushort)(cVar1 != 'j') & 0xfffc) + 0x10;
@@ -3920,10 +3920,10 @@ void Frontend::sub_4B0220()
     field_EE0E_unk.sub_483F20();
 }
 
-STUB_FUNC(0x4B4440)
+WIP_FUNC(0x4B4440)
 void Frontend::sub_4B4440()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
 
     u8* pBlock; // esi
     char mainOrBonus[256]; // [esp+14h] [ebp-718h] BYREF
@@ -4320,51 +4320,51 @@ void Frontend::sub_4B78B0(wchar_t* pString, u16 text_xpos, u16 text_ypos, u16 ar
 MATCH_FUNC(0x4B55F0)
 void Frontend::sub_4B55F0()
 {
-    s8 game_mode = gLucid_hamilton_67E8E0.sub_4C5BC0();
-    u8 v20 = gLucid_hamilton_67E8E0.sub_4C5BF0();
-    u8 v22 = gLucid_hamilton_67E8E0.sub_4C5BE0();
+    s8 game_mode = gLucid_hamilton_67E8E0.GetMultiplayerGamemode_4C5BC0();
+    u8 max_players = gLucid_hamilton_67E8E0.GetMaxPlayers_4C5BF0();
+    u8 user_idx = gLucid_hamilton_67E8E0.GetUserPlayerIdx_4C5BE0();
 
-    u8 v18 = 0;
+    u8 idx_2 = 0;
 
-    for (u8 player_idx = 0; player_idx < v20; ++player_idx)
+    for (u8 curr_plyr_idx = 0; curr_plyr_idx < max_players; ++curr_plyr_idx)
     {
         u16 x_pos;
         u16 y_pos;
         wchar_t Buffer[26];
 
-        if (game_mode == 1) //  frags
+        if (game_mode == FRAG_GAME_1) //  frags
         {
-            s32 frags = (s16)gLucid_hamilton_67E8E0.sub_4C5D60(player_idx);
+            s32 frags = (s16)gLucid_hamilton_67E8E0.GetFragsForPlayerIdx_4C5D60(curr_plyr_idx);
             _itow(frags, Buffer, 10);
             x_pos = 550;
-            y_pos = 20 * player_idx + 170;
+            y_pos = 20 * curr_plyr_idx + 170;
         }
-        else if (game_mode == 2) //  points game
+        else if (game_mode == POINTS_GAME_2) //  points game
         {
-            s32 points = gLucid_hamilton_67E8E0.sub_4C5CB0(player_idx);
+            s32 points = gLucid_hamilton_67E8E0.GetPointsForPlayerIdx_4C5CB0(curr_plyr_idx);
             _itow(points, Buffer, 10);
             x_pos = 550;
-            y_pos = 20 * player_idx + 170;
+            y_pos = 20 * curr_plyr_idx + 170;
         }
         else // tag game
         {
-            s32 player_time = gYouthful_einstein_6F8450.field_4_time[player_idx];
+            s32 player_time = gYouthful_einstein_6F8450.field_4_time[curr_plyr_idx];
             swprintf(Buffer, L"%2d:%02d", player_time / 60, player_time % 60);
             x_pos = 500;
-            y_pos = 20 * player_idx + 170;
+            y_pos = 20 * curr_plyr_idx + 170;
         }
 
         DrawText_4B87A0(Buffer, x_pos, y_pos, field_11C, 1);
 
-        s32 v11 = gLucid_hamilton_67E8E0.sub_4C5D80(v22, player_idx);
+        s32 v11 = gLucid_hamilton_67E8E0.sub_4C5D80(user_idx, curr_plyr_idx);
         _itow(v11, Buffer, 10);
 
-        if (game_mode != 3 && player_idx != v22)
+        if (game_mode != TAG_GAME_3 && curr_plyr_idx != user_idx)
         {
             x_pos = 550;
-            y_pos = 20 * v18 + 320;
+            y_pos = 20 * idx_2 + 320;
             DrawText_4B87A0(Buffer, x_pos, y_pos, field_11C, 1);
-            ++v18;
+            ++idx_2;
         }
     }
 }
@@ -4530,10 +4530,10 @@ u8 Frontend::sub_4B7060(u8 a2)
     }
 }
 
-STUB_FUNC(0x4B7270)
+WIP_FUNC(0x4B7270)
 u8 Frontend::sub_4B7270(char_type a2)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     player_stats_0xA4* v2; // esi
     u8 result; // al
 
@@ -4880,10 +4880,10 @@ menu_option_0x82::~menu_option_0x82()
     field_80_menu_page_target = 0;
 }
 
-STUB_FUNC(0x4B6330)
+WIP_FUNC(0x4B6330)
 bool menu_option_0x82::sub_4B6330()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     BYTE tmp = byte_67DA80;
     u16 old_count = field_6E_horizontal_selected_idx;
     u16 new_count = old_count;
@@ -4915,10 +4915,11 @@ bool menu_option_0x82::sub_4B6330()
     return old_count != new_count ? true : false;
 }
 
-STUB_FUNC(0x4B6390)
+WIP_FUNC(0x4B6390)
 bool menu_option_0x82::sub_4B6390()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+    
     u16 oldCount = field_6E_horizontal_selected_idx;
     u16 new_count = oldCount;
     char_type bFound = 0;

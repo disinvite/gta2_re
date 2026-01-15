@@ -16,7 +16,6 @@ class Object_2C;
 class infallible_turing;
 class Ped;
 
-
 class Sprite_4C
 {
   public:
@@ -34,7 +33,7 @@ class Sprite_4C
     }
 
     EXPORT void SetCurrentRect_5A4D90();
-    EXPORT void sub_5A3550(Fix16 x, Fix16 y, Fix16 z, Ang16 ang);
+    EXPORT void UpdateRotatedBoundingBox_5A3550(Fix16 x, Fix16 y, Fix16 z, Ang16 ang);
 
     EXPORT Sprite_4C();
     EXPORT ~Sprite_4C();
@@ -45,7 +44,7 @@ class Sprite_4C
     Fix16_Point field_C_b_box[4];
     Sprite_4C* mpNext;
     Fix16_Rect field_30;
-    char_type field_48_bUnknown;
+    char_type field_48_bDrawCollisionBox;
     char_type field_49;
     char_type field_4A;
     char_type field_4B;
@@ -54,11 +53,14 @@ class Sprite_4C
 class Sprite
 {
   public:
+    // TODO: Ordering
+    EXPORT Fix16_Point GetBoundingBoxCorner_562450(s32 idx);
+
     EXPORT Fix16_Point get_x_y_443580();
     EXPORT void sub_451950(Fix16 xpos, Fix16 ypos, Fix16 zpos);
     EXPORT void sub_54EC80(Fix16 xpos, Fix16 ypos);
-    EXPORT bool sub_59E170();
-    EXPORT Ped* sub_59E1B0();
+    EXPORT bool IsControlledByActivePlayer_59E170();
+    EXPORT Ped* GetPed_59E1B0();
     EXPORT s32 IsOnWater_59E1D0();
     EXPORT char_type sub_59E250();
     EXPORT void sub_59E2E0();
@@ -68,14 +70,14 @@ class Sprite
     EXPORT s32 sub_59E4C0(s32 a2, s32 a3);
     EXPORT char_type CollisionCheck_59E590(Sprite* a2);
     EXPORT char_type sub_59E680(s32 a2, s16* a3);
-    EXPORT void sub_59E7B0();
+    EXPORT void ResetZCollisionAndDebugBoxes_59E7B0();
     EXPORT Sprite* sub_59E7D0(s32 a2);
-    EXPORT char_type sub_59E830(Sprite* a1, Ped* a2);
+    EXPORT char_type IsThreatToSearchingPed_59E830();
     EXPORT char_type sub_59E850(Sprite* pSprite);
-    EXPORT void sub_59E8C0(Sprite* pSprite);
-    EXPORT void sub_59E910(Sprite* a2);
+    EXPORT void HandleObjectCollision_59E8C0(Sprite* pSprite);
+    EXPORT void ProcessCarToCarImpactIfCar_59E910(Sprite* a2);
     EXPORT void sub_59E960();
-    EXPORT void sub_59E9C0();
+    EXPORT void UpdateCollisionBoundsIfNeeded_59E9C0();
     EXPORT void SetRemap(s16 remap);
     EXPORT s16 sub_59EAA0();
     EXPORT char_type has_shadows_59EAE0();
@@ -83,11 +85,11 @@ class Sprite
     EXPORT void ShowHorn_59EE40(s32 a2, s32 a3);
     EXPORT void Draw_59EFF0();
     EXPORT void AllocInternal_59F950(Fix16 width, Fix16 height, Fix16 a4);
-    EXPORT void sub_59F990();
+    EXPORT void Update_4C_59F990();
     EXPORT void sub_59FA40();
-    EXPORT void sub_59FAD0();
+    EXPORT void FreeSprite4CChildren_59FAD0();
     EXPORT bool sub_59FB10(s32* a2);
-    EXPORT char_type sub_5A0150(s32 a2, u8* a3, u8* a4);
+    EXPORT char_type FindOverlappingBoundingBoxCorners_5A0150(s32 a2, u8* a3, u8* a4);
     EXPORT char_type CollisionCheck_5A0320(Fix16* pXY1, Fix16* pXY2, u8* pCollisionIdx1, u8* pCollisionIdx2);
     EXPORT bool RotatedRectCollisionSAT_5A0380(Sprite* a2);
     EXPORT char_type sub_5A0970(s32 a2, s32 a3, s32 a4);
@@ -97,10 +99,10 @@ class Sprite
     EXPORT bool sub_5A1490(s32 a2, s32 a3);
     EXPORT char_type sub_5A19C0();
     EXPORT char sub_5A1A60();
-    EXPORT char_type sub_5A1B30(Sprite* a2);
-    EXPORT char_type sub_5A1BD0();
-    EXPORT char_type sub_5A1CA0(u32* a2);
-    EXPORT char_type sub_5A1EB0();
+    EXPORT void ResolveZOrder_5A1B30(Sprite* pOther);
+    EXPORT char_type ComputeZLayer_5A1BD0();
+    EXPORT char_type CheckCornerZCollisions_5A1CA0(u32* a2);
+    EXPORT char_type IsTouchingSlopeBlock_5A1EB0();
     EXPORT char_type sub_5A21F0();
     EXPORT u32* sub_5A22B0(u32* a2, Sprite* a3);
     EXPORT char_type sub_5A2440();
@@ -108,11 +110,12 @@ class Sprite
     EXPORT s16* sub_5A26E0(s16* a2);
     EXPORT s32* sub_5A2710(s32* a2, Sprite* a3, s32* a4, s32 a5, u8* a6, u8* a7, char_type* a8);
     EXPORT void CreateSoundObj_5A29D0();
+    EXPORT bool IsObjectModelEqual_59E930(s32 model);
     EXPORT void FreeSound_5A2A00();
     EXPORT void sub_5A2A30();
     EXPORT void PoolAllocate();
     EXPORT void PoolDeallocate();
-    EXPORT void sub_5A3100(Sprite* a2, Fix16 a3, Fix16 a4, Ang16 a5);
+    EXPORT void DispatchCollisionEvent_5A3100(Sprite* a2, Fix16 a3, Fix16 a4, Ang16 a5);
 
     EXPORT void set_angle_4833B0(Ang16 ang);
 
@@ -189,35 +192,45 @@ class Sprite
     infallible_turing* field_10_sound;
 
     // 9.6f inline 0x420690
-    inline void sub_420690(Ang16 a1)
+    inline void set_ang_lazy_420690(Ang16 a1)
     {
         if (a1 != field_0)
         {
             field_0 = a1;
-            sub_59E7B0();
+            ResetZCollisionAndDebugBoxes_59E7B0();
         }
     }
 
     // 9.6f inline 0x420600
-    inline void sub_420600(Fix16 xpos, Fix16 ypos, Fix16 zpos)
+    inline void set_xyz_lazy_420600(Fix16 xpos, Fix16 ypos, Fix16 zpos)
     {
         if (field_14_xpos.x != xpos || field_14_xpos.y != ypos || field_1C_zpos != zpos)
         {
             field_14_xpos.x = xpos;
             field_14_xpos.y = ypos;
             field_1C_zpos = zpos;
-            sub_59E7B0();
+            ResetZCollisionAndDebugBoxes_59E7B0();
         }
     }
 
     // 9.6f inline 0x447E20
-    void sub_447E20(Fix16 x_target, Fix16 y_target)
+    void set_xy_lazy_447E20(Fix16 x_target, Fix16 y_target)
     {
         if (field_14_xpos.x != x_target || field_14_xpos.y != y_target)
         {
             field_14_xpos.x = x_target;
             field_14_xpos.y = y_target;
-            sub_59E7B0();
+            ResetZCollisionAndDebugBoxes_59E7B0();
+        }
+    }
+
+    // TODO: get 9.6f addr
+    void set_z_lazy(Fix16 zpos)
+    {
+        if (field_1C_zpos != zpos)
+        {
+            field_1C_zpos = zpos;
+            ResetZCollisionAndDebugBoxes_59E7B0();
         }
     }
 
@@ -236,21 +249,6 @@ class Sprite
         return field_1C_zpos;
     }
 
-    inline bool check_sprite_type_40FE80()
-    {
-        return field_30_sprite_type_enum == 4 || field_30_sprite_type_enum == 5 || field_30_sprite_type_enum == 1;
-    }
-
-    inline Object_2C* get_o2c_or_null_40FEC0()
-    {
-        if (check_sprite_type_40FE80())
-        {
-            return field_8_object_2C_ptr;
-        }
-
-        return NULL;
-    }
-
     Fix16_Point_POD field_14_xpos;
     Fix16 field_1C_zpos;
     s16 field_20_id;
@@ -266,7 +264,7 @@ class Sprite
     s32 field_30_sprite_type_enum; // Uses the enum defined in the namespace sprite_types_enum
     s32 field_34;
     char_type field_38;
-    u8 field_39_z_col;
+    char_type field_39_z_col;
     char_type field_3A;
     char_type field_3B;
 };
@@ -345,7 +343,6 @@ class Sprite_18
     }
 
     // TODO: ordering ?
-    EXPORT Sprite* sub_5A6CA0(s32 a2);
 
     EXPORT void sub_5A6A20();
 

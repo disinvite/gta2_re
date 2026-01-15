@@ -5,10 +5,10 @@
 #include "Function.hpp"
 #include "Game_0x40.hpp"
 #include "Globals.hpp"
+#include "Hud.hpp"
 #include "Ped.hpp"
 #include "cSampleManager.hpp"
 #include "sprite.hpp"
-#include "Hud.hpp"
 #include <math.h>
 
 DEFINE_GLOBAL(sound_obj, gSound_obj_66F680, 0x66F680);
@@ -1215,7 +1215,6 @@ struct naughty_elion_0x4C;
 struct inspiring_cori_0xBC;
 struct naughty_elion_0x4C;
 
-
 MATCH_FUNC(0x419FA0)
 s32 sound_obj::AddSoundObject_419FA0(infallible_turing* pTuring)
 {
@@ -1418,11 +1417,18 @@ bool sound_obj::sub_57F090(Car_BC* pCar)
     return false;
 }
 
-STUB_FUNC(0x57F120)
+WIP_FUNC(0x57F120)
 bool sound_obj::sub_57F120(Car_BC* pCar)
 {
-    NOT_IMPLEMENTED;
-    return false;
+    WIP_IMPLEMENTED;
+    
+    if (!pCar)
+    {
+        return 0;
+    }
+
+    return pCar->field_84_car_info_idx == car_model_enum::boxcar ||
+        pCar->field_84_car_info_idx > car_model_enum::TOWTRUCK && pCar->field_84_car_info_idx <= car_model_enum::TRAINFB;
 }
 
 MATCH_FUNC(0x419EF0)
@@ -1431,7 +1437,7 @@ void sound_obj::Service_419EF0()
     static char_type byte_674E24;
     if (gGame_0x40_67E008)
     {
-        field_1_isPaused = gGame_0x40_67E008->field_0_game_state == 2;
+        field_1_isPaused = gGame_0x40_67E008->field_0_game_state == GameState::Paused_2;
         if (!field_1_isPaused)
         {
             GenerateIntegerRandomNumberTable_41BA90();
@@ -1441,7 +1447,7 @@ void sound_obj::Service_419EF0()
             if (!byte_674E24)
             {
                 gSampManager_6FFF00.CloseVocalStream_58E6A0(1);
-                gSampManager_6FFF00.PlayVocal_58E510(1, 7, 1);
+                gSampManager_6FFF00.PlayVocal_58E510(1, 7, 1); // FREEZE
                 gSampManager_6FFF00.SetVocalVolume_58E6D0(1, 127u);
             }
         }
@@ -1482,10 +1488,6 @@ void sound_obj::ProcessEntity_4123A0(s32 id)
                 switch (field_147C[id].field_4_pObj->field_0_object_type)
                 {
                     case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
                         ProcessType1_2_3_4_5_412740(id);
                         break;
                     case 6:
@@ -2031,18 +2033,30 @@ char_type sound_obj::sub_418940(sound_0x68* a2)
     return 0;
 }
 
-STUB_FUNC(0x414EE0)
-char_type sound_obj::sub_414EE0(sound_0x68* a2)
+MATCH_FUNC(0x414EE0)
+char_type sound_obj::sub_414EE0(sound_0x68* p68)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    p68->field_14_samp_idx = 60;
+    p68->field_3C = 400;
+    p68->field_4C = 3;
+    p68->field_20_rate = 9000;
+    p68->field_30 = 0;
+    p68->field_34 = gSampManager_6FFF00.sub_58DC30(60);
+    p68->field_38 = gSampManager_6FFF00.sub_58DC50(60);
+    return 1;
 }
 
-STUB_FUNC(0x414C90)
-char_type sound_obj::sub_414C90(sound_0x68* a2)
+MATCH_FUNC(0x414C90)
+char_type sound_obj::sub_414C90(sound_0x68* p68)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    p68->field_14_samp_idx = 35;
+    p68->field_3C = 400;
+    p68->field_4C = 5;
+    p68->field_20_rate = gSampManager_6FFF00.GetPlayBackRateIdx_58DBF0(35);
+    p68->field_30 = 0;
+    p68->field_34 = gSampManager_6FFF00.sub_58DC30(35);
+    p68->field_38 = gSampManager_6FFF00.sub_58DC50(35);
+    return 1;
 }
 
 MATCH_FUNC(0x415100)
@@ -2084,12 +2098,15 @@ char_type sound_obj::sub_414690(sound_0x68* pObj)
     return 1;
 }
 
-STUB_FUNC(0x4149D0)
-char_type sound_obj::sub_4149D0(sound_0x68* a2)
+MATCH_FUNC(0x4149D0)
+char_type sound_obj::sub_4149D0(sound_0x68* pObj)
 {
-    NOT_IMPLEMENTED;
-    // todo
-    return 0;
+    pObj->field_3C = 400;
+    pObj->field_30 = 1;
+    pObj->field_34 = 0;
+    pObj->field_38 = -1;
+    pObj->field_20_rate = gSampManager_6FFF00.GetPlayBackRateIdx_58DBF0(pObj->field_14_samp_idx);
+    return 1;
 }
 
 MATCH_FUNC(0x41B4E0)

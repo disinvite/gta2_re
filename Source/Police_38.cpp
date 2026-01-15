@@ -1,5 +1,6 @@
 #include "Police_38.hpp"
 #include "Car_BC.hpp"
+#include "Char_Pool.hpp"
 #include "Fix16_Rect.hpp"
 #include "Game_0x40.hpp"
 #include "Globals.hpp"
@@ -472,7 +473,7 @@ void PoliceCrew_38::sub_572340()
                         Fix16 xpos_f;
                         switch (pPed->field_258_objective)
                         {
-                            case objectives_enum::fire_at_object_from_vehicle_52:
+                            case objectives_enum::objective_52:
                                 pPed->SetObjective(objectives_enum::goto_area_in_car_14, 9999);
                                 pPed_6FEDDC->field_1DC_objective_target_x = Fix16(field_14_pObj->field_10_x.ToUInt8());
                                 pPed_6FEDDC->field_1E0_objective_target_y = Fix16(field_14_pObj->field_14_y.ToUInt8());
@@ -525,7 +526,7 @@ void PoliceCrew_38::sub_572340()
                             case objectives_enum::enter_car_as_driver_35:
                                 PoliceCrew_38::sub_575210();
                                 break;
-                            case objectives_enum::follow_car_on_foot_with_offset_51:
+                            case objectives_enum::objective_51:
                                 if (pPed->field_225 == 2)
                                 {
                                     field_24_state = 6;
@@ -544,7 +545,7 @@ void PoliceCrew_38::sub_572340()
                                 if (pPed_6FEDDC->field_225 == 1)
                                 {
                                     pPed_6FEDDC->sub_463830(0, 9999);
-                                    pPed_6FEDDC->SetObjective(objectives_enum::follow_car_on_foot_with_offset_51, 200);
+                                    pPed_6FEDDC->SetObjective(objectives_enum::objective_51, 200);
                                 }
                                 break;
                             case objectives_enum::objective_28:
@@ -658,7 +659,7 @@ void PoliceCrew_38::sub_574F10()
                     switch (pPedIter->field_258_objective)
                     {
                         case objectives_enum::goto_area_in_car_14:
-                        case objectives_enum::fire_at_object_from_vehicle_52:
+                        case objectives_enum::objective_52:
                             byte_6FEB48 = 0;
                             v13 = field_10_subObj->field_0_car->field_60;
                             if (v13)
@@ -807,7 +808,7 @@ void PoliceCrew_38::Service_575590()
                 Ped* pUnkPed = pGroup->field_4_ped_list[0];
                 if (pUnkPed)
                 {
-                    pGroup->sub_4C9970(pUnkPed);
+                    pGroup->RemovePed_4C9970(pUnkPed);
                     field_10_subObj->field_8_group->add_ped_leader_4C9B10(pUnkPed);
                     field_10_subObj->field_4_ped = pUnkPed;
                 }

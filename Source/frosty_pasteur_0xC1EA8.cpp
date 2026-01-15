@@ -175,11 +175,11 @@ void frosty_pasteur_0xC1EA8::LoadSave_511F80(char_type* pFileName)
 
     gObject_5C_6F8F84->RestoreObjects_52A590(&gGameSave_6F78C8.field_5E4_object_data);
 
-    memcpy(&gObject_5C_6F8F84->field_20,
-           gGameSave_6F78C8.field_5E4_object_data.field_12C_obj_5C_buffer,
-           sizeof(gObject_5C_6F8F84->field_20));
+    memcpy(&gObject_5C_6F8F84->field_20_bUnCollectedTokens,
+           gGameSave_6F78C8.field_5E4_object_data.field_12C_obj_5C_bUnCollectedTokens,
+           sizeof(gObject_5C_6F8F84->field_20_bUnCollectedTokens));
 
-    gLucid_hamilton_67E8E0.field_574 = gGameSave_6F78C8.field_5E4_object_data.field_160_lhv;
+    gLucid_hamilton_67E8E0.field_574_secret_tokens_collected = gGameSave_6F78C8.field_5E4_object_data.field_160_secret_tokens_collected;
     field_C1E2C = true;
 }
 
@@ -207,9 +207,9 @@ void frosty_pasteur_0xC1EA8::SaveGame_511E10(char_type* pFileName)
 
     gObject_5C_6F8F84->SaveObjects_52A500(&gGameSave_6F78C8.field_5E4_object_data);
 
-    memcpy(gGameSave_6F78C8.field_5E4_object_data.field_12C_obj_5C_buffer, &gObject_5C_6F8F84->field_20, 50u);
+    memcpy(gGameSave_6F78C8.field_5E4_object_data.field_12C_obj_5C_bUnCollectedTokens, &gObject_5C_6F8F84->field_20_bUnCollectedTokens, 50u);
 
-    gGameSave_6F78C8.field_5E4_object_data.field_160_lhv = gLucid_hamilton_67E8E0.field_574;
+    gGameSave_6F78C8.field_5E4_object_data.field_160_secret_tokens_collected = gLucid_hamilton_67E8E0.field_574_secret_tokens_collected;
 
     gMap_0x370_6F6268->sub_4E8CF0(&pColData, &colBytes, &pBlockInfo, &blockInfoBytes, &pMapSub, &mapSubBytes);
 
@@ -295,7 +295,7 @@ void frosty_pasteur_0xC1EA8::Update_512160()
         }
         pf_0->ExecOpCode_5061C0();
         pf_0->sub_511930(0, pLevelStart->field_0_cmd_this);
-        gGame_0x40_67E008->sub_4B9CD0();
+        gGame_0x40_67E008->IterateFirstPlayer_4B9CD0();
     }
 }
 
@@ -357,6 +357,7 @@ u16 frosty_pasteur_0xC1EA8::sub_512400(const char_type* String1, u16* a3)
     return Buffer;
 }
 
+// https://decomp.me/scratch/W4gXh
 STUB_FUNC(0x5121E0)
 void frosty_pasteur_0xC1EA8::LoadStringTbl_5121E0(u16 tableSize)
 {
@@ -642,10 +643,10 @@ bool frosty_pasteur_0xC1EA8::sub_512C70(s32 a2, char_type a3, char_type a4)
 }
 
 // https://decomp.me/scratch/qh4EW
-STUB_FUNC(0x512ce0)
+WIP_FUNC(0x512ce0)
 frosty_pasteur_0xC1EA8::frosty_pasteur_0xC1EA8()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     field_13350_pStringTbl = 0;
     if (!bSkip_mission_67D4E5)
     {
@@ -710,7 +711,7 @@ frosty_pasteur_0xC1EA8::frosty_pasteur_0xC1EA8()
 
     if (gDo_miss_logging_67D6BC)
     {
-        //gMiss2Log_6F7698.sub_4D9470("test\\MISS_LOG.TXT", 1);
+        gMiss2Log_6F7698.sub_4D9470("test\\MISS_LOG.TXT", 1);
     }
 
     memset(field_45C_scr_file_name, 0, sizeof(field_45C_scr_file_name));

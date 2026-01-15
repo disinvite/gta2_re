@@ -158,6 +158,20 @@ enum
 // static_assert(sizeof(car_model_enum) == 4);
 } // namespace car_model_enum
 
+namespace Car_Door_Lock
+{
+enum
+{
+    no_lock_0 = 0,
+    locked_1 = 1,
+    lockout_thief_2 = 2,
+    unlocked_3 = 3,
+    locked_permanently_4 = 4,
+    lockout_player_5 = 5,
+    none_6 = 6,
+};
+} // namespace Car_Door_Lock
+
 namespace cop_level_enum
 {
 enum cop_level_enum
@@ -640,7 +654,15 @@ enum
     dead_rubbish_197 = 197,
     moving_cone_198 = 198,
     object_199 = 199,
-    remote_200 = 200
+    remote_200 = 200,
+
+    shop_car_smg_250 = 250,
+    shop_car_oil_stain_251 = 251,
+    shop_car_mines_252 = 252,
+    
+    object_254 = 254,
+
+    secret_token_266 = 266,
 };
 } // namespace objects
 
@@ -663,16 +685,16 @@ enum
     flee_on_foot_till_safe_1 = 1,
     flee_char_on_foot_till_safe_2 = 2,
     flee_char_on_foot_always_3 = 3,
-    objective_4 = 4,
-    objective_5 = 5,
-    objective_6 = 6,
+    flee_char_any_means_till_safe_4 = 4,
+    flee_char_any_means_always_5 = 5,
+    flee_char_always_once_car_stopped_6 = 6,
     objective_7 = 7,
     objective_8 = 8,
     objective_9 = 9,
     objective_10 = 10,
     objective_11 = 11,
     goto_area_on_foot_12 = 12,
-    objective_13 = 13,
+    goto_area_any_means_13 = 13,
     goto_area_in_car_14 = 14,
     objective_15 = 15,
     goto_char_on_foot_16 = 16,
@@ -680,9 +702,9 @@ enum
     objective_18 = 18,
     kill_char_any_means_19 = 19,
     kill_char_on_foot_20 = 20,
-    objective_21 = 21,
-    objective_22 = 22,
-    objective_23 = 23,
+    kill_car_21 = 21,
+    kill_frenzy_22 = 22,
+    punch_char_23 = 23,
     guard_spot_24 = 24,
     guard_area_25 = 25,
     wait_on_foot_26 = 26,
@@ -690,18 +712,18 @@ enum
     objective_28 = 28,
     objective_29 = 29,
     objective_30 = 30,
-    objective_31 = 31,
+    time_waited_in_car_31 = 31,
     objective_32 = 32,
     objective_33 = 33,
     objective_34 = 34,
     enter_car_as_driver_35 = 35,
     leave_car_36 = 36,
-    objective_37 = 37,
-    objective_38 = 38,
+    enter_train_37 = 37,
+    leave_train_38 = 38,
     objective_39 = 39,
     objective_40 = 40,
     objective_41 = 41,
-    objective_42 = 42,
+    patrol_on_foot_42 = 42,
     objective_43 = 43,
     objective_44 = 44,
     objective_45 = 45,
@@ -709,11 +731,18 @@ enum
     objective_47 = 47,
     objective_48 = 48,
     objective_49 = 49,
-    follow_car_in_car_50 = 50,
-    follow_car_on_foot_with_offset_51 = 51,
-    fire_at_object_from_vehicle_52 = 52,
-    destroy_object_53 = 53,
-    destroy_car_54 = 54,
+    objective_50 = 50,
+    objective_51 = 51,
+    objective_52 = 52,
+    objective_53 = 53,
+    objective_54 = 54,
+    follow_car_in_car_55 = 55,
+    follow_car_on_foot_with_offset_56 = 56,
+    fire_at_object_from_vehicle_57 = 57,
+    destroy_object_58 = 58,
+    destroy_car_59 = 59,
+    turret_put_out_car_fire_60 = 60,
+    objective_61 = 61,
 };
 } // namespace objectives_enum
 

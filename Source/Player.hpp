@@ -25,13 +25,13 @@ enum power_up_indices
     Unk_0 = 0,
     Unk_1 = 1,
     Unk_2 = 2,
-    Unk_3 = 3,
+    Armor_3 = 3,
     JailCard_4 = 4,
     Unk_5 = 5,
     Invulnerability_6 = 6,
     DoubleDamage_7 = 7,
     FastReload_8 = 8,
-    Unk_9 = 9,
+    Electrofingers_9 = 9,
     Unk_10 = 10,
     Invisibility_11 = 11,
     Unk_12 = 12,
@@ -46,7 +46,7 @@ class Player
   public:
     inline void Add_2D4(s32 score)
     {
-        field_2D4_unk.AddCash_592620(score * field_6BC_multpliers.field_0);
+        field_2D4_scores.AddCash_592620(score * field_6BC_multpliers.field_0);
     }
 
     inline Ped* Get_Field_68_Ped()
@@ -115,12 +115,12 @@ class Player
     }
 
     // TODO: Ordering
-    EXPORT s32 sub_443CB0(u8 varrok);
+    EXPORT s32 ObjectTypeToWeaponType_443CB0(u8 varrok);
 
     EXPORT u8 GetIdx_4881E0();
     EXPORT void sub_5645B0(Car_BC* a2);
-    EXPORT char_type sub_564610(Car_BC* a2, char_type a3);
-    EXPORT u32* sub_564680(s32 a2);
+    EXPORT char_type PromoteCarInHistory_564610(Car_BC* pCar, char_type bDontModify);
+    EXPORT u32* sub_564680(Car_BC* a2);
     EXPORT void sub_564710(Car_BC* pCar, s32 weapon_kind);
     EXPORT void sub_564790(s32 idx);
     EXPORT void ClearKFWeapon_5647D0();
@@ -136,7 +136,7 @@ class Player
     EXPORT void RemovePlayerWeapons_564C50();
     EXPORT void sub_564CC0();
     EXPORT void sub_564CF0();
-    EXPORT char_type sub_564D60(s32 a2);
+    EXPORT char_type CollectPowerUp_564D60(s32 a2);
     EXPORT void tick_down_powerups_565070();
     EXPORT s32 RestorePowerUpsFromSave_5651F0(save_stats_0x90* a2);
     EXPORT void TeleportToDebugCam_565310();
@@ -295,7 +295,7 @@ class Player
     char_type field_2D1;
     char_type field_2D2;
     char_type field_2D3;
-    eager_benz field_2D4_unk;
+    eager_benz field_2D4_scores;
     char_type field_640_busted;
     char_type field_641;
     char_type field_642;
@@ -319,14 +319,5 @@ class Player
     s16 field_796_chat_text[79];
     s32 field_834;
     s32 field_838_f796_idx;
-    wchar_t field_83C_player_name;
-    char_type field_83E;
-    char_type field_83F;
-    s32 field_840;
-    s32 field_844;
-    s32 field_848;
-    s32 field_84C;
-    s32 field_850;
-    s32 field_854;
-    s32 field_858;
+    wchar_t field_83C_player_name[16];
 };

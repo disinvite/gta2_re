@@ -1,21 +1,24 @@
 #include "Object_5C.hpp"
 #include "Car_BC.hpp"
+#include "Char_Pool.hpp"
 #include "Game_0x40.hpp"
 #include "Globals.hpp"
 #include "Light_1D4CC.hpp"
 #include "Object_2C_Pool.hpp"
 #include "Object_3C_Pool.hpp"
 #include "Object_8_Pool.hpp"
+#include "Particle_8.hpp"
 #include "Phi_8CA8.hpp"
 #include "PurpleDoom.hpp"
+#include "Rozza_C88.hpp"
 #include "Varrok_7F8.hpp"
 #include "Weapon_8.hpp"
 #include "Wolfy_3D4.hpp"
 #include "enums.hpp"
 #include "error.hpp"
+#include "frosty_pasteur_0xC1EA8.hpp"
 #include "map_0x370.hpp"
 #include "sprite.hpp"
-#include "frosty_pasteur_0xC1EA8.hpp"
 
 EXTERN_GLOBAL(Varrok_7F8*, gVarrok_7F8_703398);
 EXTERN_GLOBAL(Ang16, kZeroAng_6F8F68);
@@ -23,7 +26,7 @@ EXTERN_GLOBAL(Ang16, kZeroAng_6F8F68);
 DEFINE_GLOBAL(Object_5C*, gObject_5C_6F8F84, 0x6F8F84);
 DEFINE_GLOBAL(s32, DAT_006f8f88, 0x6f8f88);
 s32 dword_6F8F88; //DEFINE_GLOBAL(s32, dword_6F8F88, 0x6F8F88);
-DEFINE_GLOBAL(Fix16, stru_6F8EF0, 0x6F8EF0);
+DEFINE_GLOBAL(Fix16_Point, stru_6F8EF0, 0x6F8EF0);
 DEFINE_GLOBAL(Fix16, kFpZero_6F8E10, 0x6F8E10);
 
 DEFINE_GLOBAL(u8, byte_6F8C68, 0x6F8C68);
@@ -40,6 +43,14 @@ DEFINE_GLOBAL(Ang16, dword_6F8D80, 0x6F8D80);
 DEFINE_GLOBAL(Ang16, word_6F8D54, 0x6F8D54);
 DEFINE_GLOBAL(Ang16, dword_6F8CD0, 0x6F8CD0);
 
+DEFINE_GLOBAL(Sprite*, dword_6F8F8C, 0x6F8F8C);
+DEFINE_GLOBAL(u8, byte_6F8F94, 0x6F8F94);
+DEFINE_GLOBAL(s32, dword_6F8F5C, 0x6F8F5C);
+DEFINE_GLOBAL(Fix16, dword_6F8DA8, 0x6F8DA8);
+DEFINE_GLOBAL(Fix16, dword_6F8E14, 0x6F8E14);
+DEFINE_GLOBAL(Fix16, k_dword_6F8C58, 0x6F8C58);
+DEFINE_GLOBAL(u8, byte_623EC4, 0x623EC4);
+
 DEFINE_GLOBAL_INIT(Fix16, dword_6F8DC8, Fix16(256, 0), 0x6F8DC8);
 DEFINE_GLOBAL_INIT(Fix16, dword_6F8CE8, Fix16(12), 0x6F8CE8);
 DEFINE_GLOBAL_INIT(Fix16, dword_6F8CEC, Fix16(1), 0x6F8CEC);
@@ -52,10 +63,10 @@ Object_2C::Object_2C()
     field_4 = 0;
     field_18_model = 0;
     field_8 = 0;
-    field_C_obj_8 = 0;
+    field_C_pAny.o8 = 0;
     field_10_obj_3c = 0;
     field_14_id = 99;
-    field_24 = 0;
+    field_24_bDoneThisFrame = 0;
     field_25 = 0;
     field_26_varrok_idx = 99;
     field_20 = 0;
@@ -64,35 +75,102 @@ Object_2C::Object_2C()
     field_1C = 0;
 }
 
-STUB_FUNC(0x522180)
+MATCH_FUNC(0x522180)
 void Object_2C::PoolDeallocate()
 {
-    NOT_IMPLEMENTED;
+    this->field_18_model = 0;
+
+    // TODO: Local required, inline?
+    const s32 f5C = field_8->field_5C;
+    if (f5C == 2)
+    {
+        --gObject_5C_6F8F84->field_10;
+    }
+    else if (f5C == 3)
+    {
+        --gObject_5C_6F8F84->field_14;
+        gObject_5C_6F8F84->field_1C.sub_5A6B60(this->field_4);
+    }
+
+    --dword_6F8F88;
+
+    const s32 phi_type = this->field_8->field_34_behavior_type;
+    if (phi_type != 6 && phi_type != 7 && phi_type != 8 && phi_type != 9 && phi_type != 10 && phi_type != 1 && phi_type != 12)
+    {
+        if (field_26_varrok_idx > 0)
+        {
+            gVarrok_7F8_703398->sub_59B0D0(field_26_varrok_idx);
+            this->field_26_varrok_idx = 0;
+        }
+    }
+
+    Object_2C::sub_527F10();
+    if (field_4)
+    {
+        gSprite_Pool_703818->remove(field_4);
+        this->field_4 = 0;
+    }
+    this->field_14_id = 0;
 }
 
-STUB_FUNC(0x522250)
-bool Object_2C::sub_522250(Sprite* a2)
+MATCH_FUNC(0x522250)
+bool Object_2C::sub_522250(Sprite* pSprite)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    const u32 phi_type = this->field_8->field_34_behavior_type;
+    if (phi_type != 6 && phi_type != 7 && phi_type != 8 && phi_type != 9 && phi_type != 10 && phi_type != 1 && phi_type != 12)
+    {
+        u8 varrok_idx = this->field_26_varrok_idx;
+        if (varrok_idx > 0)
+        {
+            if (pSprite)
+            {
+                Char_B4* cB4 = pSprite->AsCharB4_40FEA0();
+                if (cB4)
+                {
+                    if (cB4->field_7C_pPed->field_267_varrok_idx == varrok_idx)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
 }
 
-STUB_FUNC(0x5222b0)
+MATCH_FUNC(0x5222b0)
 s32 Object_2C::sub_5222B0()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    return this->field_8->field_68 != 0 ? 2048 : 1024;
 }
 
-STUB_FUNC(0x5222d0)
-s32 Object_2C::sub_5222D0()
+MATCH_FUNC(0x5222d0)
+void Object_2C::sub_5222D0()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    if (field_10_obj_3c->field_2A == 1)
+    {
+        field_10_obj_3c->field_1C += dword_6F8DA8;
+        field_10_obj_3c->field_10 += field_10_obj_3c->field_1C;
+    }
+    else
+    {
+        field_10_obj_3c->field_C += field_10_obj_3c->field_18;
+
+        if (field_10_obj_3c->field_C < kFpZero_6F8E10)
+        {
+            field_10_obj_3c->field_C = kFpZero_6F8E10;
+            field_10_obj_3c->field_18 = kFpZero_6F8E10;
+        }
+
+        if (field_10_obj_3c->field_10 < kFpZero_6F8E10)
+        {
+            field_10_obj_3c->field_10 = kFpZero_6F8E10;
+        }
+    }
 }
 
 MATCH_FUNC(0x522340)
-void Object_2C::sub_522340()
+void Object_2C::PoolGive_522340()
 {
     if (field_20 == 2)
     {
@@ -105,7 +183,7 @@ void Object_2C::sub_522340()
 }
 
 MATCH_FUNC(0x522360)
-void Object_2C::sub_522360()
+void Object_2C::PoolTake_522360()
 {
     Object_2C* pLast;
     Object_2C* pIter;
@@ -138,7 +216,7 @@ void Object_2C::sub_522360()
 }
 
 MATCH_FUNC(0x5223c0)
-char Object_2C::sub_5223C0(Sprite* pSprite)
+char Object_2C::ShouldCollideWith_5223C0(Sprite* pSprite)
 {
     s32 sprite_type;
 
@@ -146,23 +224,27 @@ char Object_2C::sub_5223C0(Sprite* pSprite)
     {
         return 0;
     }
-    switch (field_8->field_54)
+    switch (field_8->field_54_react_to_collisions_with)
     {
-        case 0:
+        case CollisionReaction::Always_0:
+            // Always
             return true;
-        case 1:
+        case CollisionReaction::OnlyCars_1:
+            // Only cars
             if (pSprite->field_30_sprite_type_enum == sprite_types_enum::car)
             {
                 return false;
             }
             break;
-        case 2:
+        case CollisionReaction::OnlyPeds_2:
+            // Only peds
             if (pSprite->field_30_sprite_type_enum == sprite_types_enum::ped)
             {
                 return false;
             }
             break;
-        case 3:
+        case CollisionReaction::OnlyObjects_3:
+            // Only objects?
             sprite_type = pSprite->field_30_sprite_type_enum;
             if (sprite_type != sprite_types_enum::code_obj1 && sprite_type != sprite_types_enum::map_obj &&
                 sprite_type != sprite_types_enum::unknown_1)
@@ -174,7 +256,8 @@ char Object_2C::sub_5223C0(Sprite* pSprite)
                 return 0;
             }
             break;
-        case 4:
+        case CollisionReaction::Never_4:
+            // Never
             return 0;
             break;
         default:
@@ -184,38 +267,68 @@ char Object_2C::sub_5223C0(Sprite* pSprite)
     return true;
 }
 
-STUB_FUNC(0x522430)
-bool Object_2C::sub_522430(Sprite* a2)
+MATCH_FUNC(0x522430)
+bool Object_2C::sub_522430(Sprite* pSprite)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    return (pSprite && ShouldCollideWith_5223C0(pSprite) && !sub_522250(pSprite)) ? true : false;
 }
 
-STUB_FUNC(0x522460)
+MATCH_FUNC(0x522460)
 char_type Object_2C::sub_522460(Sprite* a2)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    byte_6F8F94 = 0;
+
+    Sprite* pSprite = a2->sub_59E7D0(2);
+    if (pSprite && dword_6F8F8C && pSprite->field_30_sprite_type_enum == 2 // IsCar
+        || !sub_522430(pSprite) || pSprite == dword_6F8F8C)
+    {
+        return 0;
+    }
+
+    if (pSprite->field_8_object_2C_ptr->field_18_model == 166 || pSprite->field_8_object_2C_ptr->field_18_model == 169)
+    {
+        byte_6F8F94 = 1;
+    }
+    gRozza_679188.field_20_pSprite = pSprite;
+    gRozza_679188.field_0_type = 3;
+    return 1;
 }
 
 STUB_FUNC(0x5224e0)
-s16* Object_2C::sub_5224E0(s32* a2)
+s16* Object_2C::sub_5224E0(Fix16_Point* a2)
 {
     NOT_IMPLEMENTED;
     return 0;
 }
 
-STUB_FUNC(0x522640)
-s16 Object_2C::sub_522640(s32 a2)
+MATCH_FUNC(0x522640)
+void Object_2C::sub_522640(Fix16_Point* a2)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    sub_5224E0(a2);
+
+    if (field_8->field_4C == 3 && field_10_obj_3c->field_34 == 2)
+    {
+        s16 maxVal = 9;
+        const s16 rng = stru_6F6784.get_int_4F7AE0(&maxVal);
+        if (rng < 6)
+        {
+            if (rng < 3)
+            {
+                field_10_obj_3c->field_34 = 1;
+            }
+            else
+            {
+                field_10_obj_3c->field_34 = 0;
+            }
+        }
+    }
 }
 
-STUB_FUNC(0x5226a0)
+WIP_FUNC(0x5226a0)
 void Object_2C::sub_5226A0(char_type a2)
 {
-    NOT_IMPLEMENTED;
+    // TODO: Missing SEH
+    WIP_IMPLEMENTED;
 
     if (field_10_obj_3c)
     {
@@ -240,8 +353,26 @@ void Object_2C::sub_5229B0(s32 a2, u32* a3, s32 a4)
     NOT_IMPLEMENTED;
 }
 
+// TODO: Probably move
+STUB_FUNC(0x55F3B0)
+EXPORT s32* __stdcall ComputeLineLineIntersection_55F3B0(s32* a1,
+                                                         s32 a2,
+                                                         s32 a3,
+                                                         s32* a4,
+                                                         s32 a5,
+                                                         s32 a6,
+                                                         Fix16_Point* a7,
+                                                         Fix16_Point* a8,
+                                                         s32 a9,
+                                                         s32 a10,
+                                                         s32 a11)
+{
+    NOT_IMPLEMENTED;
+    return 0;
+}
+
 STUB_FUNC(0x522b20)
-void Object_2C::sub_522B20(s32 a2, s32 a3, s32* a4)
+void Object_2C::sub_522B20(s32* f18, s32* a3, s32* a4)
 {
     NOT_IMPLEMENTED;
 }
@@ -259,22 +390,104 @@ void Object_2C::sub_522D00(u32* a2)
 }
 
 STUB_FUNC(0x522e10)
-void Object_2C::sub_522E10(s32* a2)
+void Object_2C::sub_522E10(Fix16_Point* a2)
 {
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x5233a0)
-char_type Object_2C::sub_5233A0(s32 a2)
+MATCH_FUNC(0x5233a0)
+char_type Object_2C::sub_5233A0(Fix16 a2)
 {
-    NOT_IMPLEMENTED;
+    dword_6F8F8C = 0;
+
+    if (sub_522460(this->field_4))
+    {
+
+        byte_623EC4 = 0;
+        if (byte_6F8F94)
+        {
+            return 0;
+        }
+
+        dword_6F8F8C = gRozza_679188.field_20_pSprite;
+        if (a2 > k_dword_6F8C58)
+        {
+            return 0;
+        }
+
+        if (this->field_10_obj_3c->field_34 == 1)
+        {
+            this->field_4->field_28_num = 29;
+        }
+        else
+        {
+            this->field_4->field_28_num = 6;
+        }
+        this->field_10_obj_3c->field_C = k_dword_6F8C58;
+        this->field_10_obj_3c->field_18 = this->field_8->field_14_friction;
+        return 1;
+    }
+    this->field_10_obj_3c->field_34 = 2;
     return 0;
 }
 
-STUB_FUNC(0x523440)
-void Object_2C::sub_523440(s32 a2, s32 a3, char_type a4, char_type a5)
+MATCH_FUNC(0x523440)
+void Object_2C::sub_523440(Fix16_Point point, char_type bUnknown1, char_type bUnknown2)
 {
-    NOT_IMPLEMENTED;
+    if ((u8)field_4->IsOnWater_59E1D0())
+    {
+        this->field_10_obj_3c->field_C = kFpZero_6F8E10;
+        this->field_10_obj_3c->field_10 = kFpZero_6F8E10;
+        return;
+    }
+
+    switch (this->field_8->field_4C)
+    {
+        case 4:
+            if (gRozza_679188.field_20_pSprite)
+            {
+                field_4->set_z_lazy(gRozza_679188.field_20_pSprite->field_1C_zpos);
+            }
+
+            if (!bUnknown1 || gRozza_679188.field_0_type == 3)
+            {
+                if (bUnknown2 && gRozza_679188.field_0_type != 3)
+                {
+                    gRozza_679188.field_0_type = 5;
+                    gRozza_679188.field_20_pSprite = 0;
+                }
+            }
+            else
+            {
+                gRozza_679188.field_0_type = 4;
+                gRozza_679188.field_20_pSprite = 0;
+            }
+
+            HandleImpact_528E50(gRozza_679188.field_20_pSprite);
+            return;
+
+        case 0:
+        case 1:
+            if (bUnknown1)
+            {
+                gRozza_679188.field_0_type = 4;
+                gRozza_679188.field_20_pSprite = 0;
+            }
+            else if (bUnknown2)
+            {
+                gRozza_679188.field_0_type = 5;
+                gRozza_679188.field_20_pSprite = 0;
+            }
+            HandleImpact_528E50(gRozza_679188.field_20_pSprite);
+            return;
+
+        case 2:
+        case 3:
+            sub_522E10(&point);
+            return;
+        default:
+            return;
+    }
 }
 
 STUB_FUNC(0x5235b0)
@@ -290,22 +503,72 @@ void Object_2C::sub_524630(s32 a2, s16 a3)
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x525190)
-void Object_2C::sub_525190(u8 a2)
+// https://decomp.me/scratch/jLuSq
+WIP_FUNC(0x525190)
+void Object_2C::sub_525190(u8 varrok_idx)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    if (field_8->field_3C_next_definition_idx < 39 || field_8->field_3C_next_definition_idx > 42)
+    {
+        if (field_8->field_48 == 13)
+        {
+            sub_5291D0();
+            Object_2C* pExplosion = gObject_5C_6F8F84->CreateExplosion_52A3D0(this->field_4->field_14_xpos.x,
+                                                                              this->field_4->field_14_xpos.y,
+                                                                              this->field_4->field_1C_zpos,
+                                                                              kZeroAng_6F8F68,
+                                                                              19,
+                                                                              gVarrok_7F8_703398->field_0[varrok_idx].field_0_ped_id);
+            if (pExplosion)
+            {
+                pExplosion->SetDamageOwner_529080(varrok_idx);
+            }
+        }
+    }
+    else
+    {
+        sub_5291E0(field_8->field_3C_next_definition_idx);
+    }
 }
 
-STUB_FUNC(0x5257d0)
+MATCH_FUNC(0x5257d0)
 void Object_2C::UpdateAninmation_5257D0()
 {
-    NOT_IMPLEMENTED;
+    ++this->field_C_pAny.o8->field_6_frame_counter;
+    if (field_C_pAny.o8->field_6_frame_counter >= this->field_8->field_64_next_frame_max)
+    {
+        field_C_pAny.o8->field_6_frame_counter = 0;
+        ++this->field_C_pAny.o8->field_7_anim_speed_counter;
+        if (field_C_pAny.o8->field_7_anim_speed_counter >= this->field_8->field_6C_sprite_anim_speed)
+        {
+            field_C_pAny.o8->field_7_anim_speed_counter = 0;
+            if (field_C_pAny.o8->field_4_timer > 0)
+            {
+                field_C_pAny.o8->field_4_timer--;
+            }
+        }
+        const s16 target_id = this->field_8->field_1E + this->field_C_pAny.o8->field_7_anim_speed_counter;
+
+        // TODO: Inline?
+        Sprite* pSprite = this->field_4;
+        if (pSprite->field_22_sprite_id != target_id)
+        {
+            pSprite->field_22_sprite_id = target_id;
+            pSprite->sub_59FA40();
+        }
+
+        if (!field_C_pAny.o8->field_4_timer && !field_C_pAny.o8->field_7_anim_speed_counter)
+        {
+            Object_2C::sub_5283C0(this->field_8->field_3C_next_definition_idx);
+        }
+    }
 }
 
 MATCH_FUNC(0x525910)
 bool Object_2C::sub_525910()
 {
-    if (field_24)
+    if (field_24_bDoneThisFrame)
     {
         switch (field_8->field_44)
         {
@@ -315,30 +578,30 @@ bool Object_2C::sub_525910()
             case 6:
             case 8:
             case 11:
-                if (field_24 == 1)
+                if (field_24_bDoneThisFrame == 1)
                 {
                     sub_5283C0(field_8->field_38);
                 }
                 else
                 {
-                    sub_5283C0(field_24);
+                    sub_5283C0(field_24_bDoneThisFrame);
                 }
-                field_24 = 0;
+                field_24_bDoneThisFrame = 0;
                 return true;
             case 4:
-                if (field_24 != 1)
+                if (field_24_bDoneThisFrame != 1)
                 {
-                    sub_5283C0(field_24);
+                    sub_5283C0(field_24_bDoneThisFrame);
                 }
-                field_24 = 0;
+                field_24_bDoneThisFrame = 0;
                 return true;
             case 7:
             case 10:
-                field_24 = 0;
+                field_24_bDoneThisFrame = 0;
                 sub_5290A0();
                 return true;
             default:
-                field_24 = 0;
+                field_24_bDoneThisFrame = 0;
                 return false;
         }
     }
@@ -351,6 +614,13 @@ bool Object_2C::sub_525910()
     return false;
 }
 
+STUB_FUNC(0x525370)
+char Object_2C::sub_525370(Sprite* pSprite)
+{
+    NOT_IMPLEMENTED;
+    return 0;
+}
+
 MATCH_FUNC(0x525AE0)
 EXPORT void Object_2C::sub_525AE0()
 {
@@ -358,18 +628,34 @@ EXPORT void Object_2C::sub_525AE0()
     {
         case 139:
         case 141:
-            gPurpleDoom_1_679208->sub_477BD0(field_4);
-            gPurpleDoom_2_67920C->sub_477BD0(field_4);
+            gPurpleDoom_1_679208->CheckAndHandleCollisionInStrips_477BD0(field_4);
+            gPurpleDoom_2_67920C->CheckAndHandleCollisionInStrips_477BD0(field_4);
             break;
         default:
             break;
     }
 }
 
-STUB_FUNC(0x525b40)
+MATCH_FUNC(0x525b40)
 void Object_2C::sub_525B40()
 {
-    NOT_IMPLEMENTED;
+    if (field_18_model == 128)
+    {
+        gParticle_8_6FD5E8->SpawnParticleSprite_5405D0(field_4);
+    }
+}
+
+MATCH_FUNC(0x525B60)
+char_type Object_2C::sub_525B60()
+{
+    // TODO: Forced eax -> al
+    const u8 isWater = field_4->IsOnWater_59E1D0();
+    if (isWater)
+    {
+        sub_528900();
+        return 1;
+    }
+    return 0;
 }
 
 STUB_FUNC(0x525b80)
@@ -384,10 +670,88 @@ void Object_2C::sub_525D90()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x525f30)
+MATCH_FUNC(0x525f30)
 void Object_2C::Update_525F30()
 {
-    NOT_IMPLEMENTED;
+    Wolfy_30* pWolfy;
+
+    dword_6F8F8C = 0;
+    while (2)
+    {
+        switch (this->field_8->field_34_behavior_type)
+        {
+            case object_behavior_type::behavior_0:
+                if (!sub_525910())
+                {
+                    sub_525B20();
+                    return;
+                }
+                return;
+            case object_behavior_type::behavior_1:
+                if (!sub_525910())
+                {
+                    sub_525B20();
+                    sub_525AE0();
+                }
+                return;
+
+            case object_behavior_type::behavior_5:
+                pWolfy = this->field_C_pAny.pExplosion;
+                if (pWolfy)
+                {
+                    if (pWolfy->Update_5434A0(kFpZero_6F8E10, kZeroAng_6F8F68))
+                    {
+                        this->field_25 = 1;
+                    }
+                }
+                return;
+
+            case object_behavior_type::behavior_3:
+            case object_behavior_type::behavior_7:
+                RemoveFromCollisionBuckets_527D00();
+                byte_6F8C4C = 1;
+                sub_525B80();
+                if (!byte_6F8F40)
+                {
+                    AssignToBucket_527AE0();
+                }
+                return;
+
+            case object_behavior_type::behavior_2:
+            case object_behavior_type::behavior_8:
+                if (!sub_525910())
+                {
+                    sub_525B20();
+                    UpdateAninmation_5257D0();
+                }
+                return;
+
+            case object_behavior_type::behavior_4:
+            case object_behavior_type::behavior_9:
+                RemoveFromCollisionBuckets_527D00();
+                byte_6F8C4C = 1;
+                sub_525D90();
+                if (!byte_6F8F40)
+                {
+                    AssignToBucket_527AE0();
+                }
+                return;
+
+            case object_behavior_type::behavior_6:
+            case object_behavior_type::behavior_10:
+            case object_behavior_type::behavior_11:
+                sub_525910();
+                sub_525B20();
+                return;
+
+            case object_behavior_type::behavior_12:
+                sub_525B20();
+                return;
+
+            default:
+                continue;
+        }
+    }
 }
 
 MATCH_FUNC(0x5263d0)
@@ -406,7 +770,7 @@ bool Object_2C::PoolUpdate()
     }
     else
     {
-        Object_2C::sub_527D00();
+        Object_2C::RemoveFromCollisionBuckets_527D00();
         return true;
     }
 }
@@ -417,11 +781,31 @@ void Object_2C::sub_526790(s32 a2)
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x526830)
+WIP_FUNC(0x526830)
 s32 Object_2C::sub_526830(s32 a1)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+
+    int result;
+    switch (a1)
+    {
+        case 39:
+            result = 18;
+            break;
+        case 40:
+            result = 33;
+            break;
+        case 41:
+            result = 19;
+            break;
+        case 42:
+            result = 20;
+            break;
+        default:
+            result = a1;
+            break;
+    }
+    return result;
 }
 
 STUB_FUNC(0x526b40)
@@ -444,7 +828,7 @@ void Object_2C::sub_527630(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, 
     Phi_74* phi74 = gPhi_8CA8_6FCF00->sub_534360(object_type);
     field_8 = phi74;
     field_18_model = object_type;
-    field_24 = 0;
+    field_24_bDoneThisFrame = 0;
 
     if (field_4)
     {
@@ -461,14 +845,14 @@ void Object_2C::sub_527630(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, 
         pSprite->field_14_xpos.x = xpos;
         pSprite->field_14_xpos.y = ypos;
         pSprite->field_1C_zpos = zpos;
-        pSprite->sub_59E7B0();
+        pSprite->ResetZCollisionAndDebugBoxes_59E7B0();
     }
 
     Sprite* pSprite_ = field_4;
     if (rotation.rValue != pSprite_->field_0.rValue)
     {
         pSprite_->field_0.rValue = rotation.rValue;
-        pSprite_->sub_59E7B0();
+        pSprite_->ResetZCollisionAndDebugBoxes_59E7B0();
     }
     field_4->field_8_object_2C_ptr = this;
 }
@@ -476,45 +860,45 @@ void Object_2C::sub_527630(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, 
 MATCH_FUNC(0x527990)
 void Object_2C::Light_527990()
 {
-    field_C_explosion->field_0 &= ~0xFF;
+    field_C_pAny.pLight->field_0.flag &= ~0xFF;
 }
 
 MATCH_FUNC(0x527ae0)
-void Object_2C::sub_527AE0()
+void Object_2C::AssignToBucket_527AE0()
 {
-    switch (field_8->field_40)
+    switch (field_8->field_40_collision_bucket_category)
     {
-        case 0:
-        case 1:
-            gPurpleDoom_3_679210->Add_477AE0(field_4);
+        case collision_bucket_category::purple_doom_3_single_bucket_0:
+        case collision_bucket_category::purple_doom_3_single_bucket_1:
+            gPurpleDoom_3_679210->AddToSingleBucket_477AE0(field_4);
             return;
-        case 3:
+        case collision_bucket_category::purple_doom_2_region_bucket_3:
             DAT_006f8f88++;
-            gPurpleDoom_2_67920C->sub_477B20(field_4);
+            gPurpleDoom_2_67920C->AddToRegionBuckets_477B20(field_4);
             return;
-        case 4:
-            gPurpleDoom_1_679208->sub_477B20(field_4);
+        case collision_bucket_category::purple_doom_1_region_bucket_4:
+            gPurpleDoom_1_679208->AddToRegionBuckets_477B20(field_4);
             return;
-        case 2:
+        case collision_bucket_category::purple_doom_none_2:
             return;
     }
 }
 
 MATCH_FUNC(0x527d00)
-void Object_2C::sub_527D00()
+void Object_2C::RemoveFromCollisionBuckets_527D00()
 {
-    switch (field_8->field_40)
+    switch (field_8->field_40_collision_bucket_category)
     {
-        case 0:
-        case 1:
+        case collision_bucket_category::purple_doom_3_single_bucket_0:
+        case collision_bucket_category::purple_doom_3_single_bucket_1:
             gPurpleDoom_3_679210->Remove_477B00(field_4);
             break;
-        case 3:
+        case collision_bucket_category::purple_doom_2_region_bucket_3:
             --DAT_006f8f88;
-            gPurpleDoom_2_67920C->sub_477B60(field_4);
+            gPurpleDoom_2_67920C->AddToSpriteRectBuckets_477B60(field_4);
             break;
-        case 4:
-            gPurpleDoom_1_679208->sub_477B60(field_4);
+        case collision_bucket_category::purple_doom_1_region_bucket_4:
+            gPurpleDoom_1_679208->AddToSpriteRectBuckets_477B60(field_4);
             break;
         default:
             return;
@@ -528,7 +912,7 @@ void Object_2C::sub_527F10()
 }
 
 STUB_FUNC(0x528130)
-s16* Object_2C::sub_528130(Fix16* a2)
+Ang16 Object_2C::sub_528130(Fix16_Point* a2)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -548,7 +932,7 @@ void Object_2C::sub_5283C0(s32 a2)
 }
 
 MATCH_FUNC(0x5288B0)
-bool Object_2C::sub_5288B0(Sprite* a2)
+bool Object_2C::OnObjectTouched_5288B0(Sprite* a2)
 {
     if (!a2)
     {
@@ -558,39 +942,228 @@ bool Object_2C::sub_5288B0(Sprite* a2)
     Char_B4* pCharB4 = a2->AsCharB4_40FEA0();
     if (pCharB4)
     {
-        return pCharB4->sub_553640(this);
+        return pCharB4->OnObjectTouched_553640(this);
     }
 
     Car_BC* pCarBc = a2->AsCar_40FEB0();
     if (pCarBc)
     {
-        return pCarBc->sub_43EA60(this);
+        return pCarBc->OnObjectTouched_43EA60(this);
     }
 
     return false;
 }
 
-STUB_FUNC(0x528990)
-char_type Object_2C::sub_528990(Sprite* a2)
+MATCH_FUNC(0x528900)
+void Object_2C::sub_528900()
+{
+    if (field_10_obj_3c)
+    {
+        field_10_obj_3c->field_30_bSkipAnim = 1;
+    }
+
+    if ((rng_dword_67AB34->field_0_rng & 3) == 0)
+    {
+        field_4->sub_59E320(1);
+        if (field_4->sub_59E390(dword_6F8F5C, dword_6F8F5C, 0))
+        {
+            // inline - because has to be a local here?
+            Sprite* pSprite = this->field_4;
+            if (pSprite->field_1C_zpos != kFpZero_6F8E10)
+            {
+                pSprite->field_1C_zpos = kFpZero_6F8E10;
+                pSprite->ResetZCollisionAndDebugBoxes_59E7B0();
+            }
+            sub_5290A0();
+        }
+    }
+}
+
+MATCH_FUNC(0x528960)
+char_type Object_2C::HandleObjectHitIfExplosive_528960(Object_2C* pOther)
+{
+    // Check is explosive range
+    if (field_8->field_48 < 12 || field_8->field_48 > 13)
+    {
+        return 0;
+    }
+
+    pOther->ProcessObjectExplosionImpact_528A20(this);
+    return 1;
+}
+
+MATCH_FUNC(0x528990)
+char_type Object_2C::HandleObjectHit_528990(Sprite* pSprite)
+{
+    Char_B4* cB4 = pSprite->AsCharB4_40FEA0();
+    if (cB4)
+    {
+        return cB4->HandlePedObjectHit_5537F0(this);
+    }
+
+    Car_BC* cBC = pSprite->AsCar_40FEB0();
+    if (cBC)
+    {
+        return cBC->HandleCarHitByObject_43F130(this);
+    }
+
+    Object_2C* o2c = pSprite->As2C_40FEC0();
+
+    if (gVarrok_7F8_703398->field_0[field_26_varrok_idx].field_0_ped_id)
+    {
+        Ped* pPed = gPedManager_6787BC->PedById(gVarrok_7F8_703398->field_0[field_26_varrok_idx].field_0_ped_id);
+        if (pPed)
+        {
+            pPed->ProcessWeaponHitResponse_46FE20(o2c);
+        }
+    }
+    return o2c->HandleObjectHitIfExplosive_528960(this);
+}
+
+STUB_FUNC(0x528A20)
+void Object_2C::ProcessObjectExplosionImpact_528A20(Object_2C* pObj)
 {
     NOT_IMPLEMENTED;
-    return 0;
 }
 
 STUB_FUNC(0x528ba0)
-void Object_2C::sub_528BA0()
+void Object_2C::HandleImpactNoSprite_528BA0()
 {
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x528e50)
-void Object_2C::sub_528E50(Sprite* a3)
+WIP_FUNC(0x528e50)
+void Object_2C::HandleImpact_528E50(Sprite* pSprite)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    // Mostly bad switch ordering I think
+
+    if (!this->field_24_bDoneThisFrame && (!pSprite || ShouldCollideWith_5223C0(pSprite)))
+    {
+        this->field_24_bDoneThisFrame = 1;
+        switch (field_8->field_44)
+        {
+            case 1:
+            case 2:
+                PoolGive_522340(); // destroy
+                break;
+
+            case 3:
+                if (pSprite->AsCar_40FEB0())
+                {
+                    this->field_24_bDoneThisFrame = 1;
+                }
+                else
+                {
+                    this->field_24_bDoneThisFrame = 0;
+                }
+
+                if (!field_24_bDoneThisFrame)
+                {
+                    return;
+                }
+                PoolGive_522340();
+                break;
+
+            case 4:
+            case 5:
+                if (pSprite->AsCharB4_40FEA0())
+                {
+                    this->field_24_bDoneThisFrame = 1; // is_charb4
+                }
+                else
+                {
+                    this->field_24_bDoneThisFrame = 0;
+                }
+
+                if (!field_24_bDoneThisFrame)
+                {
+                    return;
+                }
+                PoolGive_522340();
+                break;
+
+            case 6:
+                this->field_24_bDoneThisFrame = OnObjectTouched_5288B0(pSprite);
+                if (field_24_bDoneThisFrame)
+                {
+                    PoolGive_522340(); // destroy
+                }
+                break;
+
+            case 7:
+            case 8:
+                if (pSprite)
+                {
+                    this->field_24_bDoneThisFrame = HandleObjectHit_528990(pSprite);
+                }
+                else
+                {
+                    HandleImpactNoSprite_528BA0();
+                }
+
+                if (!field_24_bDoneThisFrame)
+                {
+                    return;
+                }
+                PoolGive_522340();
+                break;
+
+            case 9:
+                this->field_24_bDoneThisFrame = OnObjectTouched_5288B0(pSprite);
+                break;
+
+            case 10:
+                if (!pSprite)
+                {
+                    break;
+                }
+                if (pSprite->AsCharB4_40FEA0())
+                {
+                    this->field_24_bDoneThisFrame = 1;
+                }
+                else
+                {
+                    this->field_24_bDoneThisFrame = 0;
+                }
+                break;
+
+            case 11:
+                this->field_24_bDoneThisFrame = 0;
+                break;
+
+            default:
+                break;
+        }
+
+        if (this->field_24_bDoneThisFrame)
+        {
+            if (pSprite)
+            {
+                if (!check_is_shop_421060() || !pSprite->IsControlledByActivePlayer_59E170())
+                {
+                    gRozza_C88_66AFE0->Type3_40BDD0(field_4, pSprite);
+                }
+            }
+            else if (gRozza_679188.field_0_type == 4)
+            {
+                gRozza_C88_66AFE0->Type4_40BC40(field_4);
+            }
+            else if (gRozza_679188.field_0_type == 5)
+            {
+                gRozza_C88_66AFE0->Type5_40BD10(field_4);
+            }
+            else
+            {
+                gRozza_C88_66AFE0->OtherType_40BBA0(field_4, kFpZero_6F8E10);
+            }
+        }
+    }
 }
 
 MATCH_FUNC(0x529000)
-void Object_2C::sub_529000(Object_2C* pObj)
+void Object_2C::HandleCollisionWithObject_529000(Object_2C* pObj)
 {
     switch (pObj->field_18_model)
     {
@@ -689,10 +1262,10 @@ void Object_2C::sub_5292D0()
 }
 
 MATCH_FUNC(0x529080)
-void Object_2C::sub_529080(u8 idx)
+void Object_2C::SetDamageOwner_529080(u8 idx)
 {
     field_26_varrok_idx = idx;
-    gVarrok_7F8_703398->sub_59B0B0(idx);
+    gVarrok_7F8_703398->IncrementRefCount_59B0B0(idx);
 }
 
 MATCH_FUNC(0x5290a0)
@@ -710,22 +1283,22 @@ void Object_2C::sub_5290B0()
 MATCH_FUNC(0x5291b0)
 void Object_2C::Dealloc_5291B0()
 {
-    sub_522340();
+    PoolGive_522340();
     sub_5290A0();
 }
 
 MATCH_FUNC(0x5291d0)
 void Object_2C::sub_5291D0()
 {
-    sub_522340();
-    field_24 = 1;
+    PoolGive_522340();
+    field_24_bDoneThisFrame = 1;
 }
 
 MATCH_FUNC(0x5291E0)
 void Object_2C::sub_5291E0(u8 a2)
 {
-    sub_522340();
-    field_24 = a2;
+    PoolGive_522340();
+    field_24_bDoneThisFrame = a2;
 }
 
 MATCH_FUNC(0x529200)
@@ -743,18 +1316,20 @@ Object_2C::~Object_2C()
     field_10_obj_3c = 0;
 }
 
-STUB_FUNC(0x52ae70)
-u32* Object_2C::sub_52AE70(u32* a2)
+MATCH_FUNC(0x52ae70)
+Fix16_Point Object_2C::GetXY_52AE70()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    return field_4->get_x_y_443580();
 }
 
-STUB_FUNC(0x52ae90)
-u32* Object_2C::sub_52AE90(u32* a2)
+MATCH_FUNC(0x52ae90)
+Fix16_Point Object_2C::GetRot_52AE90()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    if (field_10_obj_3c)
+    {
+        return field_10_obj_3c->GetRot_52ADF0();
+    }
+    return stru_6F8EF0;
 }
 
 MATCH_FUNC(0x5290C0)
@@ -769,12 +1344,45 @@ void Object_2C::sub_5290C0(u8 id_base)
     }
 }
 
+MATCH_FUNC(0x5290F0)
+Fix16 Object_2C::sub_5290F0()
+{
+    if (field_10_obj_3c)
+    {
+        if (!field_10_obj_3c->field_2A)
+        {
+            if (field_10_obj_3c->field_C == kFpZero_6F8E10)
+            {
+                return field_10_obj_3c->field_10;
+            }
+            return field_10_obj_3c->field_C;
+        }
+        else
+        {
+            if (field_10_obj_3c->field_C == kFpZero_6F8E10)
+            {
+                if (field_10_obj_3c->field_10 == kFpZero_6F8E10)
+                {
+                    if (this->field_18_model == 113)
+                    {
+                        return kFpZero_6F8E10;
+                    }
+                    return dword_6F8E14;
+                }
+                return field_10_obj_3c->field_10;
+            }
+            return field_10_obj_3c->field_C;
+        }
+    }
+    return kFpZero_6F8E10;
+}
+
 MATCH_FUNC(0x525AC0)
 char Object_2C::sub_525AC0()
 {
     if (field_18_model == 113)
     {
-        return field_C_explosion->sub_5435D0();
+        return field_C_pAny.pExplosion->sub_5435D0();
     }
     else
     {
@@ -800,7 +1408,7 @@ void Object_2C::UpdateLight_527A30()
     NOT_IMPLEMENTED;
 
     // TODO: Clears light radius? also probably an inline of nostalgic_ellis_0x28
-/*
+    /*
  nostalgic_ellis_0x28 *pLight;
   int v2;
 
@@ -811,13 +1419,31 @@ void Object_2C::UpdateLight_527A30()
 */
 }
 
+STUB_FUNC(0x525100)
+void Object_2C::sub_525100()
+{
+    NOT_IMPLEMENTED;
+    if (field_8->field_34_behavior_type <= 1u)
+    {
+
+        if (get_model_40FEF0() == 148)
+        {
+            sub_5290C0(1u);
+        }
+        else
+        {
+            sub_5290A0();
+        }
+    }
+}
+
 MATCH_FUNC(0x529300)
 void Object_5C::sub_529300()
 {
     for (s32 i = field_14 - 88; i >= 0; i--)
     {
         Sprite* pSprite = field_1C.sub_5A6DC0();
-        Object_2C* o2c = pSprite->get_o2c_or_null_40FEC0();
+        Object_2C* o2c = pSprite->As2C_40FEC0();
         if (o2c->field_18_model == 10)
         {
             if (gGame_0x40_67E008->sub_4B97E0(pSprite, kFpZero_6F8E10))
@@ -847,10 +1473,10 @@ Object_5C::Object_5C()
 {
     for (u8 i = 0; i < 50; i++)
     {
-        field_20[i] = 1;
+        field_20_bUnCollectedTokens[i] = 1;
     }
 
-    field_54_f20_idx = 0;
+    field_54_uncollected_token_index = 0;
     byte_6F8C68 = 0;
     byte_6F8C4C = 0;
     byte_6F8F40 = 0;
@@ -888,7 +1514,7 @@ Object_5C::Object_5C()
     field_58 = gSprite_Pool_703818->get_new_sprite();
     field_58->sub_451950(0, 0, 0);
 
-    field_58->sub_420690(kZeroAng_6F8F68);
+    field_58->set_ang_lazy_420690(kZeroAng_6F8F68);
     field_58->AllocInternal_59F950(0, 0, 0);
 
     field_0 = 0;
@@ -961,8 +1587,8 @@ Object_2C* Object_5C::NewTouchPoint_529950(s32 object_type, Fix16 x, Fix16 y, Fi
         sprite_4c_ptr->field_0_width = w;
         sprite_4c_ptr->field_4_height = h;
         sprite_4c_ptr->field_8 = a9;
-        pSprite->sub_59E7B0();
-        pNewObj->sub_527AE0();
+        pSprite->ResetZCollisionAndDebugBoxes_59E7B0();
+        pNewObj->AssignToBucket_527AE0();
     }
     return pNewObj;
 }
@@ -973,7 +1599,7 @@ Object_2C* Object_5C::NewPhysicsObj_5299B0(s32 object_type, Fix16 xpos, Fix16 yp
     Object_2C* pNewObj = sub_529C00(object_type, xpos, ypos, zpos, maybe_rotation, 0);
     if (pNewObj)
     {
-        pNewObj->sub_527AE0();
+        pNewObj->AssignToBucket_527AE0();
     }
     return pNewObj;
 }
@@ -1007,7 +1633,7 @@ Object_2C* Object_5C::sub_529AB0(s32 light_type, Fix16 xpos, Fix16 ypos, Fix16 z
     Object_2C* pNewObj = Object_5C::sub_529C00(light_type, xpos, ypos, zpos, kZeroAng_6F8F68, 0);
     if (pNewObj)
     {
-        pNewObj->field_C_light->sub_482D60(argb, radius_flags, intensity);
+        pNewObj->field_C_pAny.pLight->sub_482D60(argb, radius_flags, intensity);
     }
     return pNewObj;
 }
@@ -1033,7 +1659,7 @@ Object_2C* Object_5C::sub_529BC0(s32 a2, Fix16 a3, Fix16 a4, Fix16 a5, Ang16 a6)
     Object_2C* tmp = sub_529C00(a2, a3, a4, a5, a6, 1);
     if (tmp)
     {
-        tmp->sub_527AE0();
+        tmp->AssignToBucket_527AE0();
     }
     return tmp;
 }
@@ -1048,11 +1674,11 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
     Object_3C* pNew3C; // eax
     Object_8* pNew8; // eax
 
-    if (object_type == 266)
+    if (object_type == objects::secret_token_266)
     {
-        if (!field_20[field_54_f20_idx]) // 20
+        if (!field_20_bUnCollectedTokens[field_54_uncollected_token_index]) // 20
         {
-            field_54_f20_idx++;
+            field_54_uncollected_token_index++;
             return 0;
         }
     }
@@ -1081,11 +1707,13 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
     pNew2C->sub_527630(object_type, xpos, ypos, zpos, rotation);
     if (field_18)
     {
-        pNew2C->sub_529080(field_18);
+        pNew2C->SetDamageOwner_529080(field_18);
         field_18 = 0;
     }
 
-    if (bUnknown && (pNew2C->field_4->sub_59E7D0(0) || (pPhi->field_40 == 3 && gPurpleDoom_2_67920C->sub_477E60(pNew2C->field_4, 0))))
+    if (bUnknown &&
+        (pNew2C->field_4->sub_59E7D0(0) ||
+         (pPhi->field_40_collision_bucket_category == collision_bucket_category::purple_doom_2_region_bucket_3 && gPurpleDoom_2_67920C->FindNearestSpriteOfType_477E60(pNew2C->field_4, 0))))
     {
         if (pNew2C->field_20 == 1) // 154: ~> cmpl    $0x1,0x0(%ebp)
         {
@@ -1105,21 +1733,21 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
         field_1C.sub_5A6CD0(pNew2C->field_4);
     }
 
-    switch (pPhi->field_34)
+    switch (pPhi->field_34_behavior_type)
     {
 
-        case 0:
-        case 1:
-        case 6:
-        case 10:
-        case 12:
-            pNew2C->field_C_obj_8 = 0;
+        case object_behavior_type::behavior_0:
+        case object_behavior_type::behavior_1:
+        case object_behavior_type::behavior_6:
+        case object_behavior_type::behavior_10:
+        case object_behavior_type::behavior_12:
+            pNew2C->field_C_pAny.o8 = 0;
             pNew2C->field_10_obj_3c = 0;
             break;
 
-        case 5:
+        case object_behavior_type::behavior_5:
             pNew30 = gWolfy_7A8_6FD5F0->sub_543800();
-            pNew2C->field_C_explosion = pNew30;
+            pNew2C->field_C_pAny.pExplosion = pNew30;
             if (pNew30) // 225
             {
                 pNew2C->field_1C = 1;
@@ -1131,17 +1759,17 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
 
             break;
 
-        case 2:
-        case 8:
+        case object_behavior_type::behavior_2:
+        case object_behavior_type::behavior_8:
             pNew8 = gObject_8_Pool_6F8F78->Allocate();
-            pNew2C->field_C_obj_8 = pNew8;
-            pNew8->field_7 = 0;
-            pNew2C->field_C_obj_8->field_4 = pPhi->field_65;
-            pNew2C->field_C_obj_8->field_6 = 0;
+            pNew2C->field_C_pAny.o8 = pNew8;
+            pNew8->field_7_anim_speed_counter = 0;
+            pNew2C->field_C_pAny.o8->field_4_timer = pPhi->field_65;
+            pNew2C->field_C_pAny.o8->field_6_frame_counter = 0;
             break;
 
-        case 3:
-        case 7:
+        case object_behavior_type::behavior_3:
+        case object_behavior_type::behavior_7:
             pNew3C = gObject_3C_Pool_6F8F7C->Allocate();
             pNew2C->field_10_obj_3c = pNew3C;
             pNew3C->field_20 = pNew2C->field_14_id;
@@ -1153,8 +1781,8 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
             pNew2C->field_10_obj_3c->field_1C = kFpZero_6F8E10;
             break;
 
-        case 4:
-        case 9:
+        case object_behavior_type::behavior_4:
+        case object_behavior_type::behavior_9:
             pNew3C = gObject_3C_Pool_6F8F7C->Allocate();
             pNew2C->field_10_obj_3c = pNew3C;
             pNew3C->field_20 = pNew2C->field_14_id;
@@ -1166,14 +1794,14 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
             pNew2C->field_10_obj_3c->field_28 = pNew2C->field_8->field_65;
 
             pNew8 = gObject_8_Pool_6F8F78->Allocate();
-            pNew2C->field_C_obj_8 = pNew8;
-            pNew8->field_7 = 0; // ??
-            pNew2C->field_C_obj_8->field_4 = pPhi->field_65;
-            pNew2C->field_C_obj_8->field_6 = 0;
+            pNew2C->field_C_pAny.o8 = pNew8;
+            pNew8->field_7_anim_speed_counter = 0; // ??
+            pNew2C->field_C_pAny.o8->field_4_timer = pPhi->field_65;
+            pNew2C->field_C_pAny.o8->field_6_frame_counter = 0;
             break;
 
-        case 11:
-            pNew2C->field_C_obj_8 = (Object_8*)gLight_1D4CC_6F5520->sub_52B2A0(xpos, ypos, zpos, 0, 0, 0);
+        case object_behavior_type::behavior_11:
+            pNew2C->field_C_pAny.pLight = gLight_1D4CC_6F5520->sub_52B2A0(xpos, ypos, zpos, 0, 0, 0);
             break;
 
         default:
@@ -1190,18 +1818,18 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
     if (pNew2C->field_18_model == 281)
     {
         Object_2C* v34 = NewPhysicsObj_5299B0(284, kFpZero_6F8E10, kFpZero_6F8E10, kFpZero_6F8E10, kZeroAng_6F8F68);
-        pNew2C->field_4->sub_5A3100(v34->field_4,
-                                    (dword_6F8CE8 * dword_6F8ECC), // x?
-                                    (dword_6F8CEC * dword_6F8ECC), // y?
-                                    kZeroAng_6F8F68); // ang?
+        pNew2C->field_4->DispatchCollisionEvent_5A3100(v34->field_4,
+                                                       (dword_6F8CE8 * dword_6F8ECC), // x?
+                                                       (dword_6F8CEC * dword_6F8ECC), // y?
+                                                       kZeroAng_6F8F68); // ang?
         return pNew2C;
     }
     else
     {
-        if (pNew2C->field_18_model == 266)
+        if (pNew2C->field_18_model == objects::secret_token_266)
         {
-            pNew2C->set_field_26(field_54_f20_idx);
-            field_54_f20_idx++;
+            pNew2C->set_field_26(field_54_uncollected_token_index);
+            field_54_uncollected_token_index++;
         }
         return pNew2C;
     }
@@ -1236,7 +1864,7 @@ s32* Object_5C::sub_52A2C0(s32 a2, s32 a3, s32 a4, s32 a5, s16 a6, s16 a7, s32 a
 }
 
 STUB_FUNC(0x52a3d0)
-s32* Object_5C::CreateExplosion_52A3D0(Fix16 x, Fix16 y, Fix16 z, Ang16 rot, s32 a6, s32 a7)
+Object_2C* Object_5C::CreateExplosion_52A3D0(Fix16 x, Fix16 y, Fix16 z, Ang16 rot, s32 a6, s32 pedId)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -1276,13 +1904,13 @@ void Object_5C::RestoreObjects_52A590(TurkishDelight_164* pData)
         pVarrok++;
     }
 
-    memset(pData, 0, 0x12Cu); // everything before field_12C_obj_5C_buffer
+    memset(pData, 0, 0x12Cu); // everything before field_12C_obj_5C_bUnCollectedTokens
 }
 
 MATCH_FUNC(0x52A610)
 void Object_5C::sub_52A610(Object_2C* p2C)
 {
-    if (p2C->field_8->field_34 != 11)
+    if (p2C->field_8->field_34_behavior_type != 11)
     {
         gPurpleDoom_3_679210->Remove_477B00(p2C->field_4);
     }
@@ -1290,7 +1918,7 @@ void Object_5C::sub_52A610(Object_2C* p2C)
 }
 
 MATCH_FUNC(0x52A650)
-void Object_2C::sub_52A650()
+void Object_2C::EnsureObject3C_52A650()
 {
     if (!field_10_obj_3c)
     {
@@ -1310,33 +1938,33 @@ void Object_2C::sub_52A650()
         p3C->field_34 = 2;
         p3C->field_24 = 0;
         p3C->field_2F = 0;
-        p3C->field_30 = 0;
+        p3C->field_30_bSkipAnim = 0;
         field_10_obj_3c = p3C;
         p3C->field_20 = field_14_id;
         field_10_obj_3c->field_C = kFpZero_6F8E10;
         field_10_obj_3c->field_10 = kFpZero_6F8E10;
     }
-    Object_2C::sub_522340();
+    Object_2C::PoolGive_522340();
 }
 
 MATCH_FUNC(0x52a6d0)
-void Object_2C::sub_52A6D0(Sprite* pSprite)
+void Object_2C::ReactivateObjectAfterImpact_52A6D0(Sprite* pSprite)
 {
-    sub_527D00();
+    RemoveFromCollisionBuckets_527D00();
 
-    if (field_8->field_34 != 11)
+    if (field_8->field_34_behavior_type != 11)
     {
-        gPurpleDoom_3_679210->Add_477AE0(field_4);
+        gPurpleDoom_3_679210->AddToSingleBucket_477AE0(field_4);
     }
 
-    sub_522360();
+    PoolTake_522360();
 
     if (pSprite->field_30_sprite_type_enum == sprite_types_enum::car)
     {
         Car_BC* pObj = pSprite->field_8_car_bc_ptr;
         if (pObj)
         {
-            field_4->field_28_num = pObj->sub_4435B0();
+            field_4->field_28_num = pObj->GetCrashSoundCategory_4435B0();
         }
     }
 }

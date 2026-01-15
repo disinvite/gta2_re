@@ -3,6 +3,7 @@
 #include "Camera.hpp"
 #include "CarInfo_808.hpp"
 #include "Car_BC.hpp"
+#include "Char_Pool.hpp"
 #include "Cranes.hpp"
 #include "Crushers.hpp"
 #include "Door_4D4.hpp"
@@ -88,21 +89,21 @@ s32 Game_0x40::sub_4B8BB0()
 }
 
 MATCH_FUNC(0x4B8BD0)
-void Game_0x40::sub_4B8BD0(s32 new_timer, s32 main_state, s8 a2)
+void Game_0x40::ExitGame_4B8BD0(s32 new_timer, s32 exit_type, s8 bonus_type)
 {
     int timer = field_28_timer;
     if (timer == -1 || timer > new_timer)
     {
         field_28_timer = new_timer;
-        field_2C_main_state = main_state;
-        gLucid_hamilton_67E8E0.sub_4C5930(a2);
+        field_2C_game_exit_type = exit_type;
+        gLucid_hamilton_67E8E0.sub_4C5930(bonus_type);
     }
 }
 
 MATCH_FUNC(0x4B8C00)
-void Game_0x40::sub_4B8C00(s32 a1, s32 a2)
+void Game_0x40::ExitGameNoBonus_4B8C00(s32 new_timer, s32 exit_type)
 {
-    sub_4B8BD0(a1, a2, 0);
+    ExitGame_4B8BD0(new_timer, exit_type, 0);
 }
 
 MATCH_FUNC(0x4B8C20)
@@ -143,7 +144,7 @@ void Game_0x40::LoadGameFiles_4B8C40()
 
     gSharp_pare_0x15D8_705064->sub_5B9350();
 
-    gLucid_hamilton_67E8E0.reset_field_574();
+    gLucid_hamilton_67E8E0.clear_secret_tokens_collected();
 
     char_type* script_name = gLucid_hamilton_67E8E0.GetScriptName_4C5960();
     gfrosty_pasteur_6F8060->Load_512330(script_name);
@@ -304,10 +305,10 @@ void Game_0x40::ShowCounters_4B8FF0()
     Player* field_38_orf1 = gGame_0x40_67E008->field_38_orf1;
     if (field_38_orf1)
     {
-        swprintf(tmpBuff_67BD9C, L"accuracy_count : %d", (unsigned __int8)field_38_orf1->field_2D4_unk.field_198_accuracy_count);
+        swprintf(tmpBuff_67BD9C, L"accuracy_count : %d", (unsigned __int8)field_38_orf1->field_2D4_scores.field_198_accuracy_count);
         gHud_2B00_706620->field_650.sub_5D1F50(tmpBuff_67BD9C, 0, 128, word_706600, 1);
 
-        swprintf(tmpBuff_67BD9C, L"reverse_count : %d", field_38_orf1->field_2D4_unk.field_19C_reverse_count);
+        swprintf(tmpBuff_67BD9C, L"reverse_count : %d", field_38_orf1->field_2D4_scores.field_19C_reverse_count);
         gHud_2B00_706620->field_650.sub_5D1F50(tmpBuff_67BD9C, 0, 144, word_706600, 1);
 
         // TODO: Seems strange, converted to a local integer point or something ??
@@ -528,17 +529,17 @@ s8 Game_0x40::ExecuteGame_4B9640()
 
     switch (field_0_game_state)
     {
-        case 0:
+        case GameState::ExecuteFrameAndPause_0:
             UpdateGame_4B9410();
 
             if (!bSkip_audio_67D6BE)
             {
                 gRoot_sound_66B038.Service_40EFA0();
             }
-            field_0_game_state = 2;
+            field_0_game_state = GameState::Paused_2;
             break;
 
-        case 1:
+        case GameState::Running_1:
             UpdateGame_4B9410();
             if (!bSkip_audio_67D6BE)
             {
@@ -546,7 +547,7 @@ s8 Game_0x40::ExecuteGame_4B9640()
             }
             break;
 
-        case 2:
+        case GameState::Paused_2:
             sub_4B93C0();
             if (!bSkip_audio_67D6BE)
             {
@@ -561,24 +562,26 @@ s8 Game_0x40::ExecuteGame_4B9640()
 }
 
 // TODO: Werid function chunk stuff
-STUB_FUNC(0x4B9700)
+WIP_FUNC(0x4B9700)
 void Game_0x40::TogglePause_4B9700()
 {
-    // Paused?
-    if (field_0_game_state == 1)
+    WIP_IMPLEMENTED;
+    
+    // Running?
+    if (field_0_game_state == GameState::Running_1)
     {
-        // Single player?
+        // Singleplayer or playing alone on multiplayer?
         if (field_23_num_players == 1)
         {
-            // Then unpause
-            field_0_game_state = 2;
+            // Then pause
+            field_0_game_state = GameState::Paused_2;
         }
     }
-    // Not paused and single player? (don't pause multi player games lol)
+    // Not running and single player?
     else if (field_23_num_players == 1)
     {
         // Go pause
-        field_0_game_state = 1;
+        field_0_game_state = GameState::Running_1;
 
         if (gBurgerKing_1_67B990)
         {
@@ -600,7 +603,7 @@ void Game_0x40::sub_4B9710()
 {
     if (field_23_num_players == 1)
     {
-        field_0_game_state = 0;
+        field_0_game_state = GameState::ExecuteFrameAndPause_0;
     }
 }
 
@@ -616,7 +619,7 @@ void Game_0x40::sub_4B9720()
 
     if (gHud_2B00_706620)
     {
-        gHud_2B00_706620->sub_5D6A90();
+        gHud_2B00_706620->GetTextSpeed_5D6A90();
     }
 }
 
@@ -793,10 +796,10 @@ Camera_0xBC* Game_0x40::IteratePlayerCamera_4B9BC0()
 MATCH_FUNC(0x4B9C10)
 s8 Game_0x40::sub_4B9C10(Car_BC* a2)
 {
-    Player* pPlayer = sub_4B9CD0();
+    Player* pPlayer = IterateFirstPlayer_4B9CD0();
     while (pPlayer)
     {
-        if (pPlayer->sub_564610(a2, 1))
+        if (pPlayer->PromoteCarInHistory_564610(a2, 1))
         {
             return 1;
         }
@@ -828,7 +831,7 @@ Camera_0xBC* Game_0x40::sub_4B9C50()
 }
 
 MATCH_FUNC(0x4B9CD0)
-Player* Game_0x40::sub_4B9CD0()
+Player* Game_0x40::IterateFirstPlayer_4B9CD0()
 {
     for (field_20_idx = 0; field_20_idx < field_23_num_players; field_20_idx++)
     {
@@ -1201,12 +1204,12 @@ Game_0x40::Game_0x40(u8 max_players, s8 player_idx) // 4B9DE0
 
     field_21_player_camera_idx = 0;
     field_22 = 0;
-    field_0_game_state = 1;
+    field_0_game_state = GameState::Running_1;
     gbRngRemapTableDone_679C0A = 0;
     field_20_idx = 0;
     field_28_timer = -1;
     field_30_bLimitFramerate = 0;
-    field_2C_main_state = 0;
+    field_2C_game_exit_type = GameExitType::None;
     field_34 = 0;
     if (!bSkip_audio_67D6BE)
     {

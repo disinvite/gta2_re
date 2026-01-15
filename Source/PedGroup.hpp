@@ -22,9 +22,9 @@ class PedGroup
     EXPORT void sub_4C9240();
     EXPORT void sub_4C92A0();
     EXPORT void DestroyGroup_4C93A0();
-    EXPORT void sub_4C94E0(Ped* a2);
+    EXPORT void DisbandGroupDueToAttack_4C94E0(Ped* a2);
     EXPORT void sub_4C9680(u8 a2);
-    EXPORT void sub_4C9970(Ped* a2);
+    EXPORT void RemovePed_4C9970(Ped* a2);
     EXPORT void add_ped_leader_4C9B10(Ped* a2);
     EXPORT void add_ped_to_list_4C9B30(Ped* ptr, u8 idx);
     EXPORT char_type sub_4C9B60(Ped* a2);
@@ -34,7 +34,7 @@ class PedGroup
     EXPORT Ped* sub_4CA3F0(u32* a2);
     EXPORT void sub_4CA4B0();
     EXPORT void sub_4CA5E0(u8 idx);
-    EXPORT void sub_4CA820(s32 a2);
+    EXPORT void sub_4CA820(u8 a2);
     EXPORT bool IsAllMembersInSomeCar_4CAA20();
     EXPORT char_type sub_4CAAE0();
     EXPORT char_type sub_4CAB80();

@@ -323,7 +323,7 @@ class Map_0x370
     EXPORT Fix16* sub_4E5050(Fix16* found_z, Fix16 x, Fix16 y, Fix16 z, bool& bFound);
     EXPORT bool sub_4E5170(Fix16 x, Fix16 y, Fix16 z);
     EXPORT char_type sub_4E52A0(Fix16 x, Fix16 y, Fix16 z);
-    EXPORT bool sub_4E5300(Fix16 x, Fix16 y, Fix16 z, Fix16 second_z);
+    EXPORT bool CheckZCollisionAtCoord_4E5300(Fix16 x, Fix16 y, Fix16 z, Fix16 second_z);
     EXPORT bool sub_4E5480(Fix16 x, Fix16 y, Fix16 z, Fix16 unk_z_coord, Fix16* found_z);
     EXPORT char_type sub_4E5640(s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9);
     EXPORT Fix16* FindGroundZForCoord_4E5B60(Fix16* found_z, Fix16 x_pos, Fix16 y_pos);
@@ -416,6 +416,21 @@ class Map_0x370
             return pBlock->field_B_slope_type & 3;
         }
         return 0;
+    }
+
+    inline bool sub_466CF0(s32 xpos, s32 ypos, s32 zpos)
+    {
+        gmp_block_info* block_4DFE10 = get_block_4DFE10(
+                                               xpos,
+                                               ypos,
+                                               zpos);
+        if (block_4DFE10 
+        && (block_4DFE10->field_B_slope_type & 0xFC) > 0 && (block_4DFE10->field_B_slope_type & 0xFC) < 0xB4 //is_gradient_slope(block_4DFE10->field_B_slope_type)
+        && (block_4DFE10->field_B_slope_type & 3) != 0) // !is_air_type(block_4DFE10->field_B_slope_type)
+        {
+            return true;
+        }
+        return false;
     }
 
   public:

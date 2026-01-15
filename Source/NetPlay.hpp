@@ -93,7 +93,7 @@ struct Network_18
     EnumeratedConnection* field_0_enumed_connections;
     Network_4* field_4_d_array_8_entries;
     s32 field_8_connections_count;
-    s32 field_C_f4_d_array_count;
+    u32 field_C_f4_d_array_count;
     s32 field_10;
     s32 field_14;
 };
@@ -104,24 +104,48 @@ struct Network_504
     u32 field_5C4_session_count;
 };
 
+struct Connection_Unknown
+{
+    void* field_0;
+    s32 field_4_len;
+};
+
+struct Network_InputData_0x8
+{
+    u32 field_0_Inputs;
+    u32 field_4_rng;
+};
+
+struct Network_Unknown_0x30
+{
+    Network_InputData_0x8 field_0_inputs[6];
+};
+
+struct PacketHandlerSlot
+{
+    void* field_0_param_fn_callback; // fn ptr
+    void* field_4_param_context; // this ptr
+    s32 field_8_fn_type;
+};
+
 struct NetPlay
 {
     EXPORT NetPlay* ctor_51D6B0();
     EXPORT void* vdtor_51D7B0(char_type flags);
     EXPORT virtual ~NetPlay();
     EXPORT void AddEnumeratedConnection_51D930(EnumeratedConnection* pConnectionInfo);
-    EXPORT s32 EnumConnections_cb_51DA30(GUID* lpguidSP,
-                                         const void* lpConnection,
-                                         u32 dwConnectionSize,
-                                         DPNAME* lpName,
-                                         s32 dwFlags,
-                                         NetPlay* lpContext);
-    EXPORT s32 SetProtoAndConnection_51DAE0(GUID* pProtocolGuid, s32 pUseThisConnection);
+    EXPORT static s32 __stdcall EnumConnections_cb_51DA30(const GUID* lpguidSP,
+                                         void* lpConnection,
+                                         unsigned long dwConnectionSize,
+                                         const DPNAME* lpName,
+                                         unsigned long dwFlags,
+                                         void* lpContext);
+    EXPORT s32 SetProtoAndConnection_51DAE0(GUID* pProtocolGuid, Connection_Unknown* pUseThisConnection);
     EXPORT void DirectPlayDestroy_51DC90();
     EXPORT s32 DirectPlayCreate_51DCD0();
     EXPORT s32 DirectPlayCreate_51DED0();
     EXPORT static BOOL PASCAL sub_51E030(const GUID& guidDataType, DWORD dwDataSize, LPCVOID lpData, LPVOID lpContext);
-    EXPORT s32 sub_51E0E0(wchar_t* Source);
+    EXPORT s32 PushConnection_51E0E0(wchar_t* Source);
     EXPORT s32 NoRefs_51E140(wchar_t* String, s32* a3, size_t* a4);
     EXPORT s32 NoRefs_51E2B0(wchar_t* Source, wchar_t* a3, s32* a4, size_t* a5);
     EXPORT s32 NoRefs_51E450(s32 a2, u32* a3, size_t* a4);
@@ -131,8 +155,8 @@ struct NetPlay
     EXPORT u32 sub_51E9C0(s32 a1, s32 a2, s32 a3, s32 a4, wchar_t* Source, s32 a6, s32 a7);
     EXPORT s32 EnumSessions_cb_51EAE0(DPSESSIONDESC2* lpThisSD, s32 lpDwTimeOut, char_type dwFlags, NetPlay* lpContext);
     EXPORT s32 AddEnumeratedSession_51EB00(DPSESSIONDESC2* pSession);
-    EXPORT void sub_51ECD0(s32 pFunc, Network_20324* pParam);
-    EXPORT void sub_51ED00();
+    EXPORT void Set15_51ECD0(s32 pFunc, Network_20324* pParam);
+    EXPORT void NetworkTick_51ED00();
     EXPORT s32 Send_51EF60();
     EXPORT char_type Receive_51F010(s32* pOutData, s32* pOutDataLen, s32* recvId, u32* senderId);
     EXPORT void sub_51F0D0(char_type* a2, s32 a3, s32 a4, s32 a5);
@@ -142,28 +166,28 @@ struct NetPlay
     EXPORT void sub_51F870(char_type* pPacket, s32 packetLen, s32 recvId, s32 a5);
     EXPORT s32 sub_520040(s32 toFind, Network_Unknown* pStru, s32 a3, u32* pOutIdx);
     EXPORT void sub_5201A0(s32 idx, Network_Unknown* pStru);
-    EXPORT s32 sub_520230(s32 a2, u32* a3);
-    EXPORT void sub_520530(s32 pFunc, s32 pParam);
+    EXPORT void ProcessIncomingPacket_520230(s32 idx, u32 pUnknown);
+    EXPORT void Set6_520530(s32 pFunc, s32 pParam);
     EXPORT s32 sub_520570(int session_idx, wchar_t* a3, s32* a4, s32* a5);
     EXPORT s32 EnumGroups_cb_520C20(s32 a1, s32 a2, s32 a3, char_type a4, NetPlay* pContext);
     EXPORT s32 sub_520CA0(s32 a2, s32 a3);
     EXPORT void sub_520D00(s32 a2);
-    EXPORT void sub_520D10();
+    EXPORT void Disconnect_520D10();
     EXPORT void sub_520DE0(Network_Unknown* pStru);
     EXPORT u32 IndexOf_520E30(s32 toFind, Network_Unknown* pObj);
-    EXPORT void sub_520E60(s32 pFunc, s32 pParam);
-    EXPORT void sub_520E80(s32 a2, s32 a3);
+    EXPORT void Set9_520E60(s32 pFunc, s32 pParam);
+    EXPORT void Set3_Disconnect_520E80(s32 a2, s32 a3);
     EXPORT void NoRefs_null_520EA0();
     EXPORT s32 sub_520EB0(s32 a2, s32 a3, Network_Unknown* a4);
-    EXPORT void sub_520F50(s32 a2, s32 a3);
-    EXPORT s32 sub_520F80(wchar_t* String2);
+    EXPORT void Set18_520F50(s32 a2, s32 a3);
+    EXPORT s32 RemovePlayerByName_520F80(wchar_t* String2);
     EXPORT s32 DeletePlayerFromGroup_521000(u32 idx);
     EXPORT s32 SendChatMessage_521060(wchar_t* pMsg, s32 idx_always_m1);
-    EXPORT void sub_5210D0(s32 a2, s32 a3);
+    EXPORT void Set21_5210D0(s32 a2, s32 a3);
     EXPORT void GetPlayerName_521100(wchar_t* Destination, u32 idx);
-    EXPORT void sub_521140(s32 a2, s32 a3);
+    EXPORT void Set24_521140(s32 a2, s32 a3);
     EXPORT s32 sub_521170(Network_8* a2);
-    EXPORT void sub_5211F0(s32 a2, s32 a3);
+    EXPORT void Set27SavePlayerName_5211F0(s32 a2, s32 a3);
     EXPORT void sub_521220();
     EXPORT void SetExitGameCallBack_521330(s32 pFunc, Game_0x40* pGame);
     EXPORT s32 GetMaxPlayers_521350();
@@ -179,7 +203,7 @@ struct NetPlay
     EXPORT void Send_521B20(s32* a2);
     EXPORT s32 NoRefs_Send_521BE0(s32* a2, s32 a3);
     EXPORT s32 NoRefs_Send_521C80(s32 a2);
-    EXPORT s32 Send_521D20();
+    EXPORT s32 SendKeepAlive_521D20();
     EXPORT s32 Send_521DB0(s32 dataLen);
     EXPORT s32 Send_521E40(s32 a2);
     EXPORT void static_dtor_5E4DD0();
@@ -198,7 +222,7 @@ struct NetPlay
     s32 field_2C_ptrs;
     Network_18 field_30_enumed_connections;
     s32 field_48;
-    s32 field_4C_func_ptrs_and_params[30];
+    PacketHandlerSlot field_4C_func_ptrs_and_params[10];
     Network_504 field_C4_sessions;
     s32 field_5C8;
     s32 field_5CC;

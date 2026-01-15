@@ -9,7 +9,7 @@ DEFINE_GLOBAL(Montana_2EE4*, gMontana_2EE4_705BBC, 0x705BBC);
 DEFINE_GLOBAL(Montana_FA4*, gMontana_FA4_705BC0, 0x705BC0);
 DEFINE_GLOBAL(s32, gDisplayDraw_67B57C, 0x67B57C);
 DEFINE_GLOBAL(s32, gDisplayAdd_67B578, 0x67B578);
-DEFINE_GLOBAL(Fix16, dword_67B434, 0x67B434); // = 0x4000, TODO, 0xUNKNOWN);
+DEFINE_GLOBAL_INIT(Fix16, dword_67B434, Fix16(1), 0x67B434);
 DEFINE_GLOBAL_INIT(Fix16, dword_705B80, Fix16(60), 0x705B80);
 DEFINE_GLOBAL_INIT(Fix16, dword_705AC4, Fix16(0), 0x705AC4);
 
@@ -218,7 +218,7 @@ void Montana::DisplayAdd_495510(Sprite* pSprite)
     const s32 rdtsc = get_rdtsc_5BEE90();
     if (pSprite->field_1C_zpos >= dword_67B434)
     {
-        field_0_cols[pSprite->sub_5A1BD0()]->AddSprite_5C5CF0(pSprite);
+        field_0_cols[pSprite->ComputeZLayer_5A1BD0()]->AddSprite_5C5CF0(pSprite);
     }
     gDisplayAdd_67B578 += get_rdtsc_5BEE90() - rdtsc;
 }

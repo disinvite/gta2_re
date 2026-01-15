@@ -1,6 +1,8 @@
 #include "char.hpp"
+#include "Char_Pool.hpp"
 #include "Car_BC.hpp"
 #include "Game_0x40.hpp"
+#include "Gang.hpp"
 #include "Globals.hpp"
 #include "Hud.hpp"
 #include "Object_3C.hpp"
@@ -9,27 +11,22 @@
 #include "Player.hpp"
 #include "Police_7B8.hpp"
 #include "PurpleDoom.hpp"
+#include "rng.hpp"
 #include "Varrok_7F8.hpp"
 #include "debug.hpp"
 #include "error.hpp"
 #include "frosty_pasteur_0xC1EA8.hpp"
 #include "sprite.hpp"
-#include <DINPUT.H>
-
-DEFINE_GLOBAL(PedManager*, gPedManager_6787BC, 0x6787BC);
-DEFINE_GLOBAL(PedPool*, gPedPool_6787B8, 0x6787B8);
-DEFINE_GLOBAL(Char_B4_Pool*, gChar_B4_Pool_6FDB44, 0x6FDB44);
-DEFINE_GLOBAL(Char_8_Pool*, gChar_8_Pool_678b50, 0x678b50);
 
 DEFINE_GLOBAL(s8, byte_6FDB48, 0x6FDB48);
 DEFINE_GLOBAL(s8, byte_6FDB49, 0x6FDB49);
 DEFINE_GLOBAL(u32, gB4_id_6FDB4C, 0x6FDB4C);
-DEFINE_GLOBAL(Fix16, dword_6FD80C, 0x6FD80C);
 
+DEFINE_GLOBAL(Fix16, dword_623F44, 0x623F44);
 DEFINE_GLOBAL(Fix16, dword_6FD7F8, 0x6FD7F8);
 DEFINE_GLOBAL(Fix16, dword_6FD800, 0x6FD800);
+DEFINE_GLOBAL(Fix16, dword_6FD80C, 0x6FD80C);
 DEFINE_GLOBAL(Fix16, dword_6FD7FC, 0x6FD7FC);
-DEFINE_GLOBAL(Fix16, dword_6FD7B0, 0x6FD7B0);
 
 DEFINE_GLOBAL_INIT(Ang16, word_6FD936, Ang16(720), 0x6FD936);
 
@@ -39,55 +36,62 @@ DEFINE_GLOBAL(u8, byte_6FDB58, 0x6FDB58);
 DEFINE_GLOBAL(u8, byte_6FDB59, 0x6FDB59);
 
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD9E4, Fix16(0), 0x6FD9E4);
-DEFINE_GLOBAL_INIT(Fix16, dword_6FD7C0, dword_6FD9E4, 0x6FD7C0);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD9F4, Fix16(65536, 0), 0x6FD9F4);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD7A4, Fix16(0x1000, 0), 0x6FD7A4);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD7B0, dword_6FD9E4, 0x6FD7B0);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD7C0, dword_6FD9E4, 0x6FD7C0);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD7DC, dword_6FD9E4, 0x6FD7DC);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD868, Fix16(256, 0), 0x6FD868);
 DEFINE_GLOBAL_INIT(Fix16, gRunOrJumpSpeed_6FD7D0, dword_6FD9F4* dword_6FD868, 0x6FD7D0);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD8B4, dword_6FD9E4, 0x6FD8B4);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD8B8, dword_6FD9E4, 0x6FD8B8);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD8BC, dword_6FD9E4, 0x6FD8BC);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD8D8, Fix16(0xCCC, 0), 0x6FD8D8);
-DEFINE_GLOBAL_INIT(Fix16, dword_6FD7A4, Fix16(0x1000, 0), 0x6FD7A4);
-
 
 DEFINE_GLOBAL(u16, gNumPedsOnScreen_6787EC, 0x6787EC);
-DEFINE_GLOBAL(u16, word_6787F0, 0x6787F0);
-DEFINE_GLOBAL(u8, byte_61A8A1, 0x61A8A1);
-DEFINE_GLOBAL(u8, byte_61A8A2, 0x61A8A2);
-DEFINE_GLOBAL(u8, unk_6787EE, 0x6787EE);
-DEFINE_GLOBAL(u8, unk_6787EF, 0x6787EF);
-DEFINE_GLOBAL(u8, byte_6787DA, 0x6787DA);
 
-EXTERN_GLOBAL(u16, word_6787E0);
-EXTERN_GLOBAL(u8, byte_6787E2);
-EXTERN_GLOBAL(u8, byte_6787E4);
-EXTERN_GLOBAL(u8, byte_6787E3);
-EXTERN_GLOBAL(u8, byte_6787D8);
-EXTERN_GLOBAL(u8, byte_6787D9);
-EXTERN_GLOBAL(u8, byte_6787D2);
+DEFINE_GLOBAL(u8, byte_6FDB51, 0x6FDB51);
+DEFINE_GLOBAL(u8, byte_6FDB52, 0x6FDB52);
+DEFINE_GLOBAL(u8, byte_6FDB53, 0x6FDB53);
+DEFINE_GLOBAL(u8, byte_6FDB54, 0x6FDB54);
+
+DEFINE_GLOBAL(u8, byte_6FDB56, 0x6FDB56);
+DEFINE_GLOBAL(u8, byte_623F48, 0x623F48);
+DEFINE_GLOBAL(u8, byte_6FDAD8, 0x6FDAD8);
+DEFINE_GLOBAL(u8, byte_6FDAD9, 0x6FDAD9);
+DEFINE_GLOBAL(u8, byte_6FDB57, 0x6FDB57);
 
 EXTERN_GLOBAL(Ang16, word_6FDB34);
-EXTERN_GLOBAL_ARRAY(wchar_t, tmpBuff_67BD9C, 640);
+EXTERN_GLOBAL(Ped_List_4, gThreateningPedsList_678468);
 
-struct HashBrown_678468
-{
-    Char_8* field_0;
-
-    EXPORT void sub_4712F0();
-};
-DEFINE_GLOBAL(HashBrown_678468, gHashBrown_678468, 0x678468);
-
-STUB_FUNC(0x4712F0)
-void HashBrown_678468::sub_4712F0()
-{
-    NOT_IMPLEMENTED;
-}
-
-STUB_FUNC(0x544F70)
+//https://decomp.me/scratch/iQH9l
+MATCH_FUNC(0x544F70)
 void __stdcall sub_544F70()
 {
-    NOT_IMPLEMENTED;
+    dword_6FD7F8 = dword_6FD9E4;
+    dword_6FD800 = dword_6FD9E4;
+    dword_6FD7FC = dword_6FD9E4;
+    dword_6FD7DC = dword_6FD9E4;
+    dword_6FD7B0 = dword_6FD9E4;
+    dword_6FD8B8 = dword_6FD9E4;
+    dword_6FD8BC = dword_6FD9E4;
+    dword_6FD8B4 = dword_6FD9E4;
+    byte_6FDB51 = 0;
+    byte_6FDB52 = 0;
+    byte_6FDB53 = 0;
+    byte_6FDB54 = 0;
+    byte_6FDB55 = 0;
+    dword_623F44 = 1;
+    byte_6FDB56 = 0;
+    byte_623F48 = 1;
+    byte_6FDAD8 = dword_6FD9E4.ToUInt8();
+    byte_6FDAD9 = dword_6FD9E4.ToUInt8();
+    byte_6FDB57 = 0;
+    byte_6FDB58 = 0;
 }
 
 // https://decomp.me/scratch/ZsDjc
-STUB_FUNC(0x544ff0)
+WIP_FUNC(0x544ff0)
 Char_B4::Char_B4()
 {
     field_0_id = 0;
@@ -231,7 +235,7 @@ void Char_B4::PoolDeallocate()
 {
     if (field_80_sprite_ptr)
     {
-        gPurpleDoom_1_679208->sub_477B60(field_80_sprite_ptr);
+        gPurpleDoom_1_679208->AddToSpriteRectBuckets_477B60(field_80_sprite_ptr);
         gSprite_Pool_703818->remove(field_80_sprite_ptr);
         field_80_sprite_ptr = NULL;
     }
@@ -260,7 +264,7 @@ void Char_B4::sub_545430()
 {
     // Spawn fire
     Object_2C* p2C = gObject_5C_6F8F84->NewPhysicsObj_5299B0(197, 0, 0, 0, word_6FDB34); // dead_rubbish_197 ?? but its actually fire
-    field_80_sprite_ptr->sub_5A3100(p2C->field_4, 0, 0, word_6FDB34);
+    field_80_sprite_ptr->DispatchCollisionEvent_5A3100(p2C->field_4, 0, 0, word_6FDB34);
     field_B0 = 10; // Start screaming timer
 }
 
@@ -345,7 +349,7 @@ void Char_B4::sub_5456A0()
 }
 
 MATCH_FUNC(0x545700)
-s32 Char_B4::IsOnScreen_545700()
+bool Char_B4::IsOnScreen_545700()
 {
     return gGame_0x40_67E008->sub_4B97E0(this->field_80_sprite_ptr, dword_6FD9E4) == 1;
 }
@@ -375,11 +379,11 @@ void Char_B4::sub_545720(Fix16 a2)
     byte_6FDB55 = 0;
     byte_6FDB58 = 0;
 
-    gPurpleDoom_1_679208->sub_477B60(field_80_sprite_ptr);
+    gPurpleDoom_1_679208->AddToSpriteRectBuckets_477B60(field_80_sprite_ptr);
 
     if (field_58_flags_bf.b5)
     {
-        field_80_sprite_ptr->sub_420600(field_A4_xpos, field_A8_ypos, field_AC_zpos);
+        field_80_sprite_ptr->set_xyz_lazy_420600(field_A4_xpos, field_A8_ypos, field_AC_zpos);
         field_58_flags_bf.b5 = 0;
     }
     else
@@ -439,7 +443,7 @@ void Char_B4::sub_545720(Fix16 a2)
         }
         Char_B4::sub_546360();
 
-        field_80_sprite_ptr->sub_420690(field_40_rotation);
+        field_80_sprite_ptr->set_ang_lazy_420690(field_40_rotation);
 
         if (field_58_flags_bf.b3)
         {
@@ -452,7 +456,7 @@ void Char_B4::sub_545720(Fix16 a2)
             field_98.sub_41E210(field_38_velocity, field_40_rotation);
         }
     }
-    gPurpleDoom_1_679208->sub_477B20(field_80_sprite_ptr);
+    gPurpleDoom_1_679208->AddToRegionBuckets_477B20(field_80_sprite_ptr);
     if (field_88_obj_2c.field_0_p18)
     {
         field_88_obj_2c.PoolUpdate_5A6F70(field_80_sprite_ptr);
@@ -463,11 +467,11 @@ void Char_B4::sub_545720(Fix16 a2)
     }
 }
 
-STUB_FUNC(0x5459c0)
-char_type Char_B4::sub_5459C0()
+MATCH_FUNC(0x5459c0)
+void Char_B4::sub_5459C0()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    byte_6FDB59 = 0;
+    gPurpleDoom_2_67920C->CheckAndHandleCollisionInStrips_477BD0(field_80_sprite_ptr);
 }
 
 MATCH_FUNC(0x5459e0)
@@ -486,10 +490,10 @@ void Char_B4::DrownPed_5459E0()
     {
         field_7C_pPed->field_250 = 28;
     }
-    s32 leader_ped_id = field_7C_pPed->field_204;
-    if (leader_ped_id)
+    s32 ped_killer_id = field_7C_pPed->field_204_killer_id;
+    if (ped_killer_id)
     {
-        if (gPedManager_6787BC->PedById(leader_ped_id))
+        if (gPedManager_6787BC->PedById(ped_killer_id))
         {
             field_7C_pPed->field_290 = 5;
             field_7C_pPed->field_264 = 50;
@@ -748,6 +752,13 @@ bool Char_B4::sub_5532C0()
     return false;
 }
 
+STUB_FUNC(0x553330)
+char_type Char_B4::IsThreatToSearchingPed_553330()
+{
+    NOT_IMPLEMENTED;
+    return field_7C_pPed->IsThreatToSearchingPed_4661F0();
+}
+
 STUB_FUNC(0x553340)
 bool Char_B4::sub_553340(Sprite* pSprite)
 {
@@ -770,7 +781,7 @@ char_type Char_B4::sub_5535B0(Object_2C* p2c)
 }
 
 STUB_FUNC(0x553640)
-bool Char_B4::sub_553640(Object_2C* p2c)
+bool Char_B4::OnObjectTouched_553640(Object_2C* p2c)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -778,7 +789,7 @@ bool Char_B4::sub_553640(Object_2C* p2c)
 
 // https://decomp.me/scratch/UYcej
 STUB_FUNC(0x5537F0)
-char_type Char_B4::sub_5537F0(Object_2C* p2c)
+char_type Char_B4::HandlePedObjectHit_5537F0(Object_2C* p2c)
 {
     NOT_IMPLEMENTED;
 
@@ -804,7 +815,7 @@ char_type Char_B4::sub_5537F0(Object_2C* p2c)
     }
     else
     {
-        return pPed->sub_45D000(p2c);
+        return pPed->HandlePedHitByObject_45D000(p2c);
     }
 }
 
@@ -838,326 +849,3 @@ EXPORT void Char_B4::nullsub_28()
 //{
 //    NOT_IMPLEMENTED;
 //}
-
-STUB_FUNC(0x46eb60)
-void PedManager::sub_46EB60(u32* a2)
-{
-    NOT_IMPLEMENTED;
-}
-
-// https://decomp.me/scratch/dQf8H
-STUB_FUNC(0x4703f0)
-void PedManager::PedsService_4703F0()
-{
-    NOT_IMPLEMENTED;
-
-    ++word_6787F0;
-    word_6787E0 = 0;
-    byte_6787E2 = 0;
-    byte_6787E4 = 0;
-    byte_6787E3 = 0;
-    gNumPedsOnScreen_6787EC = 0;
-    byte_61A8A1 = 1;
-    byte_61A8A2 = 1;
-    byte_6787D2 = 0;
-    unk_6787EE = 0;
-
-    gPedPool_6787B8->field_0_pool.UpdatePool();
-
-    if (unk_6787EF) // 11d: je 128
-    {
-        byte_6787DA = 1;
-    }
-    else
-    {
-        byte_6787DA = 0;
-        gHashBrown_678468.sub_4712F0();
-    }
-
-    byte_6787D8 = byte_61A8A1 == 1;
-    byte_6787D9 = byte_61A8A2 == 1;
-
-    if (!bSkip_dummies_67D4EF)
-    {
-        Dummies_470330();
-    }
-    field_3 = word_6787E0;
-    field_2 = byte_6787E2;
-    field_4 = byte_6787E3;
-    field_5_fbi_army_count = byte_6787E4;
-    field_6_num_peds_on_screen = gNumPedsOnScreen_6787EC;
-    if (gPolice_7B8_6FEE40)
-    {
-        gPolice_7B8_6FEE40->field_7AD_police_peds_in_range_screen = unk_6787EE;
-    }
-    unk_6787EF = 0;
-    if (bDo_iain_test_67D4E9)
-    {
-        u16 num_peds = *(u32*)&gNumPedsOnScreen_6787EC; //  TODO: fix me
-        swprintf(tmpBuff_67BD9C, L"num peds on screen : %d",
-                 num_peds); // num peds on screen : %d
-        gHud_2B00_706620->field_650.sub_5D1F50(tmpBuff_67BD9C, 0, 64, word_706600, 1);
-
-        if (gPolice_7B8_6FEE40)
-        {
-            swprintf(tmpBuff_67BD9C,
-                     L"num police peds in range screen : %d", // num police peds in range screen : %d
-                     (u8)gPolice_7B8_6FEE40->field_7AD_police_peds_in_range_screen);
-            gHud_2B00_706620->field_650.sub_5D1F50(tmpBuff_67BD9C, 0, 80, word_706600, 1);
-        }
-    }
-}
-
-// https://decomp.me/scratch/P1OvR
-STUB_FUNC(0x470650)
-PedManager::PedManager()
-{
-    field_8 = 0;
-    if (!gPedPool_6787B8)
-    {
-        gPedPool_6787B8 = new PedPool();
-        if (!gPedPool_6787B8)
-        {
-            FatalError_4A38C0(0x20, "C:\\Splitting\\Gta2\\Source\\char.cpp", 15827); // OutOfMemoryNewOperator
-        }
-    }
-
-    if (!gChar_B4_Pool_6FDB44)
-    {
-        gChar_B4_Pool_6FDB44 = new Char_B4_Pool();
-        if (!gChar_B4_Pool_6FDB44)
-        {
-            FatalError_4A38C0(0x20, "C:\\Splitting\\Gta2\\Source\\char.cpp", 15834); // OutOfMemoryNewOperator
-        }
-    }
-
-    if (!gChar_8_Pool_678b50)
-    {
-        gChar_8_Pool_678b50 = new Char_8_Pool();
-        if (!gChar_8_Pool_678b50)
-        {
-            FatalError_4A38C0(0x20, "C:\\Splitting\\Gta2\\Source\\char.cpp", 15841); // OutOfMemoryNewOperator
-        }
-    }
-
-    field_8 = gSprite_Pool_703818->get_new_sprite();
-
-    field_2 = 0;
-    field_3 = 0;
-    field_4 = 0;
-    field_6_num_peds_on_screen = 0;
-    field_0 = 50;
-    field_7_make_all_muggers = false;
-    /*
-    gPedId_61A89C = 7;
-    dword_6787C0 = 0;
-    word_6787C6 = 0;
-    byte_6787C8 = 0;
-    byte_6787C9 = 0;
-    gNumberMuggersSpawned_6787CA = 0;
-    gNumberCarThiefsSpawned_6787CB = 0;
-    gNumberElvisLeadersSpawned_6787CC = 0;
-    gNumberWalkingCopsSpawned_6787CD = 0;
-    byte_6787CE = 0;
-    word_6787D0 = 0;
-    this->field_5_fbi_army_count = 0;
-    HIWORD(dword_678654) = word_61A898;
-    word_6787F0 = 0;
-    byte_6787D2 = 0;
-    byte_6787D3 = 0;
-    HIWORD(dword_6784EE) = word_6787A8;
-    byte_6787D4 = 0;
-    byte_6787D5 = 0;
-    byte_6787D6 = 0;
-    byte_6787D7 = 0;
-    byte_61A8A0 = 1;
-    byte_61A8A1 = 1;
-    byte_6787D8 = 0;
-    byte_61A8A2 = 1;
-    byte_6787D9 = 0;
-    byte_6787DA = 0;
-    dword_678750 = dword_678660;
-    dword_6787DC = 0;
-    word_678760 = word_6787A8;
-    byte_61A8A3 = 1;
-    byte_61A8A4 = 1;
-    word_6787E0 = 0;
-    byte_6787E2 = 0;
-    byte_6787E3 = 0;
-    gNumPedsOnScreen_6787EC = 0;
-    unk_6787EF = 0;
-    */
-    sub_553F90();
-    //gHashBrown_678468.field_0 = 0;
-}
-
-STUB_FUNC(0x4709b0)
-PedManager::~PedManager()
-{
-    NOT_IMPLEMENTED;
-}
-
-MATCH_FUNC(0x470a50)
-Ped* PedManager::SpawnPedAt(Fix16 xpos, Fix16 ypos, Fix16 zpos, u8 remap, Ang16 rotation)
-{
-    Ped* pPed = gPedPool_6787B8->Allocate();
-
-    if (!pPed->sub_45C830(xpos, ypos, zpos))
-    {
-        return 0;
-    }
-    pPed->field_168_game_object->field_40_rotation.rValue = rotation.rValue;
-    pPed->field_244_remap = remap;
-
-    Char_B4* pB4 = pPed->field_168_game_object;
-    pB4->field_5_remap = remap;
-    if (remap != 0xFF)
-    {
-        pB4->field_80_sprite_ptr->SetRemap(remap);
-    }
-    pPed->field_134 = rotation;
-    pPed->field_288_threat_search = 2;
-    pPed->field_28C_threat_reaction = 3;
-    pPed->field_216_health = 100;
-    pPed->field_26C_graphic_type = 0;
-    return pPed;
-}
-
-MATCH_FUNC(0x470b00)
-Ped* PedManager::SpawnDriver_470B00(Car_BC* pCar)
-{
-    Ped* pNewPed = gPedPool_6787B8->Allocate();
-    pNewPed->field_238 = 3;
-    pNewPed->field_240_occupation = 4; //unknown_2;
-    pNewPed->field_16C_car = pCar;
-    pNewPed->field_168_game_object = 0;
-    pNewPed->sub_45C500(10);
-    pNewPed->sub_45C540(10);
-    pNewPed->field_248_enter_car_as_passenger = 0;
-    pNewPed->field_24C_target_car_door = 0;
-    pNewPed->field_288_threat_search = 2; //area_2;
-    pNewPed->field_28C_threat_reaction = 3; //run_away_3;
-    pNewPed->field_216_health = 100;
-    pNewPed->field_26C_graphic_type = 0;
-    pCar->SetDriver(pNewPed);
-    return pNewPed;
-}
-
-STUB_FUNC(0x470ba0)
-Ped* PedManager::SpawnGangDriver_470BA0(Car_BC* pCar, Gang_144* pGang)
-{
-    NOT_IMPLEMENTED;
-    return 0;
-}
-
-MATCH_FUNC(0x470cc0)
-Ped* PedManager::sub_470CC0(Car_BC* pCar)
-{
-    Ped* pNewPed = gPedPool_6787B8->Allocate();
-    pNewPed->field_244_remap = -1;
-    pNewPed->field_26C_graphic_type = 0;
-    pNewPed->field_238 = 3;
-    pNewPed->field_240_occupation = 4; //unknown_2;
-    pNewPed->field_16C_car = pCar;
-    pNewPed->field_168_game_object = 0;
-    pNewPed->sub_45C500(10);
-    pNewPed->sub_45C540(10);
-    pNewPed->field_24C_target_car_door = 0;
-    pNewPed->field_288_threat_search = 2; //area_2;
-    pNewPed->field_28C_threat_reaction = 3; //run_away_3;
-    pNewPed->field_216_health = 100;
-    pNewPed->field_26C_graphic_type = 0;
-    return pNewPed;
-}
-
-STUB_FUNC(0x470d60)
-Ped* PedManager::sub_470D60()
-{
-    NOT_IMPLEMENTED;
-    return 0;
-}
-
-STUB_FUNC(0x470e30)
-Ped* PedManager::sub_470E30()
-{
-    NOT_IMPLEMENTED;
-    return 0;
-}
-
-MATCH_FUNC(0x470f30)
-Ped* PedManager::sub_470F30()
-{
-    Ped* pNewPed = gPedPool_6787B8->Allocate();
-    pNewPed->field_216_health = 100;
-    return pNewPed;
-}
-
-MATCH_FUNC(0x470f90)
-Ped* PedManager::sub_470F90(Ped* pSrc)
-{
-    Ped* pDst = gPedPool_6787B8->Allocate();
-    Ped* pNext = pDst->mpNext;
-    memcpy(pDst, pSrc, sizeof(Ped));
-    pDst->mpNext = pNext;
-
-    if (pSrc->field_168_game_object)
-    {
-        pDst->sub_45C830(pSrc->field_1AC_cam.x, pSrc->field_1AC_cam.y, pSrc->field_1AC_cam.z);
-        Char_B4* pCharObj = pDst->field_168_game_object;
-        u8 remap = pSrc->field_244_remap;
-        pCharObj->field_5_remap = remap;
-        if (remap != 0xFF)
-        {
-            pCharObj->field_80_sprite_ptr->SetRemap(remap);
-        }
-        pDst->field_168_game_object->set_rotation_433A30(pSrc->GetRotation());
-        pDst->field_168_game_object->field_16 = 1;
-        pDst->field_168_game_object->field_84 = pSrc->field_168_game_object->field_84;
-    }
-    return pDst;
-}
-
-STUB_FUNC(0x471060)
-void PedManager::DoIanTest_471060(s16 key)
-{
-    NOT_IMPLEMENTED;
-
-    switch (key)
-    {
-
-        case DIK_9:
-            gGame_0x40_67E008->field_38_orf1->field_2C4_player_ped->SetOnFire();
-            break;
-        case DIK_8:
-            gGame_0x40_67E008->field_38_orf1->field_2C4_player_ped->SetVisible();
-            break;
-
-        case DIK_7:
-            gGame_0x40_67E008->field_38_orf1->field_2C4_player_ped->SetInvisible();
-            break;
-    }
-}
-
-MATCH_FUNC(0x4710c0)
-Ped* PedManager::PedById(s32 pedId)
-{
-    for (Ped* pPedIter = gPedPool_6787B8->field_0_pool.field_4_pPrev; pPedIter; pPedIter = pPedIter->mpNext)
-    {
-        if (pPedIter->field_200_id == pedId)
-        {
-            return pPedIter;
-        }
-    }
-    return NULL;
-}
-
-STUB_FUNC(0x470330)
-void PedManager::Dummies_470330()
-{
-    NOT_IMPLEMENTED;
-}
-
-MATCH_FUNC(0x471110)
-PedPool::~PedPool()
-{
-}

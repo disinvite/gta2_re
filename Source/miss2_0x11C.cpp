@@ -1,6 +1,7 @@
 #include "miss2_0x11c.hpp"
 #include "CarPhysics_B0.hpp"
 #include "Car_BC.hpp"
+#include "Char_Pool.hpp"
 #include "Cranes.hpp"
 #include "Crushers.hpp"
 #include "Door_4D4.hpp"
@@ -72,10 +73,14 @@ void miss2_0x11C::sub_5035B0()
     field_11A = word_6212EE++;
 }
 
-STUB_FUNC(0x5035d0)
+MATCH_FUNC(0x5035d0)
 void miss2_0x11C::sub_5035D0()
 {
-    NOT_IMPLEMENTED;
+    if (gDo_miss_logging_67D6BC)
+    {
+        sprintf(gTmpBuffer_67C598, "%d:\t\t%d ", rng_dword_67AB34->field_0_rng, (s16)field_4_next_cmd);
+        gMiss2Log_6F7698.Write_Log_4D9650(gTmpBuffer_67C598);
+    }
 }
 
 DEFINE_GLOBAL(s32, dword_6F806C, 0x6F806C);
@@ -212,7 +217,7 @@ void miss2_0x11C::SCRCMD_OBJ_DECSET_5038D0(SCR_OBJ_DATA* pCmd, SCR_POINTER* a2)
     {
         Object_2C* pObj;
 
-        if (a2->field_8_obj->field_8->field_34 == 1)
+        if (a2->field_8_obj->field_8->field_34_behavior_type == object_behavior_type::behavior_1)
         {
             a2->field_8_obj->field_26_varrok_idx = pCmd->field_1C_value_shop_type;
         }
@@ -283,7 +288,7 @@ void miss2_0x11C::SCRCMD_PLAYER_PED_503A20(SCR_PLAYER_PED* pCmd)
             pPed->field_26C_graphic_type = 1;
             pCmd->field_8_ped = pPed;
 
-            Sprite* v6 = pPed->sub_46DF50();
+            Sprite* v6 = pPed->GetSprite_46DF50();
             v6->sub_5A2A30();
         }
     }
@@ -340,7 +345,7 @@ void miss2_0x11C::SCRCMD_CAR_DECSET_503BC0(SCR_CAR_DATA_DEC* pCmd, SCR_POINTER* 
                                                                pCmd->field_C_pos.field_8_z,
                                                                rotation,
                                                                pCmd->field_1C_car_id);
-            pPointer->field_8_car->field_50_car_sprite->sub_5A3100(v7->field_50_car_sprite, dword_6F77C0, dword_6F77C0, word_6F771E);
+            pPointer->field_8_car->field_50_car_sprite->DispatchCollisionEvent_5A3100(v7->field_50_car_sprite, dword_6F77C0, dword_6F77C0, word_6F771E);
             v7->IncrementCarStats_443D70(8);
         }
         else
@@ -435,7 +440,7 @@ void miss2_0x11C::SCRCMD_CHAR_DECSET_2D_3D_503FB0(SCR_CHAR_DATA_DEC* pCmd, SCR_P
         a2->field_8_char->field_26C_graphic_type = 1;
         a2->field_8_char->SetObjective(objectives_enum::wait_on_foot_26, 9999);
         a2->field_8_char->field_216_health = 100;
-        Sprite* v6 = a2->field_8_char->sub_46DF50();
+        Sprite* v6 = a2->field_8_char->GetSprite_46DF50();
         v6->sub_5A2A30();
     }
 }
@@ -632,7 +637,7 @@ void miss2_0x11C::SCRCMD_SET_GANG_INFO1_504830(SCR_SET_GANG_INFO* pCmd)
 MATCH_FUNC(0x504950)
 void miss2_0x11C::SCRCMD_SET_DOOR_INFO_504950(SCR_FOUR_PARAMS* a1)
 {
-    gDoor_4D4_67BD2C->sub_49D2D0(a1->field_8_unsigned_1, a1->field_A_unsigned_2, a1->field_C_unsigned_3);
+    gDoor_4D4_67BD2C->RegisterDoorInfo_49D2D0(a1->field_8_unsigned_1, a1->field_A_unsigned_2, a1->field_C_unsigned_3);
 }
 
 MATCH_FUNC(0x504970)
@@ -642,7 +647,7 @@ void miss2_0x11C::SCRCMD_DOOR_DECLARE_D1_S1_504970(SCR_DOOR_DATA_DEC* a1)
     {
         if (a1->field_14_check.field_C_size.field_0_x == dword_6F77C0 && a1->field_14_check.field_C_size.field_4_y == dword_6F77C0)
         {
-            a1->field_8 = gDoor_4D4_67BD2C->sub_49CF50(a1->field_10_gr_id,
+            a1->field_8 = gDoor_4D4_67BD2C->RegisterSingleDoorNoCheck_49CF50(a1->field_10_gr_id,
                                                        a1->field_C_block.field_0_x,
                                                        a1->field_C_block.field_1_y,
                                                        a1->field_C_block.field_2_z,
@@ -652,7 +657,7 @@ void miss2_0x11C::SCRCMD_DOOR_DECLARE_D1_S1_504970(SCR_DOOR_DATA_DEC* a1)
         }
         else
         {
-            a1->field_8 = gDoor_4D4_67BD2C->sub_49D170(a1->field_10_gr_id,
+            a1->field_8 = gDoor_4D4_67BD2C->RegisterSingleDoor_49D170(a1->field_10_gr_id,
                                                        a1->field_C_block.field_0_x,
                                                        a1->field_C_block.field_1_y,
                                                        a1->field_C_block.field_2_z,
@@ -670,7 +675,7 @@ void miss2_0x11C::SCRCMD_DOOR_DECLARE_D1_S1_504970(SCR_DOOR_DATA_DEC* a1)
     {
         if (a1->field_14_check.field_C_size.field_0_x == dword_6F77C0 && a1->field_14_check.field_C_size.field_4_y == dword_6F77C0)
         {
-            a1->field_8 = gDoor_4D4_67BD2C->sub_49CFA0(a1->field_10_gr_id,
+            a1->field_8 = gDoor_4D4_67BD2C->RegisterDoubleDoorNoCheck_49CFA0(a1->field_10_gr_id,
                                                        a1->field_C_block.field_0_x,
                                                        a1->field_C_block.field_1_y,
                                                        a1->field_C_block.field_2_z,
@@ -680,7 +685,7 @@ void miss2_0x11C::SCRCMD_DOOR_DECLARE_D1_S1_504970(SCR_DOOR_DATA_DEC* a1)
         }
         else
         {
-            a1->field_8 = gDoor_4D4_67BD2C->sub_49D1F0(a1->field_10_gr_id,
+            a1->field_8 = gDoor_4D4_67BD2C->RegisterDoubleDoor_49D1F0(a1->field_10_gr_id,
                                                        a1->field_C_block.field_0_x,
                                                        a1->field_C_block.field_1_y,
                                                        a1->field_C_block.field_2_z,
@@ -771,7 +776,7 @@ void miss2_0x11C::SCRCMD_DOOR_DECLARE_D2_S2_504B80(SCR_DOOR_DATA_DEC* a3)
     {
         if (a3->field_14_check.field_C_size.field_0_x == dword_6F77C0 && a3->field_14_check.field_C_size.field_4_y == dword_6F77C0)
         {
-            a3->field_8 = gDoor_4D4_67BD2C->sub_49CF50(a3->field_10_gr_id,
+            a3->field_8 = gDoor_4D4_67BD2C->RegisterSingleDoorNoCheck_49CF50(a3->field_10_gr_id,
                                                        a3->field_C_block.field_0_x,
                                                        a3->field_C_block.field_1_y,
                                                        a3->field_C_block.field_2_z,
@@ -781,7 +786,7 @@ void miss2_0x11C::SCRCMD_DOOR_DECLARE_D2_S2_504B80(SCR_DOOR_DATA_DEC* a3)
         }
         else
         {
-            a3->field_8 = gDoor_4D4_67BD2C->sub_49D170(a3->field_10_gr_id,
+            a3->field_8 = gDoor_4D4_67BD2C->RegisterSingleDoor_49D170(a3->field_10_gr_id,
                                                        a3->field_C_block.field_0_x,
                                                        a3->field_C_block.field_1_y,
                                                        a3->field_C_block.field_2_z,
@@ -799,7 +804,7 @@ void miss2_0x11C::SCRCMD_DOOR_DECLARE_D2_S2_504B80(SCR_DOOR_DATA_DEC* a3)
     {
         if (a3->field_14_check.field_C_size.field_0_x == dword_6F77C0 && a3->field_14_check.field_C_size.field_4_y == dword_6F77C0)
         {
-            a3->field_8 = gDoor_4D4_67BD2C->sub_49CFA0(a3->field_10_gr_id,
+            a3->field_8 = gDoor_4D4_67BD2C->RegisterDoubleDoorNoCheck_49CFA0(a3->field_10_gr_id,
                                                        a3->field_C_block.field_0_x,
                                                        a3->field_C_block.field_1_y,
                                                        a3->field_C_block.field_2_z,
@@ -809,7 +814,7 @@ void miss2_0x11C::SCRCMD_DOOR_DECLARE_D2_S2_504B80(SCR_DOOR_DATA_DEC* a3)
         }
         else
         {
-            a3->field_8 = gDoor_4D4_67BD2C->sub_49D1F0(a3->field_10_gr_id,
+            a3->field_8 = gDoor_4D4_67BD2C->RegisterDoubleDoor_49D1F0(a3->field_10_gr_id,
                                                        a3->field_C_block.field_0_x,
                                                        a3->field_C_block.field_1_y,
                                                        a3->field_C_block.field_2_z,
@@ -1112,7 +1117,7 @@ s16 miss2_0x11C::sub_505EA0(u16 idx)
     s16 result = pPointer->field_8_counter;
     if (result != -3 && result != -4)
     {
-        result = gGame_0x40_67E008->field_38_orf1->field_2D4_unk.field_1A8_unk.sub_432080(result);
+        result = gGame_0x40_67E008->field_38_orf1->field_2D4_scores.field_1A8_unk.sub_432080(result);
         if (result == -3 || result == -4)
         {
             pPointer->field_8_counter = result;
@@ -1714,11 +1719,11 @@ void miss2_0x11C::sub_508550() //  SCRCMD_POINT_ARROW_3D and SCRCMD_LEVEL_END_AR
         pPointer->field_8_arrow = gHud_2B00_706620->field_1F18.AllocArrow_5D1050();
     }
 
-    ArrowTrace_24* pArrow_trace = &pPointer->field_8_arrow->field_18.field_18;
+    ArrowTrace_24* pArrow_trace = &pPointer->field_8_arrow->field_18.field_18_primary_target;
 
     pArrow_trace->set_arrow_aim_from_pos_4767C0(v1->field_8_pos.field_0_x, v1->field_8_pos.field_4_y, v1->field_8_pos.field_8_z);
 
-    pArrow_trace->field_10_type = 1;
+    pArrow_trace->field_10_target_type = 1;
 
     if (gBasePtr_6F8070->field_2_type == SCRCMD_LEVEL_END_ARROW2)
     {
@@ -1754,8 +1759,8 @@ void miss2_0x11C::SCRCMD_REMOVE_ARROW_508E80()
 
     if (pArrow != NULL)
     {
-        pArrow->field_18.field_18.field_10_type = 0;
-        pArrow->field_18.field_3C.field_10_type = 0;
+        pArrow->field_18.field_18_primary_target.field_10_target_type = 0;
+        pArrow->field_18.field_3C_secondary_target.field_10_target_type = 0;
     }
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
@@ -2198,11 +2203,11 @@ void miss2_0x11C::sub_509D90()
         {
             if (gBasePtr_6F8070->field_2_type == SCRCMD_ADD_SCORE1)
             {
-                pPlayer->field_2D4_unk.AddCash_592620(pCmd->field_C_s32 * pPlayer->field_6BC_multpliers.field_0);
+                pPlayer->field_2D4_scores.AddCash_592620(pCmd->field_C_s32 * pPlayer->field_6BC_multpliers.field_0);
             }
             else
             {
-                pPlayer->field_2D4_unk.AddCash_592620(pCmd->field_C_s32); //  no multiplier
+                pPlayer->field_2D4_scores.AddCash_592620(pCmd->field_C_s32); //  no multiplier
             }
         }
     }
@@ -2223,7 +2228,7 @@ void miss2_0x11C::SCRCMD_ADD_SCORE2_509E00()
         Player* pPlayer = pPed->field_15C_player;
         if (pPlayer != NULL)
         {
-            pPlayer->field_2D4_unk.AddCash_592620(pCounter->field_8_counter * pPlayer->field_6BC_multpliers.field_0);
+            pPlayer->field_2D4_scores.AddCash_592620(pCounter->field_8_counter * pPlayer->field_6BC_multpliers.field_0);
         }
     }
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
@@ -2695,10 +2700,23 @@ void miss2_0x11C::sub_50AEF0()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x50b0e0)
+MATCH_FUNC(0x50b0e0)
 void miss2_0x11C::sub_50B0E0()
 {
-    NOT_IMPLEMENTED;
+    SCR_ADD_PATROL_POINT* pCmd = (SCR_ADD_PATROL_POINT*)gBasePtr_6F8070;
+    SCR_POINTER* pPointer = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    Ped* pPed = pPointer->field_8_char;
+    if (pPed)
+    {
+        if (pPed->field_258_objective != objectives_enum::patrol_on_foot_42)
+        {
+            pPed->SetObjective(objectives_enum::patrol_on_foot_42, 9999);
+        }
+        pPointer->field_8_char->PushPatrolPoint_4702A0(pCmd->field_C_pos.field_0_x.ToInt(),
+                                                       pCmd->field_C_pos.field_4_y.ToInt(),
+                                                       pCmd->field_C_pos.field_8_z.ToInt());
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
 MATCH_FUNC(0x50b150)
@@ -2709,40 +2727,122 @@ void miss2_0x11C::SCRCMD_SET_AMBIENT_50B150()
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b180)
+MATCH_FUNC(0x50b180)
 void miss2_0x11C::sub_50B180()
 {
-    NOT_IMPLEMENTED;
+    SCR_ANSWER_PHONE* pCmd = (SCR_ANSWER_PHONE*)gBasePtr_6F8070;
+    SCR_POINTER* pPtrPed = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_C_ped_idx);
+    SCR_POINTER* pPtrObj = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_8_obj_idx);
+    Object_2C* pPhoneObj = pPtrObj->field_8_obj;
+    if (pPhoneObj && pPtrPed->field_8_char)
+    {
+        pPhoneObj->sub_5291D0();
+        gfrosty_pasteur_6F8060->sub_5129B0(pPtrPed->field_8_char->field_200_id,
+                                           pPtrObj->field_8_obj->field_14_id,
+                                           gBasePtr_6F8070->field_0_cmd_this);
+        field_8 = false;
+        pCmd->field_12 = 0;
+        if (pCmd->field_10 > 0)
+        {
+            field_E = pCmd->field_10;
+        }
+        else
+        {
+            field_E = -1;
+        }
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b230)
+MATCH_FUNC(0x50b230)
 void miss2_0x11C::SCRCMD_CHECK_PHONE_50B230()
 {
-    NOT_IMPLEMENTED;
+    SCR_POINTER* pPtr = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    thread_C* pHeader = gfrosty_pasteur_6F8060->sub_512AD0(pPtr->field_8_obj->field_14_id);
+    SCR_ANSWER_PHONE* pThreadPtr = (SCR_ANSWER_PHONE*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pHeader->field_8_cmd_line);
+    if (pThreadPtr->field_12 == 1)
+    {
+        gfrosty_pasteur_6F8060->sub_512A70(pHeader->field_0_unk, pHeader->field_4_obj_f14);
+        field_8 = true;
+    }
+    else
+    {
+        field_8 = false;
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
+// https://decomp.me/scratch/Fu170 matches on decompme, wrong instr size?
 STUB_FUNC(0x50b2c0)
 void miss2_0x11C::SCRCMD_CHECK_PHONETIMER_50B2C0()
 {
-    NOT_IMPLEMENTED;
+    SCR_POINTER* pPtr = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    thread_C* pHeader =
+        gfrosty_pasteur_6F8060->sub_512AD0(pPtr->field_8_obj->field_14_id);
+    if (pHeader)
+    {
+        SCR_ANSWER_PHONE* pAnswer = (SCR_ANSWER_PHONE*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pHeader->field_8_cmd_line);
+        if (field_E != -1)
+        {
+            if (field_E == 0 && pAnswer->field_12 == 0)
+            {
+                field_8 = true;
+                pPtr->field_8_obj->sub_5291D0();
+            }
+            else
+            {
+                --field_E;
+                field_8 = false;
+            }
+        }
+    }
+    else
+    {
+        field_8 = false;
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b360)
+MATCH_FUNC(0x50b360)
 void miss2_0x11C::SCRCMD_STOP_PHONE_RING_50B360()
 {
-    NOT_IMPLEMENTED;
+    SCR_POINTER* pPtr = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    Object_2C* pObj = pPtr->field_8_obj;
+    if (pObj)
+    {
+        thread_C* pHeader = gfrosty_pasteur_6F8060->sub_512AD0(pObj->field_14_id);
+        if (pHeader)
+        {
+            gfrosty_pasteur_6F8060->sub_512A70(pHeader->field_0_unk, pHeader->field_4_obj_f14);
+        }
+        pPtr->field_8_obj->sub_5291E0(163);
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b3d0)
+MATCH_FUNC(0x50b3d0)
 void miss2_0x11C::sub_50B3D0()
 {
-    NOT_IMPLEMENTED;
+    SCR_POINTER* pPtr = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    Ped* v2 = pPtr->field_8_char;
+    BitSet32 flag = v2->field_21C;
+    if (flag.check_bit(11) && v2->field_20e == 0 && v2->field_170_selected_weapon)
+    {
+        field_8 = true;
+    }
+    else
+    {
+        field_8 = false;
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b440)
+MATCH_FUNC(0x50b440)
 void miss2_0x11C::SCRCMD_CAR_DRIVE_AWAY_50B440()
 {
-    NOT_IMPLEMENTED;
+    SCR_POINTER* pPtr = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    pPtr->field_8_car->InitCarAIControl_440590();
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
 MATCH_FUNC(0x50b470)
@@ -2773,28 +2873,66 @@ void miss2_0x11C::SCRCMD_GET_CAR_FROM_CRANE_50B470()
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b4f0)
+MATCH_FUNC(0x50b4f0)
 void miss2_0x11C::sub_50B4F0()
 {
-    NOT_IMPLEMENTED;
+    SCR_CHAR_ENTER_CAR* pCmd = (SCR_CHAR_ENTER_CAR*)gBasePtr_6F8070;
+    SCR_POINTER* pPtrPed = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    SCR_POINTER* pPtrCar = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_A_car_idx);
+
+    if (pPtrPed->field_8_char)
+    {
+        if (gBasePtr_6F8070->field_2_type != SCRCMD_CHAR_TO_BACKDOOR)
+        {
+            pPtrPed->field_8_char->sub_463830(0, 9999);
+            pPtrPed->field_8_char->SetObjective(objectives_enum::enter_car_as_driver_35, 9999);
+            pPtrPed->field_8_char->field_150_target_objective_car = pPtrCar->field_8_car;
+            pPtrPed->field_8_char->field_248_enter_car_as_passenger = false;
+        }
+        else
+        {
+            pPtrPed->field_8_char->EnterCarAsDriver(pPtrCar->field_8_car);
+        }
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b5a0)
-void miss2_0x11C::sub_50B5A0()
+MATCH_FUNC(0x50b5a0)
+void miss2_0x11C::sub_50B5A0() // SCRCMD_DRIVER_OUT_CAR
 {
-    NOT_IMPLEMENTED;
+    SCR_POINTER* pPtr = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    if (pPtr->field_8_char)
+    {
+        pPtr->field_8_char->sub_463830(0, 9999);
+        pPtr->field_8_char->SetObjective(objectives_enum::leave_car_36, 9999);
+        pPtr->field_8_char->field_150_target_objective_car = pPtr->field_8_char->field_16C_car;
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b600)
-void miss2_0x11C::sub_50B600()
+MATCH_FUNC(0x50b600)
+void miss2_0x11C::sub_50B600() // SCRCMD_GIVE_DRIVER_BRAKE
 {
-    NOT_IMPLEMENTED;
+    SCR_POINTER* pPtr = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    if (pPtr->field_8_car)
+    {
+        if (pPtr->field_8_car->field_54_driver == NULL)
+        {
+            pPtr->field_8_car->SpawnDriverPed();
+        }
+        pPtr->field_8_car->InitCarAIControl_440590();
+        pPtr->field_8_car->field_A6 |= 0x20;
+        pPtr->field_8_car->sub_421560(5);
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b670)
+MATCH_FUNC(0x50b670)
 void miss2_0x11C::SCRCMD_SET_GANG_INFO1_50B670()
 {
-    NOT_IMPLEMENTED;
+    // mid-game change
+    miss2_0x11C::SCRCMD_SET_GANG_INFO1_504830((SCR_SET_GANG_INFO*)gBasePtr_6F8070);
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
 MATCH_FUNC(0x50b690)
@@ -2804,7 +2942,7 @@ void miss2_0x11C::sub_50B690() // SCRCMD_CLEAR_TIMERS
 
     if (pPointer->field_8_index != 0xFFFF)
     {
-        gHud_2B00_706620->field_620.sub_5D3280(pPointer->field_8_index);
+        gHud_2B00_706620->field_620.ClearPager_5D3280(pPointer->field_8_index);
     }
     pPointer->field_8_index = 0;
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
@@ -2820,7 +2958,7 @@ void miss2_0x11C::SCRCMD_CHECK_SCORE_50B6F0()
     if (pPed != NULL)
     {
         Player* pPlayer = pPed->field_15C_player;
-        if (pPlayer != NULL && pPlayer->field_2D4_unk.GetScore_592370() > pCmd->field_C_target_score)
+        if (pPlayer != NULL && pPlayer->field_2D4_scores.GetScore_592370() > pCmd->field_C_target_score)
         {
             field_8 = true;
         }
@@ -2832,16 +2970,58 @@ void miss2_0x11C::SCRCMD_CHECK_SCORE_50B6F0()
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b760)
+MATCH_FUNC(0x50b760)
 void miss2_0x11C::SCRCMD_GET_SCORE_50B760()
 {
-    NOT_IMPLEMENTED;
+    SCR_GET_SCORE* pCmd = (SCR_GET_SCORE*)gBasePtr_6F8070;
+    SCR_POINTER* pPtrPed = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    SCR_POINTER* pPtrCounter = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_A_counter_idx);
+
+    if (pPtrPed->field_8_char)
+    {
+        Player* pPlayer = pPtrPed->field_8_char->field_15C_player;
+        if (pPlayer)
+        {
+            pPtrCounter->field_8_counter = (u16)pPlayer->field_2D4_scores.GetScore_592370();
+        }
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
-STUB_FUNC(0x50b7d0)
+MATCH_FUNC(0x50b7d0)
 void miss2_0x11C::SCRCMD_IS_CHAR_IN_GANG_50B7D0()
 {
-    NOT_IMPLEMENTED;
+    SCR_IS_CHAR_IN_GANG_ZONE* pCmd = (SCR_IS_CHAR_IN_GANG_ZONE*)gBasePtr_6F8070;
+    SCR_POINTER* BasePointer_512770 = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+    str_table_entry* StringById_503080 = gfrosty_pasteur_6F8060->FindStringById_503080(pCmd->field_A_gang_idx);
+    const char_type* GangName = (char*)&StringById_503080[1];
+    Gang_144* pGang = gGangPool_CA8_67E274->gang_by_name_4BF100(GangName);
+    Ped* pPed = BasePointer_512770->field_8_char;
+    Player* pPlayer = pPed->field_15C_player;
+    if (pPlayer)
+    {
+        if (pPlayer->field_34_gang_curr_location == pGang)
+        {
+            field_8 = true;
+        }
+        else
+        {
+            field_8 = false;
+        }
+    }
+    else
+    {
+        gmp_map_zone* pZone = gMap_0x370_6F6268->zone_by_pos_and_type_4DF4D0(pPed->get_cam_x().ToInt(), pPed->get_cam_y().ToInt(), Gang_14);
+        if (pZone && !_strnicmp(pZone->field_6_name, pGang->field_2_name, pZone->field_5_name_length))
+        {
+            field_8 = true;
+        }
+        else
+        {
+            field_8 = false;
+        }
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
 STUB_FUNC(0x50b8b0)
@@ -2879,7 +3059,7 @@ void miss2_0x11C::SCRCMD_GET_PASSENGER_NUM_50B9C0()
 
     Car_BC* pCar = pPointer->field_8_car;
 
-    if (pCar != NULL && (u16)pCar->field_4.GetPassengerNum_4716B0() >= v1->field_A_signed_2)
+    if (pCar != NULL && pCar->field_4_passengers_list.GetPedsCount_4716B0() >= v1->field_A_signed_2)
     {
         field_8 = true;
     }
@@ -3067,8 +3247,8 @@ void miss2_0x11C::SCRCMD_IS_CAR_ON_TRAIL_50C1B0()
     SCR_POINTER* pCarPointer = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
     SCR_POINTER* pTrailerPointer = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(v1->field_A_unsigned_2);
 
-    Sprite* v5 = pTrailerPointer->field_8_sprite->sub_5A6CA0(2);
-    //Sprite* v5 = pTrailerPointer->field_8_car->field_0_qq->sub_5A6CA0(2);
+    //Sprite* v5 = pTrailerPointer->field_8_sprite->sub_5A6CA0(2);
+    Sprite* v5 = pTrailerPointer->field_8_car->field_0_qq.FirstSpriteOfType_5A6CA0(2);
     Car_BC* v6;
 
     if (v5 != NULL && (v5->field_30_sprite_type_enum == 2 ? (v6 = v5->field_8_car_bc_ptr) : (v6 = NULL), v6 == pCarPointer->field_8_car))
@@ -3165,7 +3345,7 @@ MATCH_FUNC(0x50c410)
 void miss2_0x11C::SCRCMD_KILL_ALL_PASSENG_50C410()
 {
     SCR_POINTER* pPointer = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
-    pPointer->field_8_car->field_4.sub_4715A0();
+    pPointer->field_8_car->field_4_passengers_list.KillAllPedsFromList_4715A0();
 
     if (gPublicTransport_181C_6FF1D4->is_bus_579AA0(pPointer->field_8_car))
     {
@@ -3431,7 +3611,7 @@ void miss2_0x11C::SCRCMD_PARK_FINISHED_50CE10()
 }
 
 STUB_FUNC(0x50ce50)
-void miss2_0x11C::sub_50CE50(s32 a2, u16 a3)
+void miss2_0x11C::sub_50CE50(SCR_CMD_HEADER* pCmd, u16 cmd_idx)
 {
     NOT_IMPLEMENTED;
 }
@@ -3448,17 +3628,19 @@ void miss2_0x11C::SCRCMD_REMOTE_CONTROL_50D200()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x50d2e0)
-s32 miss2_0x11C::SCRCMD_LAUNCH_MISSION_50D2E0()
+MATCH_FUNC(0x50d2e0)
+void miss2_0x11C::SCRCMD_LAUNCH_MISSION_50D2E0()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    str_table_entry* StringById_503080 = gfrosty_pasteur_6F8060->FindStringById_503080(gBasePtr_6F8070[1].field_0_cmd_this);
+    miss2_0x11C::launch_mission_5119A0(gBasePtr_6F8070, StringById_503080->get_name());
 }
 
-STUB_FUNC(0x50d340)
+MATCH_FUNC(0x50d340)
 void miss2_0x11C::SCRCMD_SAVE_GAME_50D340()
 {
-    NOT_IMPLEMENTED;
+    char* pSaveFileName = gLucid_hamilton_67E8E0.GetDebugStr_4C5970();
+    gfrosty_pasteur_6F8060->SaveGame_511E10(pSaveFileName);
+    Next_503620(gBasePtr_6F8070);
 }
 
 STUB_FUNC(0x50d3c0)
@@ -3467,10 +3649,53 @@ void miss2_0x11C::sub_50D3C0()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x50d680)
+MATCH_FUNC(0x50d680)
 void miss2_0x11C::SCRCMD_CHANGE_CAR_LOCK_50D680()
 {
-    NOT_IMPLEMENTED;
+    SCR_CHANGE_CAR_LOCK* pCmd = (SCR_CHANGE_CAR_LOCK*)gBasePtr_6F8070;
+    SCR_POINTER* pPtr = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
+
+    Car_BC* pCar;
+
+    switch (pCmd->field_A_lock_type)
+    {
+        case Car_Door_Lock::locked_1:
+            pCar = pPtr->field_8_car;
+            if (pCar->field_98 != Car_Door_Lock::locked_permanently_4)
+            {
+                pCar->field_98 = Car_Door_Lock::locked_1;
+            }
+
+            break;
+        case Car_Door_Lock::lockout_thief_2:
+            pCar = pPtr->field_8_car;
+            if (pCar->field_98 != Car_Door_Lock::locked_permanently_4)
+            {
+                pCar->field_98 = Car_Door_Lock::lockout_thief_2;
+            }
+
+            break;
+        case Car_Door_Lock::unlocked_3:
+            pCar = pPtr->field_8_car;
+            if (pCar->field_98 != Car_Door_Lock::locked_permanently_4)
+            {
+                pCar->field_98 = Car_Door_Lock::unlocked_3;
+            }
+            break;
+        case Car_Door_Lock::locked_permanently_4:
+            pPtr->field_8_car->field_98 = Car_Door_Lock::locked_permanently_4;
+            break;
+        case Car_Door_Lock::lockout_player_5:
+            pCar = pPtr->field_8_car;
+            if (pCar->field_98 != Car_Door_Lock::locked_permanently_4)
+            {
+                pCar->field_98 = Car_Door_Lock::lockout_player_5;
+            }
+            break;
+        default:
+            break;
+    }
+    miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
 STUB_FUNC(0x50d870)
@@ -3515,7 +3740,7 @@ void miss2_0x11C::sub_50DD00()
 }
 
 // matches on decompme: https://decomp.me/scratch/y8gtV
-STUB_FUNC(0x50dd90)
+WIP_FUNC(0x50dd90)
 void miss2_0x11C::SCRCMD_SET_DIR_OF_TVVAN_50DD90()
 {
     SCR_SET_DIR_OF_TVVAN* pCmd = (SCR_SET_DIR_OF_TVVAN*)gBasePtr_6F8070;
@@ -3829,12 +4054,12 @@ void miss2_0x11C::sub_50E900()
         if (pTrailer != NULL && pTrailer->field_8_truck_cab == pDstCar)
         {
             // put car on the trailer attached to the truck cab
-            pDstCar->sub_440840()->sub_5A3100(pCarPointer->field_8_car->field_50_car_sprite, dword_6F77C0, dword_6F77C0, word_6F771E);
+            pDstCar->GetSprite_440840()->DispatchCollisionEvent_5A3100(pCarPointer->field_8_car->field_50_car_sprite, dword_6F77C0, dword_6F77C0, word_6F771E);
         }
         else
         {
             // put car directly on the trailer
-            pDstCar->field_50_car_sprite->sub_5A3100(pCarPointer->field_8_car->field_50_car_sprite,
+            pDstCar->field_50_car_sprite->DispatchCollisionEvent_5A3100(pCarPointer->field_8_car->field_50_car_sprite,
                                                      dword_6F77C0,
                                                      dword_6F77C0,
                                                      word_6F771E);
@@ -3898,11 +4123,11 @@ void miss2_0x11C::sub_50EA40() //  SCRCMD_FINISH_LEVEL
     }
     if (bonus_type)
     {
-        gGame_0x40_67E008->sub_4B8BD0(0, 4, bonus_type);
+        gGame_0x40_67E008->ExitGame_4B8BD0(0, GameExitType::AreaCompleted_4, bonus_type);
     }
     else
     {
-        gGame_0x40_67E008->sub_4B8C00(0, 4);
+        gGame_0x40_67E008->ExitGameNoBonus_4B8C00(0, GameExitType::AreaCompleted_4);
     }
 
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
@@ -4087,7 +4312,7 @@ void miss2_0x11C::sub_50EDC0() //  EASY_PHONE_TEMPLATE
     {
         str_table_entry* mission1_str_table = gfrosty_pasteur_6F8060->FindStringById_503080(v1->field_1C_mission1);
         char_type* mission1_name = (char_type*)&mission1_str_table[1];
-        miss2_0x11C::launch_mission_5119A0((int)gBasePtr_6F8070, mission1_name); //  TODO: fix gBasePtr_6F8070 type
+        miss2_0x11C::launch_mission_5119A0(gBasePtr_6F8070, mission1_name); //  TODO: fix gBasePtr_6F8070 type
         return;
     }
     s8 idx2;
@@ -4381,7 +4606,7 @@ void miss2_0x11C::SCRCMD_SET_CAR_JAMMED_50FA70()
 MATCH_FUNC(0x50fad0)
 void miss2_0x11C::SCRCMD_FINISH_MISSION_50FAD0()
 {
-    gMiss2_25C_6F805C->sub_502DC0();
+    gMiss2_25C_6F805C->MissionCleanUp_502DC0();
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
@@ -4397,7 +4622,7 @@ void miss2_0x11C::sub_50FAF0() // SCRCMD_STORE_BONUS
     if (bonus_unk != -3 && bonus_unk != -4)
     {
         pPointerCounter->field_8_counter =
-            gGame_0x40_67E008->field_38_orf1->field_2D4_unk.field_1A8_unk.field_0[pPointerBonus->field_8_index].field_26;
+            gGame_0x40_67E008->field_38_orf1->field_2D4_scores.field_1A8_unk.field_0[pPointerBonus->field_8_index].field_26;
     }
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
@@ -4490,7 +4715,7 @@ void miss2_0x11C::sub_50FF50() // SCRCMD_ADD_ONSCREEN_COUNTER
     SCR_POINTER* pOnScreenCounter = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
     SCR_POINTER* pCounter = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(v1->field_A_counter_idx);
 
-    pOnScreenCounter->field_8_index = gHud_2B00_706620->field_620.sub_5D3220(&pCounter->field_8_counter);
+    pOnScreenCounter->field_8_index = gHud_2B00_706620->field_620.AddOnScreenCounter_5D3220(&pCounter->field_8_counter);
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
 }
 
@@ -4504,11 +4729,11 @@ void miss2_0x11C::sub_50FFB0() // SCRCMD_CLEAR_COUNTER and SCRCMD_CLEAR_CLOCK_ON
     {
         if (gBasePtr_6F8070->field_2_type == SCRCMD_CLEAR_COUNTER)
         {
-            gHud_2B00_706620->field_620.sub_5D3310(idx);
+            gHud_2B00_706620->field_620.ClearCounterOnly_5D3310(idx);
         }
         else // == SCRCMD_CLEAR_CLOCK_ONLY
         {
-            gHud_2B00_706620->field_620.sub_5D32D0(idx);
+            gHud_2B00_706620->field_620.ClearClockOnly_5D32D0(idx);
         }
     }
     miss2_0x11C::Next_503620(gBasePtr_6F8070);
@@ -4574,7 +4799,7 @@ void miss2_0x11C::sub_510280()
         pTimerIDPointer->field_8_index = gHud_2B00_706620->field_620.CreateTimer_5D31F0(pCmd->field_C_time_limit);
         SCR_POINTER* pOnScreenCounter = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_10_onscreenname);
         SCR_POINTER* pCounter = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_12_countername);
-        pOnScreenCounter->field_8_index = gHud_2B00_706620->field_620.sub_5D3220(&pCounter->field_8_counter);
+        pOnScreenCounter->field_8_index = gHud_2B00_706620->field_620.AddOnScreenCounter_5D3220(&pCounter->field_8_counter);
         ++field_C;
     }
     else
@@ -4584,13 +4809,13 @@ void miss2_0x11C::sub_510280()
             SCR_POINTER* pBonusType = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_8_bonusname);
             SCR_POINTER* pCounter = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_12_countername);
             pCounter->field_8_counter = pCmd->field_14_target_total -
-                (u8)gGame_0x40_67E008->field_38_orf1->field_2D4_unk.field_1A8_unk.field_0[pBonusType->field_8_index].field_26;
+                (u8)gGame_0x40_67E008->field_38_orf1->field_2D4_scores.field_1A8_unk.field_0[pBonusType->field_8_index].field_26;
 
             Ped* pPed = pPlayerPedCmdPointer->field_8_char;
 
             if (pPed->field_278 == 9 || pPed->field_21C_bf.b5 != 0)
             {
-                gGame_0x40_67E008->field_38_orf1->field_2D4_unk.field_1A8_unk.field_0[pBonusType->field_8_index].sub_431DB0();
+                gGame_0x40_67E008->field_38_orf1->field_2D4_scores.field_1A8_unk.field_0[pBonusType->field_8_index].sub_431DB0();
                 pPlayerPedCmdPointer->field_8_char->field_15C_player->ClearKFWeapon_5647D0();
             }
         }
@@ -4599,7 +4824,7 @@ void miss2_0x11C::sub_510280()
             pTimerIDPointer = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(pCmd->field_A_timername);
             if (pTimerIDPointer->field_8_index != 0xFFFF)
             {
-                gHud_2B00_706620->field_620.sub_5D3280(pTimerIDPointer->field_8_index);
+                gHud_2B00_706620->field_620.ClearPager_5D3280(pTimerIDPointer->field_8_index);
             }
             pTimerIDPointer->field_8_index = 0;
             pPlayerPedCmdPointer->field_8_char->field_15C_player->ClearKFWeapon_5647D0();
@@ -5552,11 +5777,13 @@ miss2_0x11C* miss2_0x11C::sub_511960(u16 levelStart)
     return v4;
 }
 
-STUB_FUNC(0x5119a0)
-s32 miss2_0x11C::launch_mission_5119A0(s32 a2, char_type* String1)
+MATCH_FUNC(0x5119a0)
+void miss2_0x11C::launch_mission_5119A0(SCR_CMD_HEADER* BasePointer, char_type* string)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    u16 cmd_next;
+    gfrosty_pasteur_6F8060->sub_512400(string, &cmd_next);
+    strcpy(field_14_str, string);
+    miss2_0x11C::sub_50CE50(BasePointer, cmd_next);
 }
 
 MATCH_FUNC(0x511a00)
@@ -5578,10 +5805,20 @@ miss2_0x11C::miss2_0x11C()
     field_118 = 0;
 }
 
-STUB_FUNC(0x511cd0)
+// https://decomp.me/scratch/gmYBd 
+MATCH_FUNC(0x511cd0)
 void miss2_0x11C::sub_511CD0()
 {
-    NOT_IMPLEMENTED;
+    for (u16 i = 0; i < 25; i++)
+    {
+        if ((1 << i) & gGameSave_6F78C8.field_E4_car_and_script_data.field_4C)
+        {
+            SCR_START_BASIC_KF_TEMPLATE* pPtr = (SCR_START_BASIC_KF_TEMPLATE*)gfrosty_pasteur_6F8060->GetBasePointer_512770(
+                                    gfrosty_pasteur_6F8060->field_C1E74_basic_kf[i]);
+            miss2_0x11C::DisableThread_505790(pPtr->field_8_triggername);
+            miss2_0x11C::DeallocOrDeleteItem_505B10(pPtr->field_C_objname);
+        }
+    }
 }
 
 MATCH_FUNC(0x512fd0)

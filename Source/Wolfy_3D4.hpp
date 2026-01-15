@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Function.hpp"
+#include "fix16.hpp"
+#include "ang16.hpp"
 
 class Object_2C;
 
@@ -23,16 +25,16 @@ class Wolfy_30
     EXPORT char_type sub_542340();
     EXPORT s16 sub_542790();
     EXPORT void sub_542E30(char_type a2);
-    EXPORT char_type sub_5434A0(s32 a2, s32 a3);
+    EXPORT char_type Update_5434A0(Fix16 a2, Ang16 a3);
     EXPORT char_type sub_5435D0();
-    EXPORT void sub_543610();
-    EXPORT void sub_543650();
+    EXPORT void DeInit_543610();
+    EXPORT void Init_543650();
     EXPORT void sub_543680(Object_2C* a2);
 
-    s32 field_0;
+    s32 field_0_bIn20Pool;
     u8 field_4_idx;
     u8 field_5;
-    s16 field_6;
+    s16 field_6_id;
     s32 field_8;
     s16 field_C;
     s16 field_E;
@@ -56,7 +58,7 @@ class Wolfy_7A8
     EXPORT Wolfy_7A8();
     EXPORT ~Wolfy_7A8();
     Wolfy_30 field_0[40];
-    char_type field_780[40];
+    char_type field_780_bUsed[40];
 };
 
 class Wolfy_3D4
@@ -65,7 +67,7 @@ class Wolfy_3D4
     EXPORT Wolfy_3D4();
     EXPORT ~Wolfy_3D4();
     Wolfy_30 field_0[20];
-    char_type field_3C0[20];
+    char_type field_3C0_bUsed[20];
 };
 
 EXTERN_GLOBAL(Wolfy_7A8*, gWolfy_7A8_6FD5F0);

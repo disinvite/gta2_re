@@ -3,6 +3,7 @@
 #include "Function.hpp"
 #include "ang16.hpp"
 #include "fix16.hpp"
+#include "Fix16_Point.hpp"
 
 class Sprite;
 class Sprite_18;
@@ -21,7 +22,7 @@ class struct_4
         field_0_p18 = 0;
     }
 
-    EXPORT Sprite_18* sub_5A6A50(s32 a2);
+    EXPORT Sprite_18* GetSpriteForModel_5A6A50(s32 a2);
     EXPORT Object_2C* sub_5A6A90(s32 obj_type);
     EXPORT Sprite_18* sub_5A6AD0();
 
@@ -37,14 +38,14 @@ class struct_4
     EXPORT Sprite* FirstSpriteOfType_5A6CA0(s32 sprite_type);
 
     EXPORT void sub_5A6CD0(Sprite* pSprite);
-    EXPORT void sub_5A6D00(Sprite* pSprite1, Fix16 a3, Fix16 pSprite2, Ang16 angle);
+    EXPORT void PushImpactEvent_5A6D00(Sprite* pSprite1, Fix16 x, Fix16 y, Ang16 angle);
     EXPORT void PushSprite_5A6D40(Sprite* pToFind);
     EXPORT char_type SpriteExists_5A6D80(Sprite* pToFind);
     EXPORT Sprite* sub_5A6DA0();
     EXPORT Sprite* sub_5A6DC0();
     EXPORT Sprite_18* sub_5A6E10();
     EXPORT Sprite* sub_5A6E40(Fix16 xOff, Fix16 yOff);
-    EXPORT s32 sub_5A6EA0(s32 a2, s32 a3);
+    EXPORT Sprite* TakeClosestSprite_5A6EA0(Fix16 xpos, Fix16 ypos);
     EXPORT void PoolUpdate_5A6F70(Sprite* a2);
     EXPORT void sub_5A7010();
     EXPORT void sub_5A7080();
@@ -72,7 +73,7 @@ class Object_3C
     }
 
     // ?? not sure if this is O3C either :skull:
-    EXPORT u32* sub_52ADF0(u32* a2);
+    EXPORT Fix16_Point GetRot_52ADF0();
 
     struct_4 field_0;
     Ang16 field_4;
@@ -90,7 +91,7 @@ class Object_3C
     s16 field_2C;
     char_type field_2E;
     char_type field_2F;
-    u8 field_30;
+    u8 field_30_bSkipAnim;
     u8 field_31;
     u16 field_32;
     s32 field_34;

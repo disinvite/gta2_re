@@ -1,6 +1,7 @@
 #include "winmain.hpp"
 #include "Bink.hpp"
 #include "BurgerKing_67F8B0.hpp"
+#include "Char_Pool.hpp"
 #include "Frontend.hpp"
 #include "Function.hpp"
 #include "Game_0x40.hpp"
@@ -53,6 +54,25 @@
 #include "nostalgic_ellis_0x28.hpp"
 #include "sound_obj.hpp"
 #include "sprite.hpp"
+#include "text_0x14.hpp"
+
+DEFINE_GLOBAL(u8, gNetInUsePlayerBits_6F56B8, 0x6F56B8); // TODO: move
+DEFINE_GLOBAL(u32, gNetworkPlayerIdx_6F56C8, 0x6F56C8); // TODO: move
+DEFINE_GLOBAL(u32, gPlayerQuit_6F5AEC, 0x6F5AEC); // TODO: move
+DEFINE_GLOBAL(u32, gMatchStartTime_6F5A28, 0x6F5A28); // TODO: move
+DEFINE_GLOBAL(u32, gNetworkFrameCounter_6F5868, 0x6F5868); // TODO: move
+DEFINE_GLOBAL(u8, bRecordStartTime_6F593C, 0x6F593C); // TODO: move
+DEFINE_GLOBAL(Network_Unknown_0x30, gCurrentNetInputs_6F57D8, 0x6F57D8); // TODO: move
+DEFINE_GLOBAL(Network_Unknown_0x30, gPrevNetInputs_6F5B28, 0x6F5B28); // TODO: move
+DEFINE_GLOBAL(Network_InputData_0x8*, gpInputBuffer_6F58C0, 0x6F58C0); // TODO: move
+DEFINE_GLOBAL(u32, gCurrentInputsBufferSize_6F58C4, 0x6F58C4); // TODO: move
+DEFINE_GLOBAL(u32, gTotalNetworkTime_6F5980, 0x6F5980); // TODO: move
+DEFINE_GLOBAL(u32, dword_6F573C, 0x6F573C); // TODO: move
+DEFINE_GLOBAL(s32, gHudTimerIdx_6F5860, 0x6F5860); // TODO: move
+EXTERN_GLOBAL(s32, dword_6F58A4); // TODO: move
+DEFINE_GLOBAL(u32, dword_6F58A0, 0x6F58A0); // TODO: move
+DEFINE_GLOBAL(u32, dword_6F5858, 0x6F5858); // TODO: move
+DEFINE_GLOBAL(u8, byte_6F59C0, 0x6F59C0); // TODO: move
 
 static T_gbh_SetBeginSceneCB pBeginSceneCB = NULL;
 
@@ -135,7 +155,7 @@ void force_link()
     u8 zero_u8 = 0;
     lewin.GetIdx_4881E0();
     lewin.sub_5645B0(0);
-    lewin.sub_564610(0, 0);
+    lewin.PromoteCarInHistory_564610(0, 0);
     lewin.sub_564680(0);
     lewin.sub_564710(0, 0);
     lewin.sub_564790(0);
@@ -152,7 +172,7 @@ void force_link()
     lewin.RemovePlayerWeapons_564C50();
     lewin.sub_564CC0();
     lewin.sub_564CF0();
-    lewin.sub_564D60(0);
+    lewin.CollectPowerUp_564D60(0);
     lewin.tick_down_powerups_565070();
     lewin.RestorePowerUpsFromSave_5651F0(0);
     lewin.TeleportToDebugCam_565310();
@@ -246,7 +266,7 @@ void force_link()
     burgerking.sub_4CE650();
     burgerking.GetNextAttrReplay_4CE6E0(0);
     burgerking.input_init_replay_4CE740(0);
-    burgerking.sub_4CE880(0);
+    burgerking.input_init_live_4CE880(0);
     burgerking.replay_save_4CEA40(0);
     burgerking.get_input_bits_4CEAC0();
     burgerking.save_replay_inputs_4CED00(0, 0);
@@ -323,7 +343,6 @@ DEFINE_GLOBAL(u8, min_frame_rate_706C50, 0x706C50);
 DEFINE_GLOBAL(u8, byte_6F58D8, 0x6F58D8);
 DEFINE_GLOBAL(u8, byte_6F5760, 0x6F5760);
 DEFINE_GLOBAL(u8, byte_6F5880, 0x6F5880);
-DEFINE_GLOBAL(s32, dword_6F5A28, 0x6F5A28);
 
 // TODO: move
 MATCH_FUNC(0x4DA820)
@@ -336,7 +355,7 @@ EXPORT void sub_4DA820()
 MATCH_FUNC(0x4DA830)
 EXPORT void __stdcall sub_4DA830()
 {
-    dword_6F5A28 = timeGetTime();
+    gMatchStartTime_6F5A28 = timeGetTime();
     byte_6F58D8 = 0;
 }
 
@@ -867,26 +886,37 @@ void __stdcall sub_4DB170()
     gCheatUnlimitedFlameThrower_67D6CC = 0;
 }
 
-STUB_FUNC(0x4DB0D0)
+MATCH_FUNC(0x4DB070)
+EXPORT void __stdcall sub_4DB070(u8 idx)
+{
+    Player* pPlayer = gGame_0x40_67E008->field_4_players[idx];
+    pPlayer->sub_568730();
+    swprintf(tmpBuff_67BD9C, gText_0x14_704DFC->Find_5B5F90("comms1"), pPlayer->field_83C_player_name);
+    gHud_2B00_706620->field_12F0.sub_5D5730(tmpBuff_67BD9C);
+}
+
+MATCH_FUNC(0x4DB0D0)
 void __stdcall ExitGameCallback_4DB0D0(Game_0x40* pGame, int reason)
 {
-    NOT_IMPLEMENTED;
-    pGame->sub_4B8C00(0, 1);
+    char Buffer[260];
+    sprintf(Buffer, "(ExitGameCallback)Called with reason - %d", reason);
+    gFile_67C530.Write_4D9620(Buffer);
+    pGame->ExitGameNoBonus_4B8C00(0, GameExitType::CloseGameImmediately_1);
 }
 
 // todo move to another file for ordering
-STUB_FUNC(0x4DA4D0)
+// https://decomp.me/scratch/VazoB
+WIP_FUNC(0x4DA4D0)
 EXPORT void __stdcall InitializeGame_4DA4D0()
 {
-    NOT_IMPLEMENTED;
-
     if (bReplayMode_6F5B71)
     {
         gBurgerKing_67F8B0.input_init_replay_4CE740(gHInstance_708220);
+        bReplayMode_6F5B71 = 0;
     }
     else
     {
-        gBurgerKing_67F8B0.sub_4CE880(gHInstance_708220);
+        gBurgerKing_67F8B0.input_init_live_4CE880(gHInstance_708220);
     }
 
     gRoot_sound_66B038.Set3DSound_40F160(gRegistry_6FF968.Get_Sound_Settting_586A70("do_3d_sound"));
@@ -899,10 +929,40 @@ EXPORT void __stdcall InitializeGame_4DA4D0()
         sub_4DB170();
 
         gGame_0x40_67E008 = new Game_0x40(gNetPlay_7071E8.GetMaxPlayers_521350(), gNetPlay_7071E8.field_5D4_player_idx);
-
         gNetPlay_7071E8.SetExitGameCallBack_521330((int)ExitGameCallback_4DB0D0, gGame_0x40_67E008);
 
-        // TODO missing code here
+        memset(&gCurrentNetInputs_6F57D8, 0, sizeof(gCurrentNetInputs_6F57D8));
+        memset(&gPrevNetInputs_6F5B28, 0, sizeof(gPrevNetInputs_6F5B28));
+
+        // Here
+
+        gNetworkPlayerIdx_6F56C8 = gNetPlay_7071E8.field_5D4_player_idx;
+        gpInputBuffer_6F58C0 = &gCurrentNetInputs_6F57D8.field_0_inputs[0];
+
+        //dword_6F5AC8 = 0;
+        //dword_6F5ACC = 0;
+        //dword_6F5AD0 = 0;
+        //word_6F5AD4 = 0;
+
+        gCurrentInputsBufferSize_6F58C4 = 48;
+        //dword_6F5B00 = 0;
+        bRecordStartTime_6F593C = 1;
+        gPlayerQuit_6F5AEC = false;
+        gNetInUsePlayerBits_6F56B8 = 0;
+        gNetworkFrameCounter_6F5868 = 0;
+        //dword_6F580C = 0;
+        gTotalNetworkTime_6F5980 = 0;
+        //dword_6F5AC0 = 0;
+        dword_6F573C = gLucid_hamilton_67E8E0.GetTimeLimit_461DC0();
+        if (dword_6F573C > 60)
+        {
+            dword_6F573C = 60;
+        }
+        gHudTimerIdx_6F5860 = -1;
+        dword_6F58A4 = (dword_6F573C != 0);
+        dword_6F58A0 = 0;
+        dword_6F5858 = 0;
+        byte_6F59C0 = 0;
     }
     else
     {
@@ -912,9 +972,9 @@ EXPORT void __stdcall InitializeGame_4DA4D0()
     gGame_0x40_67E008->LoadGameFiles_4B8C40();
     gGame_0x40_67E008->BootGame_4B8EB0();
 
+    gMatchStartTime_6F5A28 = timeGetTime();
     byte_6F58D8 = 0;
     byte_6F5880 = 0;
-    dword_6F5A28 = timeGetTime();
     byte_6F5760 = 1;
 }
 
@@ -963,67 +1023,88 @@ void __stdcall Draw_4DA7B0()
     }
 }
 
-STUB_FUNC(0x4DAF30)
-EXPORT void __stdcall do_inputs_4DAF30()
+STUB_FUNC(0x4DA9F0)
+EXPORT void Net_4DA9F0()
+{
+    NOT_IMPLEMENTED;
+}
+
+STUB_FUNC(0x4DACB0)
+EXPORT void Net_Send_Our_Inputs_4DACB0()
+{
+    NOT_IMPLEMENTED;
+}
+
+STUB_FUNC(0x4DAD50)
+EXPORT void Net_Set_Local_Player_Inputs_4DAD50()
+{
+    NOT_IMPLEMENTED;
+}
+
+STUB_FUNC(0x4DADA0)
+EXPORT void TagGameHudUpdate_4DADA0()
+{
+    NOT_IMPLEMENTED;
+}
+
+MATCH_FUNC(0x4DAF30)
+EXPORT void __stdcall do_network_and_local_inputs_4DAF30()
 {
     if (bStartNetworkGame_7081F0)
     {
-        /*
-        sub_4DADA0();
-        gYouthful_einstein_6F8450->sub_516660();
-        if (gGame_0x40_67E008->sub_4B8C20())
+        TagGameHudUpdate_4DADA0();
+        gYouthful_einstein_6F8450.ExecuteGamemodeTick_516660();
+
+        if (!gGame_0x40_67E008->sub_4B8C20())
         {
-            gGoofy_thompson_7071E8->Send_521D20();
-        }
-        else
-        {
-            if (byte_6F56B8)
+            if (gNetInUsePlayerBits_6F56B8)
             {
-                u32 v0 = 0;
+                u32 player_idx = 0;
                 do
                 {
-                    if ((byte_6F56B8 & 1) != 0)
+                    if ((gNetInUsePlayerBits_6F56B8 & 1) != 0)
                     {
-                        Player* v1 = gGame_0x40_67E008->field_4_players[(u8)v0];
-                        if (v1)
+                        Player* pPlayer = gGame_0x40_67E008->field_4_players[(u8)player_idx];
+                        if (pPlayer && pPlayer->field_8E_bInUse)
                         {
-                            if (v1->field_8E_bInUse)
+                            gNetPlay_7071E8.DeletePlayerFromGroup_521000(player_idx);
+                            sub_4DB070(player_idx);
+                            if (!player_idx || player_idx == gNetworkPlayerIdx_6F56C8)
                             {
-                                gGoofy_thompson_7071E8->DeletePlayerFromGroup_521000(v0);
-                                sub_4DB070(v0);
-                                if (!v0 || v0 == dword_6F56C8)
-                                {
-                                    dword_6F5AEC = 1;
-                                }
+                                gPlayerQuit_6F5AEC = 1;
                             }
                         }
                     }
-                    ++v0;
-                    byte_6F56B8 = (unsigned __int8)byte_6F56B8 >> 1;
-                } while (byte_6F56B8);
+                    player_idx++;
+                    gNetInUsePlayerBits_6F56B8 >>= 1;
+                } while (gNetInUsePlayerBits_6F56B8);
             }
-            dword_6F57D8[2 * dword_6F56C8] = BurgerKing_67F8B0::get_input_bits_4CEAC0(&gBurgerKing_67F8B0);
-            void* v2;
-            //sub_4DACB0(v2); // thiscall: unknown class
+
+            gCurrentNetInputs_6F57D8.field_0_inputs[gNetworkPlayerIdx_6F56C8].field_0_Inputs = gBurgerKing_67F8B0.get_input_bits_4CEAC0();
+            Net_Send_Our_Inputs_4DACB0();
             Draw_4DA7B0();
-            sub_4DA9F0();
-            qmemcpy(dword_6F5B28, dword_6F57D8, sizeof(dword_6F5B28));
-        }
-        if (byte_6F593C)
-        {
-            dword_6F5A28 = timeGetTime();
-            byte_6F593C = 0;
-        }
-        if (dword_6F5AEC)
-        {
-            gGame_0x40_67E008->sub_4B8C00(0, 2);
+            Net_4DA9F0();
+            memcpy(&gPrevNetInputs_6F5B28, &gCurrentNetInputs_6F57D8, sizeof(gPrevNetInputs_6F5B28));
         }
         else
         {
-            sub_4DAD50();
+            gNetPlay_7071E8.SendKeepAlive_521D20();
         }
-        ++dword_6F5868;
-        */
+
+        if (bRecordStartTime_6F593C)
+        {
+            gMatchStartTime_6F5A28 = timeGetTime();
+            bRecordStartTime_6F593C = false;
+        }
+        if (gPlayerQuit_6F5AEC)
+        {
+            gGame_0x40_67E008->ExitGameNoBonus_4B8C00(0, 2);
+        }
+        else
+        {
+            Net_Set_Local_Player_Inputs_4DAD50();
+        }
+        ++gNetworkFrameCounter_6F5868;
     }
     else
     {
@@ -1044,16 +1125,16 @@ EXPORT u8 sub_4DA850()
 
     if (bStartNetworkGame_7081F0)
     {
-        if (Time >= dword_6F5A28)
+        if (Time >= gMatchStartTime_6F5A28)
         {
             bContinue = ExecuteGame_4DA780();
-            do_inputs_4DAF30();
-            dword_6F5A28 = Time + gGame_0x40_67E008->sub_4B8BB0();
+            do_network_and_local_inputs_4DAF30();
+            gMatchStartTime_6F5A28 = Time + gGame_0x40_67E008->sub_4B8BB0();
         }
     }
     else
     {
-        if (!max_frame_rate_626A08 && !byte_6F58D8 || Time >= dword_6F5A28)
+        if (!max_frame_rate_626A08 && !byte_6F58D8 || Time >= gMatchStartTime_6F5A28)
         {
             unk_bl = 1;
             unk_0xc = 1;
@@ -1073,17 +1154,17 @@ EXPORT u8 sub_4DA850()
         {
             if (!min_frame_rate_706C50)
             {
-                dword_6F5A28 = Time;
+                gMatchStartTime_6F5A28 = Time;
             }
             if (byte_6F5760)
             {
-                do_inputs_4DAF30();
+                do_network_and_local_inputs_4DAF30();
                 byte_6F5760 = 0;
             }
             bContinue = ExecuteGame_4DA780();
             s32 v2 = gGame_0x40_67E008->sub_4B8BB0();
             byte_6F5880 = 0;
-            dword_6F5A28 += v2;
+            gMatchStartTime_6F5A28 += v2;
             ++byte_6F58D8;
             byte_6F5760 = 1;
         }
@@ -1095,7 +1176,7 @@ EXPORT u8 sub_4DA850()
         }
         else if (byte_6F5760)
         {
-            do_inputs_4DAF30();
+            do_network_and_local_inputs_4DAF30();
             byte_6F5760 = 0;
         }
     }
@@ -1692,7 +1773,7 @@ EXPORT LRESULT __stdcall WindowProc_5E4EE0(HWND hWnd, UINT Msg, WPARAM wParam, L
         case WM_DESTROY: // order ok
             if (bStartNetworkGame_7081F0)
             {
-                gNetPlay_7071E8.sub_520D10();
+                gNetPlay_7071E8.Disconnect_520D10();
             }
 
             ReleaseMutex(gMutex_707078);
@@ -2001,7 +2082,7 @@ s32 __stdcall WinMain_5E53F0(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR
                         {
                             if (bStartNetworkGame_7081F0)
                             {
-                                switch (gGame_0x40_67E008->field_2C_main_state)
+                                switch (gGame_0x40_67E008->field_2C_game_exit_type)
                                 {
                                     case 1:
                                         DestroyWindow(gHwnd_707F04);
@@ -2017,13 +2098,13 @@ s32 __stdcall WinMain_5E53F0(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR
                             }
                             else
                             {
-                                switch (gGame_0x40_67E008->field_2C_main_state)
+                                switch (gGame_0x40_67E008->field_2C_game_exit_type)
                                 {
-                                    case 1:
+                                    case GameExitType::CloseGameImmediately_1:
                                         DestroyWindow(gHwnd_707F04);
                                         break;
 
-                                    case 2:
+                                    case GameExitType::PlayerQuit_2:
                                         gLucid_hamilton_67E8E0.sub_4C5A10(gGame_0x40_67E008->field_38_orf1);
                                         gJolly_poitras_0x2BC0_6FEAC0->sub_56BB10(gGame_0x40_67E008->field_38_orf1);
                                         gJolly_poitras_0x2BC0_6FEAC0->sub_56C010();
@@ -2033,7 +2114,7 @@ s32 __stdcall WinMain_5E53F0(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR
                                         bDoFrontEnd_626B68 = 1;
                                         break;
 
-                                    case 3:
+                                    case GameExitType::GameOverRIP_3:
                                         gLucid_hamilton_67E8E0.sub_4C5A10(gGame_0x40_67E008->field_38_orf1);
                                         gJolly_poitras_0x2BC0_6FEAC0->sub_56BB10(gGame_0x40_67E008->field_38_orf1);
                                         gJolly_poitras_0x2BC0_6FEAC0->sub_56C010();
@@ -2042,7 +2123,7 @@ s32 __stdcall WinMain_5E53F0(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR
                                         bDoFrontEnd_626B68 = 1;
                                         break;
 
-                                    case 4:
+                                    case GameExitType::AreaCompleted_4:
                                         gLucid_hamilton_67E8E0.sub_4C5A10(gGame_0x40_67E008->field_38_orf1);
                                         gJolly_poitras_0x2BC0_6FEAC0->sub_56BB10(gGame_0x40_67E008->field_38_orf1);
                                         gJolly_poitras_0x2BC0_6FEAC0->sub_56C010();
@@ -2051,13 +2132,13 @@ s32 __stdcall WinMain_5E53F0(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR
                                         bDoFrontEnd_626B68 = 1;
                                         break;
 
-                                    case 5:
+                                    case GameExitType::MultiplayerExit_5:
                                         state = 7;
                                         CleanUpInputAndOthers_4DA700();
                                         bDoFrontEnd_626B68 = 1;
                                         break;
 
-                                    case 6:
+                                    case GameExitType::ReplayExit_6:
                                         state = 0;
                                         CleanUpInputAndOthers_4DA700();
                                         bDoFrontEnd_626B68 = 1;

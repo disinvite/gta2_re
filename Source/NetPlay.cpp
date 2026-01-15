@@ -3,6 +3,7 @@
 #include "crt_stubs.hpp"
 
 DEFINE_GLOBAL(NetPlay, gNetPlay_7071E8, 0x7071E8);
+DEFINE_GLOBAL(GUID, kGta2_DP_Guid_5FE928, 0x5FE928);
 
 STUB_FUNC(0x51d6b0)
 NetPlay* NetPlay::ctor_51D6B0()
@@ -43,11 +44,10 @@ void NetPlay::AddEnumeratedConnection_51D930(EnumeratedConnection* pConnectionIn
 
             this->field_30_enumed_connections.field_0_enumed_connections[this->field_30_enumed_connections.field_8_connections_count]
                 .field_14_pConnection = new u8[pConnectionInfo->field_18_connection_len];
-            memcpy(
-                this->field_30_enumed_connections.field_0_enumed_connections[this->field_30_enumed_connections.field_8_connections_count]
-                    .field_14_pConnection,
-                pConnectionInfo->field_14_pConnection,
-                pConnectionInfo->field_18_connection_len);
+            memcpy(this->field_30_enumed_connections.field_0_enumed_connections[this->field_30_enumed_connections.field_8_connections_count]
+                       .field_14_pConnection,
+                   pConnectionInfo->field_14_pConnection,
+                   pConnectionInfo->field_18_connection_len);
 
             this->field_30_enumed_connections.field_0_enumed_connections[this->field_30_enumed_connections.field_8_connections_count]
                 .field_18_connection_len = pConnectionInfo->field_18_connection_len;
@@ -58,12 +58,12 @@ void NetPlay::AddEnumeratedConnection_51D930(EnumeratedConnection* pConnectionIn
 }
 
 MATCH_FUNC(0x51da30)
-s32 NetPlay::EnumConnections_cb_51DA30(GUID* lpguidSP,
-                                       const void* lpConnection,
-                                       u32 dwConnectionSize,
-                                       DPNAME* lpName,
-                                       s32 dwFlags,
-                                       NetPlay* lpContext)
+s32 __stdcall NetPlay::EnumConnections_cb_51DA30(const GUID* lpguidSP,
+                                       void* lpConnection,
+                                       unsigned long dwConnectionSize,
+                                       const DPNAME* lpName,
+                                       unsigned long dwFlags,
+                                       void* lpContext)
 {
     EnumeratedConnection info;
     info.field_0_sp_guid = *lpguidSP; // store guid
@@ -80,11 +80,78 @@ s32 NetPlay::EnumConnections_cb_51DA30(GUID* lpguidSP,
     return 1;
 }
 
-STUB_FUNC(0x51dae0)
-s32 NetPlay::SetProtoAndConnection_51DAE0(GUID* pProtocolGuid, s32 pUseThisConnection)
+MATCH_FUNC(0x51dae0)
+s32 NetPlay::SetProtoAndConnection_51DAE0(GUID* pProtocolGuid, Connection_Unknown* pUseThisConnection)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    s32 isIpx;
+
+    if (pProtocolGuid)
+    {
+        if (memcmp(pProtocolGuid, &DPSPGUID_MODEM, sizeof(GUID)) == 0)
+        {
+            field_4 = 1;
+        }
+        isIpx = 0;
+        field_8_ip_or_ipx_guid = *pProtocolGuid;
+    }
+    else
+    {
+        isIpx = 1;
+        field_8_ip_or_ipx_guid = DPSPGUID_IPX;
+    }
+
+    if (field_30_enumed_connections.field_0_enumed_connections)
+    {
+        delete[] field_30_enumed_connections.field_0_enumed_connections;
+        field_30_enumed_connections.field_8_connections_count = 0;
+        field_30_enumed_connections.field_10 = 0;
+    }
+
+    field_30_enumed_connections.field_0_enumed_connections = new EnumeratedConnection[8];
+    if (NetPlay::DirectPlayCreate_51DCD0())
+    {
+        if (isIpx)
+        {
+            if (SUCCEEDED(field_5E4_pDPlay3->EnumConnections(&kGta2_DP_Guid_5FE928, NetPlay::EnumConnections_cb_51DA30, this, 1)))
+            {
+                field_30_enumed_connections.field_10 = 1;
+                if (NetPlay::DirectPlayCreate_51DED0())
+                {
+                    field_30_enumed_connections.field_14 = 1;
+                }
+                return 1;
+            }
+            else
+            {
+                field_30_enumed_connections.field_10 = 0;
+                NetPlay::DirectPlayDestroy_51DC90();
+                return 0;
+            }
+        }
+        else
+        {
+            EnumeratedConnection info;
+            info.field_0_sp_guid = *pProtocolGuid;
+
+            info.field_14_pConnection = new u8[pUseThisConnection->field_4_len];
+            memcpy(info.field_14_pConnection, pUseThisConnection->field_0, pUseThisConnection->field_4_len);
+            info.field_18_connection_len = pUseThisConnection->field_4_len;
+            info.field_10_pConnectionName = new wchar_t[wcslen(L"dummy prot") + 1];
+            wcscpy(info.field_10_pConnectionName, L"dummy prot");
+            NetPlay::AddEnumeratedConnection_51D930(&info);
+
+            delete[] info.field_10_pConnectionName;
+            GTA2_DELETE_AND_NULL(info.field_14_pConnection);
+
+            field_30_enumed_connections.field_10 = 1;
+            return 1;
+        }
+    }
+    else
+    {
+        NetPlay::DirectPlayDestroy_51DC90();
+        return 0;
+    }
 }
 
 MATCH_FUNC(0x51dc90)
@@ -183,10 +250,20 @@ BOOL NetPlay::sub_51E030(const GUID& guidDataType, DWORD dwDataSize, LPCVOID lpD
     return 0;
 }
 
-STUB_FUNC(0x51e0e0)
-s32 NetPlay::sub_51E0E0(wchar_t* Source)
+MATCH_FUNC(0x51e0e0)
+s32 NetPlay::PushConnection_51E0E0(wchar_t* Source)
 {
-    NOT_IMPLEMENTED;
+    if (field_30_enumed_connections.field_C_f4_d_array_count < 8)
+    {
+        size_t string_len_bytes = wcslen(Source);
+        field_30_enumed_connections.field_4_d_array_8_entries[field_30_enumed_connections.field_C_f4_d_array_count].field_0_allocated_str =
+            new wchar_t[string_len_bytes + 1];
+        wcscpy(field_30_enumed_connections.field_4_d_array_8_entries[field_30_enumed_connections.field_C_f4_d_array_count]
+                   .field_0_allocated_str,
+               Source);
+        ++field_30_enumed_connections.field_C_f4_d_array_count;
+        return 1;
+    }
     return 0;
 }
 
@@ -286,15 +363,15 @@ s32 NetPlay::AddEnumeratedSession_51EB00(DPSESSIONDESC2* pSession)
 }
 
 MATCH_FUNC(0x51ecd0)
-void NetPlay::sub_51ECD0(s32 pFunc, Network_20324* pParam)
+void NetPlay::Set15_51ECD0(s32 pFunc, Network_20324* pParam)
 {
-    this->field_4C_func_ptrs_and_params[15] = pFunc;
-    this->field_4C_func_ptrs_and_params[16] = (u32)pParam;
-    this->field_4C_func_ptrs_and_params[17] = 5;
+    this->field_4C_func_ptrs_and_params[5].field_0_param_fn_callback = (void*)pFunc;
+    this->field_4C_func_ptrs_and_params[5].field_4_param_context = pParam;
+    this->field_4C_func_ptrs_and_params[5].field_8_fn_type = 5;
 }
 
 STUB_FUNC(0x51ed00)
-void NetPlay::sub_51ED00()
+void NetPlay::NetworkTick_51ED00()
 {
     NOT_IMPLEMENTED;
 }
@@ -357,15 +434,73 @@ void NetPlay::sub_5201A0(s32 idx, Network_Unknown* pStru)
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x520230)
-s32 NetPlay::sub_520230(s32 a2, u32* a3)
+// TODO: Temp - should be integrated into the type array or something
+typedef void(__stdcall* T1)(void*);
+typedef void(__stdcall* T2)(void*, s32);
+typedef void(__stdcall* T3)(void*, s32, s32);
+
+MATCH_FUNC(0x520230)
+void NetPlay::ProcessIncomingPacket_520230(s32 idx, u32 pUnknown)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    // TODO: Figure out what pUnknown is
+    if (idx >= 1 && idx <= 10)
+    {
+        switch (idx)
+        {
+            case 1: // disconnect ?
+                if (field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)
+                {
+                    ((T1)field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)(
+                        field_4C_func_ptrs_and_params[idx].field_4_param_context);
+                }
+                break;
+            case 2: // adding to listbox, player? session??
+                if (field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)
+                {
+                    ((T3)field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)(
+                        field_4C_func_ptrs_and_params[idx].field_4_param_context,
+                        *(s32*)(pUnknown + 0x1C),
+                        pUnknown + 0x24);
+                }
+                break;
+            case 3:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+                if (field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)
+                {
+                    ((T2)field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)(
+                        field_4C_func_ptrs_and_params[idx].field_4_param_context,
+                        pUnknown); // a wchar_t* string?
+                }
+                break;
+            case 4:
+                // Exit game call back?
+                if (field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)
+                {
+                    ((T2)field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)(
+                        field_4C_func_ptrs_and_params[idx].field_4_param_context,
+                        *(u32*)pUnknown); // s32* usually set to 2 ?
+                }
+                break;
+
+            case 9:
+                // set player name?
+                if (field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)
+                {
+                    ((T1)field_4C_func_ptrs_and_params[idx].field_0_param_fn_callback)(
+                        field_4C_func_ptrs_and_params[idx].field_4_param_context);
+                }
+                break;
+            default:
+                return;
+        }
+    }
 }
 
 STUB_FUNC(0x520530)
-void NetPlay::sub_520530(s32 pFunc, s32 pParam)
+void NetPlay::Set6_520530(s32 pFunc, s32 pParam)
 {
     NOT_IMPLEMENTED;
 }
@@ -413,7 +548,7 @@ void NetPlay::sub_520D00(s32 a2)
 }
 
 STUB_FUNC(0x520d10)
-void NetPlay::sub_520D10()
+void NetPlay::Disconnect_520D10()
 {
     NOT_IMPLEMENTED;
 }
@@ -455,19 +590,19 @@ u32 NetPlay::IndexOf_520E30(s32 toFind, Network_Unknown* pObj)
 }
 
 MATCH_FUNC(0x520e60)
-void NetPlay::sub_520E60(s32 pFunc, s32 pParam)
+void NetPlay::Set9_520E60(s32 pFunc, s32 pParam)
 {
-    field_4C_func_ptrs_and_params[9] = pFunc;
-    field_4C_func_ptrs_and_params[10] = pParam;
-    field_4C_func_ptrs_and_params[11] = 3;
+    this->field_4C_func_ptrs_and_params[3].field_0_param_fn_callback = (void*)pFunc;
+    this->field_4C_func_ptrs_and_params[3].field_4_param_context = (void*)pParam;
+    this->field_4C_func_ptrs_and_params[3].field_8_fn_type = 3;
 }
 
 MATCH_FUNC(0x520e80)
-void NetPlay::sub_520E80(s32 a2, s32 a3)
+void NetPlay::Set3_Disconnect_520E80(s32 a2, s32 a3)
 {
-    field_4C_func_ptrs_and_params[3] = a2;
-    field_4C_func_ptrs_and_params[4] = a3;
-    field_4C_func_ptrs_and_params[5] = 1;
+    this->field_4C_func_ptrs_and_params[1].field_0_param_fn_callback = (void*)a2;
+    this->field_4C_func_ptrs_and_params[1].field_4_param_context = (void*)a3;
+    this->field_4C_func_ptrs_and_params[1].field_8_fn_type = 1;
 }
 
 STUB_FUNC(0x520ea0)
@@ -484,21 +619,22 @@ s32 NetPlay::sub_520EB0(s32 a2, s32 a3, Network_Unknown* a4)
 }
 
 MATCH_FUNC(0x520f50)
-void NetPlay::sub_520F50(s32 a2, s32 a3)
+void NetPlay::Set18_520F50(s32 a2, s32 a3)
 {
-    field_4C_func_ptrs_and_params[18] = a2;
-    field_4C_func_ptrs_and_params[19] = a3;
-    field_4C_func_ptrs_and_params[20] = 6;
+    this->field_4C_func_ptrs_and_params[6].field_0_param_fn_callback = (void*)a2;
+    this->field_4C_func_ptrs_and_params[6].field_4_param_context = (void*)a3;
+    this->field_4C_func_ptrs_and_params[6].field_8_fn_type = 6;
 }
 
+// https://decomp.me/scratch/oYBrX
 STUB_FUNC(0x520f80)
-s32 NetPlay::sub_520F80(wchar_t* String2)
+s32 NetPlay::RemovePlayerByName_520F80(wchar_t* pToRemove)
 {
     NOT_IMPLEMENTED;
 
     for (u32 i = 0; i < this->field_758_n2.field_4_count; i++)
     {
-        if (wcscmp(field_758_n2.field_10[i].field_1C, String2) == 0)
+        if (wcscmp(field_758_n2.field_10[i].field_1C, pToRemove) == 0)
         {
             field_5E4_pDPlay3->DeletePlayerFromGroup(field_758_n2.field_0_group_id, field_758_n2.field_10[i].field_10);
             return 1;
@@ -550,11 +686,11 @@ s32 NetPlay::SendChatMessage_521060(wchar_t* pMsg, s32 idx_always_m1)
 }
 
 MATCH_FUNC(0x5210d0)
-void NetPlay::sub_5210D0(s32 a2, s32 a3)
+void NetPlay::Set21_5210D0(s32 a2, s32 a3)
 {
-    this->field_4C_func_ptrs_and_params[21] = a2;
-    this->field_4C_func_ptrs_and_params[22] = a3;
-    this->field_4C_func_ptrs_and_params[23] = 7;
+    this->field_4C_func_ptrs_and_params[7].field_0_param_fn_callback = (void*)a2;
+    this->field_4C_func_ptrs_and_params[7].field_4_param_context = (void*)a3;
+    this->field_4C_func_ptrs_and_params[7].field_8_fn_type = 7;
 }
 
 MATCH_FUNC(0x521100)
@@ -573,11 +709,11 @@ void NetPlay::GetPlayerName_521100(wchar_t* Destination, u32 idx)
 }
 
 MATCH_FUNC(0x521140)
-void NetPlay::sub_521140(s32 a2, s32 a3)
+void NetPlay::Set24_521140(s32 a2, s32 a3)
 {
-    this->field_4C_func_ptrs_and_params[24] = a2;
-    this->field_4C_func_ptrs_and_params[25] = a3;
-    this->field_4C_func_ptrs_and_params[26] = 8;
+    this->field_4C_func_ptrs_and_params[8].field_0_param_fn_callback = (void*)a2;
+    this->field_4C_func_ptrs_and_params[8].field_4_param_context = (void*)a3;
+    this->field_4C_func_ptrs_and_params[8].field_8_fn_type = 8;
 }
 
 MATCH_FUNC(0x521170)
@@ -599,11 +735,11 @@ s32 NetPlay::sub_521170(Network_8* pObj)
 }
 
 MATCH_FUNC(0x5211f0)
-void NetPlay::sub_5211F0(s32 a2, s32 a3)
+void NetPlay::Set27SavePlayerName_5211F0(s32 a2, s32 a3)
 {
-    this->field_4C_func_ptrs_and_params[27] = a2;
-    this->field_4C_func_ptrs_and_params[28] = a3;
-    this->field_4C_func_ptrs_and_params[29] = 9;
+    this->field_4C_func_ptrs_and_params[9].field_0_param_fn_callback = (void*)a2;
+    this->field_4C_func_ptrs_and_params[9].field_4_param_context = (void*)a3;
+    this->field_4C_func_ptrs_and_params[9].field_8_fn_type = 9;
 }
 
 STUB_FUNC(0x521220)
@@ -615,10 +751,9 @@ void NetPlay::sub_521220()
 MATCH_FUNC(0x521330)
 void NetPlay::SetExitGameCallBack_521330(s32 pFunc, Game_0x40* pGame)
 {
-    // TODO: fix meme types
-    this->field_4C_func_ptrs_and_params[12] = pFunc;
-    this->field_4C_func_ptrs_and_params[13] = (int)pGame;
-    this->field_4C_func_ptrs_and_params[14] = 4;
+    this->field_4C_func_ptrs_and_params[4].field_0_param_fn_callback = (void*)pFunc;
+    this->field_4C_func_ptrs_and_params[4].field_4_param_context = pGame;
+    this->field_4C_func_ptrs_and_params[4].field_8_fn_type = 4;
 }
 
 MATCH_FUNC(0x521350)
@@ -719,7 +854,7 @@ s32 NetPlay::NoRefs_Send_521C80(s32 a2)
 }
 
 STUB_FUNC(0x521d20)
-s32 NetPlay::Send_521D20()
+s32 NetPlay::SendKeepAlive_521D20()
 {
     NOT_IMPLEMENTED;
     return 0;

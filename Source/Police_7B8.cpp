@@ -1,5 +1,6 @@
 #include "Police_7B8.hpp"
 #include "Car_BC.hpp"
+#include "Char_Pool.hpp"
 #include "Game_0x40.hpp"
 #include "Globals.hpp"
 #include "Kfc_1E0.hpp"
@@ -112,7 +113,7 @@ bool Police_7B8::sub_56F4D0(Ped* a2)
             {
                 if (a2->field_164_ped_group)
                 {
-                    a2->field_164_ped_group->sub_4C9970(a2);
+                    a2->field_164_ped_group->RemovePed_4C9970(a2);
                 }
                 return false;
             }
@@ -492,7 +493,7 @@ void Police_7B8::SpawnWalkingGuard_570320(Ped* pPed, Fix16 xpos, Fix16 ypos, Fix
     pPed->field_26C_graphic_type = 2;
     pPed->field_288_threat_search = threat_search_enum::line_of_sight_1;
     pPed->field_28C_threat_reaction = threat_reaction_enum::react_as_emergency_1;
-    pPed->sub_45C830(xpos, ypos, zpos);
+    pPed->AllocCharB4_45C830(xpos, ypos, zpos);
 
     Char_B4* pCharObj = pPed->field_168_game_object;
     u8 remap = pPed->field_244_remap;
@@ -678,7 +679,7 @@ void Police_7B8::sub_5708C0(Ped* pPed)
 }
 
 MATCH_FUNC(0x570940)
-void Police_7B8::sub_570940(Ped* pPed)
+void Police_7B8::UpdateCriminalLatestPosition_570940(Ped* pPed)
 {
     for (u8 i = 0; i < 4; i++)
     {

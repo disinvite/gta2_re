@@ -5,6 +5,7 @@
 #include "Phi_8CA8.hpp"
 #include "ang16.hpp"
 #include "fix16.hpp"
+#include "Fix16_Point.hpp"
 
 class Object_2C;
 class Sprite;
@@ -24,30 +25,32 @@ class Object_2C
     EXPORT void PoolDeallocate();
     EXPORT bool sub_522250(Sprite* a2);
     EXPORT s32 sub_5222B0();
-    EXPORT s32 sub_5222D0();
-    EXPORT void sub_522340();
-    EXPORT void sub_522360();
-    EXPORT char_type sub_5223C0(Sprite* a2);
+    EXPORT void sub_5222D0();
+    EXPORT void PoolGive_522340();
+    EXPORT void PoolTake_522360();
+    EXPORT char_type ShouldCollideWith_5223C0(Sprite* a2);
     EXPORT bool sub_522430(Sprite* a2);
     EXPORT char_type sub_522460(Sprite* a2);
-    EXPORT s16* sub_5224E0(s32* a2);
-    EXPORT s16 sub_522640(s32 a2);
+    EXPORT s16* sub_5224E0(Fix16_Point* a2);
+    EXPORT void sub_522640(Fix16_Point* a2);
     EXPORT void sub_5226A0(char_type a2);
     EXPORT void sub_522710(Object_2C* a2, u32* a3);
     EXPORT void sub_5229B0(s32 a2, u32* a3, s32 a4);
-    EXPORT void sub_522B20(s32 a2, s32 a3, s32* a4);
+    EXPORT void sub_522B20(s32* a2, s32* a3, s32* a4);
     EXPORT void sub_522BE0(u32* a2);
     EXPORT void sub_522D00(u32* a2);
-    EXPORT void sub_522E10(s32* a2);
-    EXPORT char_type sub_5233A0(s32 a2);
-    EXPORT void sub_523440(s32 a2, s32 a3, char_type a4, char_type a5);
+    EXPORT void sub_522E10(Fix16_Point* a2);
+    EXPORT char_type sub_5233A0(Fix16 a2);
+    EXPORT void sub_523440(Fix16_Point a3, char_type a4, char_type a5);
     EXPORT char_type sub_5235B0(Sprite* a2, u32* a3, u8* a4, s32 a5);
     EXPORT void sub_524630(s32 a2, s16 a3);
-    EXPORT void sub_525190(u8 a2);
+    EXPORT void sub_525190(u8 varrok_idx);
     EXPORT void UpdateAninmation_5257D0();
     EXPORT bool sub_525910();
+    EXPORT char sub_525370(Sprite* pSprite);
     EXPORT void sub_525AE0();
     EXPORT void sub_525B40();
+    EXPORT char_type sub_525B60();
     EXPORT void sub_525B80();
     EXPORT void sub_525D90();
     EXPORT void Update_525F30();
@@ -58,23 +61,26 @@ class Object_2C
     EXPORT char_type sub_527070(s16* a2, s32 a3, s16* a4, s32 a5);
     EXPORT void sub_527630(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation);
     EXPORT void Light_527990();
-    EXPORT void sub_527AE0();
-    EXPORT void sub_527D00();
+    EXPORT void AssignToBucket_527AE0();
+    EXPORT void RemoveFromCollisionBuckets_527D00();
     EXPORT void sub_527F10();
-    EXPORT s16* sub_528130(Fix16* a2);
+    EXPORT Ang16 sub_528130(Fix16_Point* a2);
     EXPORT char_type sub_528240(s32 a2, s32 a3);
     EXPORT void sub_5283C0(s32 a2);
-    EXPORT bool sub_5288B0(Sprite* a2);
-    EXPORT char_type sub_528990(Sprite* a2);
-    EXPORT void sub_528BA0();
-    EXPORT void sub_528E50(Sprite* a3);
-    EXPORT void sub_529000(Object_2C* pObj);
+    EXPORT bool OnObjectTouched_5288B0(Sprite* a2);
+    EXPORT void sub_528900();
+    EXPORT char_type HandleObjectHitIfExplosive_528960(Object_2C* pOther);
+    EXPORT char_type HandleObjectHit_528990(Sprite* a2);
+    EXPORT void ProcessObjectExplosionImpact_528A20(Object_2C *pObj);
+    EXPORT void HandleImpactNoSprite_528BA0();
+    EXPORT void HandleImpact_528E50(Sprite* a3);
+    EXPORT void HandleCollisionWithObject_529000(Object_2C* pObj);
     EXPORT void sub_529030(s8 speed_x, s8 speed_y);
     EXPORT void sub_529070(Object_2C* pObj);
     EXPORT s32 sub_529210();
     EXPORT s32 sub_529240();
     EXPORT void sub_5292D0();
-    EXPORT void sub_529080(u8 a2);
+    EXPORT void SetDamageOwner_529080(u8 a2);
     EXPORT void sub_5290A0();
     EXPORT void sub_5290B0();
     EXPORT void Dealloc_5291B0();
@@ -82,21 +88,23 @@ class Object_2C
     EXPORT void sub_5291E0(u8 a2);
     EXPORT bool sub_529200();
     EXPORT ~Object_2C();
-    EXPORT void sub_52A650();
-    EXPORT void sub_52A6D0(Sprite* a2);
-    EXPORT u32* sub_52AE70(u32* a2);
-    EXPORT u32* sub_52AE90(u32* a2);
+    EXPORT void EnsureObject3C_52A650();
+    EXPORT void ReactivateObjectAfterImpact_52A6D0(Sprite* a2);
+    EXPORT Fix16_Point GetXY_52AE70();
+    EXPORT Fix16_Point GetRot_52AE90();
 
     // TODO: ordering
     EXPORT void sub_5290C0(u8 id_base);
+    EXPORT Fix16 sub_5290F0();
     EXPORT char sub_525AC0();
     EXPORT void sub_525B20();
     EXPORT void UpdateLight_527A30();
-
+    EXPORT void sub_525100();
+    
     inline bool check_is_busy_shop()
     {
-        s32 v1 = field_8->field_34;
-        return v1 == 10;
+        s32 v1 = field_8->field_34_behavior_type;
+        return v1 == object_behavior_type::behavior_10;
     }
 
     // Inlined on version 9.6f 0x447e90
@@ -118,14 +126,17 @@ class Object_2C
 
     bool check_is_shop_421060()
     {
-        return field_8->field_34 == 6 || field_8->field_34 == 7 || field_8->field_34 == 8 || field_8->field_34 == 9;
+        return field_8->field_34_behavior_type == object_behavior_type::behavior_6 || 
+               field_8->field_34_behavior_type == object_behavior_type::behavior_7 || 
+               field_8->field_34_behavior_type == object_behavior_type::behavior_8 || 
+               field_8->field_34_behavior_type == object_behavior_type::behavior_9;
     }
 
     inline void PoolAllocate()
     {
         field_26_varrok_idx = 99;
         field_10_obj_3c = 0;
-        field_C_obj_8 = 0;
+        field_C_pAny.o8 = 0;
         field_1C = 0;
         field_4 = 0;
         field_18_model = 0;
@@ -134,12 +145,13 @@ class Object_2C
     Object_2C* mpNext;
     Sprite* field_4;
     Phi_74* field_8;
-    union
+    union TAny
     {
-        Wolfy_30* field_C_explosion;
-        Object_8* field_C_obj_8;
-        nostalgic_ellis_0x28* field_C_light;
+        Wolfy_30* pExplosion;
+        Object_8* o8;
+        nostalgic_ellis_0x28* pLight;
     };
+    TAny field_C_pAny;
     Object_3C* field_10_obj_3c;
     s32 field_14_id;
     s32 field_18_model;
@@ -148,7 +160,7 @@ class Object_2C
     char_type field_1E;
     char_type field_1F;
     s32 field_20;
-    u8 field_24;
+    u8 field_24_bDoneThisFrame;
     u8 field_25;
     u8 field_26_varrok_idx;
     char_type field_27;
@@ -189,7 +201,7 @@ class Object_5C
     EXPORT s32* sub_52A240(s32 a2, s32 maybe_x, s32 maybe_y, s32 maybe_z, s16 pCarBC, s16 maybe_ang, s32 a8, s32 a9, s32 a10);
     EXPORT s32* sub_52A280(s32 a2, s32 a3, s32 a4, s32 a5, s16 a6, s16 a7, s32 a8, s32 a9, s32 a10);
     EXPORT s32* sub_52A2C0(s32 a2, s32 a3, s32 a4, s32 a5, s16 a6, s16 a7, s32 a8, s32 a9, s32 a10, char_type a11);
-    EXPORT s32* CreateExplosion_52A3D0(Fix16 a2, Fix16 a3, Fix16 a4, Ang16 a5, s32 a6, s32 a7);
+    EXPORT Object_2C* CreateExplosion_52A3D0(Fix16 x, Fix16 y, Fix16 z, Ang16 rot, s32 a6, s32 pedId);
 
     EXPORT void SaveObjects_52A500(TurkishDelight_164* pUnknownObj);
     EXPORT void RestoreObjects_52A590(TurkishDelight_164* pUnknownObj);
@@ -205,9 +217,9 @@ class Object_5C
     u8 field_19;
     u16 field_1A;
     struct_4 field_1C;
-    u8 field_20[50];
-    u16 field_52;
-    s32 field_54_f20_idx;
+    u8 field_20_bUnCollectedTokens[50];
+    u16 field_52; // pad?
+    s32 field_54_uncollected_token_index;
     Sprite* field_58;
 };
 

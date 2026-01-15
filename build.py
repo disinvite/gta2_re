@@ -25,13 +25,19 @@ RECCMP_GENERATE_JOM_CMD = " ".join([
     '-DCMAKE_CXX_FLAGS_RELWITHDEBINFO="/Z7 /O2 /D \\"NDEBUG\\""',
     '-DCMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO="/incremental:no /debug"',
 ])
-RECCMP_BUILD_CMD = "cmake --build . --target all -- -j 1"
 
-def get_build_cmds(reccmp: bool):
+def get_build_cmds(reccmp : bool, core_count_to_use : int):
     if reccmp:
-        return [RECCMP_GENERATE_JOM_CMD, RECCMP_BUILD_CMD]
+        jom_cmd = RECCMP_GENERATE_JOM_CMD
+    else:
+        jom_cmd = CMAKE_GENERATE_JOM_CMD
 
-    return [CMAKE_GENERATE_JOM_CMD, CMAKE_BUILD_CMD]
+    if core_count_to_use is not None and core_count_to_use > 0:
+        build_cmd = CMAKE_BUILD_CMD + " -- -j " + str(core_count_to_use)
+    else:
+        build_cmd = CMAKE_BUILD_CMD
+
+    return [jom_cmd, build_cmd]
 
 GTA2_ROOT = os.environ.get("GTA2_ROOT")
 
@@ -98,13 +104,33 @@ def main():
     parser.add_argument("--run_patched", help="Run the patched gta2 exe after the build successfully finishes", action="store_true")
     parser.add_argument("--ignore_no_match", help="Ignore any errors related to non matching functions", action="store_true")
     parser.add_argument("--reccmp", help="Run debug build for reccmp analysis", action="store_true")
+    parser.add_argument("--single_cpp", help="Build only n.cpp using cl.exe and produce n.obj using most common project flags", type=str)
+    parser.add_argument("--cores", help="Limit cpu cores to build with (use all if not passed, else 1 if reccmp build)", type=int)
 
     args = parser.parse_args()
 
-    print("Starting build")
+    ok = check_duplicated_globals()
+    if not ok:
+        print(f"\nGlobals verification failed!")
+        sys.exit(1)
+    
+    print("No duplicated globals found!\n")
+
+    if args.single_cpp:
+        print(f"Building single cpp file: {args.single_cpp}")
+    else:
+        print("Starting build")
     print(f"Build platform: {platform.system()}")
 
-    returncode = build(args.reccmp)
+    if args.single_cpp:
+        returncode = build_single_cpp(args.single_cpp)
+    else:
+        core_count_to_use = 0
+        if args.reccmp:
+            core_count_to_use = 1
+        else:
+            core_count_to_use = args.cores
+        returncode = build_cmake(args.reccmp, core_count_to_use)
     if returncode != 0:
         print(f"Build failed with return code {returncode}")
         sys.exit(returncode)
@@ -114,24 +140,25 @@ def main():
         subprocess.run(f"{python} reccmp/generate.py", cwd=CURRENT_DIRECTORY, shell=True)
         sys.exit(0)
 
-    ok = verify()
-    if not ok and not args.ignore_no_match:
-        print(f"Function verification failed!")
-        sys.exit(1)
+    if not args.single_cpp:
+        ok = verify()
+        if not ok and not args.ignore_no_match:
+            print(f"Function verification failed!")
+            sys.exit(1)
 
-    print("Build finished and verified successfully!")
+        print("Build finished and verified successfully!")
 
-    if GTA2_ROOT is None:
-        if os.environ.get("CI") is None:
-            print("Warning: GTA2_ROOT environment variable is not set. Some optional QoF features will not be available.")
-        sys.exit(0)
+        if GTA2_ROOT is None:
+            if os.environ.get("CI") is None:
+                print("Warning: GTA2_ROOT environment variable is not set. Some optional QoF features will not be available.")
+            sys.exit(0)
 
-    copy_files()
+        copy_files()
 
-    if args.run_standalone:
-        run_exe(ExeType.standalone)
-    elif args.run_patched:
-        run_exe(ExeType.patched)
+        if args.run_standalone:
+            run_exe(ExeType.standalone)
+        elif args.run_patched:
+            run_exe(ExeType.patched)
 
 def as_wine_path(unix_path):
     wine_path = unix_path.replace("/", "\\")
@@ -184,7 +211,72 @@ def convert_path(strPath):
 # bin annoying clang-cl spam under some wine versions
 GUID_FILTER = "177f0c4a-1cd3-4de7-a32c-71dbbb9fa36d"
 
-def build(reccmp: bool):
+def build_single_cpp(cpp_file: str):
+    os.makedirs(BUILD_FOLDER_NAME, exist_ok=True)
+
+    vc6_env = get_vc6_env()
+    lib, include, path = vc6_env
+
+
+    linux_or_mac = platform.system() in ("Linux", "Darwin")
+    source_dir = os.path.join(CURRENT_DIRECTORY, "Source")
+    cpp_file = os.path.join(source_dir, cpp_file)
+    compile_tools_dir = os.path.join(CURRENT_DIRECTORY, '3rdParty', 'gta2_re_compile_tools')
+    if linux_or_mac:
+        source_dir = as_wine_path(source_dir)
+        compile_tools_dir = as_wine_path(compile_tools_dir)
+        cpp_file = as_wine_path(cpp_file)
+
+    cl_rsp_args = f"/TP -DIMGUI_DLL -I{source_dir} -I{CURRENT_DIRECTORY} -I{compile_tools_dir} /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GX /ML /W3 /GX /O2  /D NDEBUG /Fo{cpp_file}.obj /FdCMakeFiles\\gta2_lib.dir\\ -c {cpp_file}"
+    rsp_path = os.path.join(BUILD_DIRECTORY, "single_cpp.rsp")
+    with open(rsp_path, "w") as f:
+        f.write(cl_rsp_args)
+
+    if linux_or_mac:
+        cl_args = f"@{as_wine_path(rsp_path)}"
+        build_dir = as_wine_path(BUILD_DIRECTORY)
+        command = (
+            f"WINEDEBUG=-all "
+            f"export WINEPATH={path} "
+            f"export LIB={lib} "
+            f"export INCLUDE={include} "
+            f"wine cmd /c \"cd {build_dir} && cl.exe {cl_args}\""
+        )
+        print(f"Running command: {command}")
+        p1 = subprocess.Popen(
+            command,
+            cwd=BUILD_DIRECTORY,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            shell=True
+        )
+    else:  # Windows
+        cl_args = f"@{rsp_path}"
+        p1 = subprocess.Popen(
+            "cmd",
+            cwd=BUILD_DIRECTORY,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True
+        )
+        p1.stdin.write(f"set LIB={lib}\n")
+        p1.stdin.write(f"set INCLUDE={include}\n")
+        p1.stdin.write(f"set PATH={path};%PATH%\n")
+        p1.stdin.write(f"cl.exe {cl_args}\n")
+        p1.stdin.write("exit /b %errorlevel%\n")
+        p1.stdin.close()
+
+    exit_code = p1.wait()
+    for line in p1.stdout:
+        if GUID_FILTER in line:
+            continue
+        print(line.rstrip())
+
+    return exit_code
+
+def build_cmake(reccmp : bool, core_count_to_use : int):
     os.makedirs(BUILD_FOLDER_NAME, exist_ok=True)
 
     vc6_env = get_vc6_env()
@@ -197,7 +289,7 @@ def build(reccmp: bool):
             f"export WINEPATH={path} "
             f"export LIB={lib} "
             f"export INCLUDE={include} "
-            f"wine cmd /c \"cd {build_dir} && {CMAKE_GENERATE_JOM_CMD} && {CMAKE_BUILD_CMD}\""
+            f"wine cmd /c \"cd {build_dir} && {get_build_cmds(reccmp, core_count_to_use)[0]} && {get_build_cmds(reccmp, core_count_to_use)[1]}\""
         )
         p1 = subprocess.Popen(
             command,
@@ -219,7 +311,7 @@ def build(reccmp: bool):
         p1.stdin.write(f"set LIB={lib}\n")
         p1.stdin.write(f"set INCLUDE={include}\n")
         p1.stdin.write(f"set PATH={path};%PATH%\n")
-        for build_cmd in get_build_cmds(reccmp):
+        for build_cmd in get_build_cmds(reccmp, core_count_to_use):
             p1.stdin.write(f"{build_cmd}\n")
         p1.stdin.write("exit /b %errorlevel%\n")
         p1.stdin.close()
@@ -334,6 +426,13 @@ def run_exe(exe: ExeType):
 
     print(f"Executing run command: {arg_list}")
     subprocess.run(args=arg_list, cwd=GTA2_ROOT)
+
+def check_duplicated_globals():
+    print("Checking for duplicated globals...")
+    python = sys.executable # should be the python venv
+
+    global_check_result = subprocess.run(f"{python} check_duplicate_globals.py", cwd=BIN_COMP_DIRECTORY, shell=True)
+    return global_check_result.returncode == 0
 
 if __name__ == "__main__":
     main()

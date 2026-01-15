@@ -2,11 +2,14 @@
 
 #include "Function.hpp"
 #include "BitSet32.hpp"
+#include "char.hpp"
 #include "Marz_1D7E.hpp"
 #include "ang16.hpp"
 #include "enums.hpp"
 #include "fix16.hpp"
-#include "miss2_0x11C.hpp"
+#include "Fix16_Point.hpp"
+#include "miss2_xyz.hpp"
+#include "sprite.hpp"
 #include <cstdio>
 
 class Player;
@@ -14,12 +17,12 @@ class gmp_map_zone;
 class PedGroup;
 class Weapon_30;
 class Gang_144;
-class Weapon_30;
 class Sprite;
 class Char_8;
 class Char_B4;
 class Marz_96;
 class Object_2C;
+class Car_BC;
 
 class Ped
 {
@@ -63,24 +66,24 @@ class Ped
     EXPORT void SpawnPedInCar_45C730(Car_BC* pCar);
     EXPORT void EnterCarAsDriver(Car_BC* a2);
     EXPORT void sub_45C7F0(Car_BC* pCar);
-    EXPORT char_type sub_45C830(Fix16 xpos, Fix16 ypos, Fix16 zpos);
+    EXPORT char_type AllocCharB4_45C830(Fix16 xpos, Fix16 ypos, Fix16 zpos);
     EXPORT Ang16& sub_45C900(Ang16& a2);
     EXPORT Fix16 sub_45C920();
     EXPORT Ang16 GetRotation();
     EXPORT Fix16& sub_45C9B0(Fix16& a2);
-    EXPORT s16* sub_45C9D0(s16* a2);
-    EXPORT void sub_45CAA0();
+    EXPORT s16* ComputeAimAngle_45C9D0(s16* a2);
+    EXPORT void HandleClosePedInteraction_45CAA0();
     EXPORT void TakeDamage(s16 damage);
-    EXPORT void sub_45CF20(s32 a2);
-    EXPORT char_type sub_45D000(Object_2C* a2);
+    EXPORT void sub_45CF20(Object_2C* a2);
+    EXPORT char_type HandlePedHitByObject_45D000(Object_2C* a2);
     EXPORT char_type AddWeaponWithAmmo_45DD30(s32 weapon_kind, char_type ammo);
-    EXPORT char_type sub_45DE80(s32 a2);
-    EXPORT void sub_45E080();
+    EXPORT char_type HandlePickupCollision_45DE80(Object_2C *pPickUp);
+    EXPORT void SpawnWeaponOnDeath_45E080();
     EXPORT void sub_45E4A0();
     EXPORT void sub_45EA00();
     EXPORT void Deallocate_45EB60();
     EXPORT char_type sub_45EDC0();
-    EXPORT bool sub_45EDE0(s32 a2);
+    EXPORT bool IsField238_45EDE0(s32 a2);
     EXPORT char_type sub_45EE00(s32 a2);
     EXPORT gmp_map_zone* sub_45EE70();
     EXPORT void Mugger_AI_45F360();
@@ -97,29 +100,31 @@ class Ped
     EXPORT void RemovePedWeapons_462510();
     EXPORT void sub_462550();
     EXPORT void ForceDoNothing_462590();
-    EXPORT s32 sub_462620();
+    EXPORT void sub_462620();
     EXPORT char_type sub_4626B0();
     EXPORT void sub_462B80();
     EXPORT bool PoolUpdate();
-    EXPORT void sub_4632E0();
+    EXPORT void ProcessObjective_4632E0();
     EXPORT void sub_463300(u8 a1);
     EXPORT s32 sub_4633E0(char_type a2);
     EXPORT char_type SetObjective(s32 a2, s16 a3);
     EXPORT void sub_463830(s32 a2, s16 a3);
-    EXPORT void sub_463AA0();
-    EXPORT void sub_463FB0();
+    EXPORT void ProcessOnFootObjective_463AA0();
+    EXPORT void ProcessInCarObjective_463FB0();
     EXPORT s16* sub_4645B0();
     EXPORT void Threat_Reaction_AI_465270();
     EXPORT char_type sub_465B20();
     EXPORT bool sub_465CD0();
     EXPORT char_type sub_465D00(Ped* a2);
-    EXPORT Ped* sub_466B90(Ped* a2);
-    EXPORT Ped* sub_466BB0(s32 a2);
-    EXPORT Ped* sub_466BD0(Ped* a2);
-    EXPORT Ped* sub_466BF0(s32 a2);
+    EXPORT char_type IsThreatToSearchingPed_4661F0();
+    EXPORT Ped* FindBestTargetPed_Mode1_466B90(s32 max_x_check);
+    EXPORT Ped* FindBestTargetPed_Mode4_466BB0(s32 max_x_check);
+    EXPORT Ped* FindBestTargetPed_Mode5_466BD0(s32 max_x_check);
+    EXPORT Ped* FindBestTargetPed_466BF0(s32 a2);
     EXPORT Ped* sub_466F40(u8 a2);
-    EXPORT Ped* sub_466F60(u8 a2);
-    EXPORT s32 sub_466FB0();
+    EXPORT Ped* FindNearestPed_466F60(u8 a2);
+    EXPORT s32 FindNearbyPed_466FB0();
+    EXPORT Ped* sub_467070();
     EXPORT char_type sub_467090();
     EXPORT Sprite* sub_467280();
     EXPORT char_type sub_4672E0(Fix16 a2, s32 a3);
@@ -140,23 +145,23 @@ class Ped
     EXPORT void sub_468930();
     EXPORT void sub_468A00();
     EXPORT void sub_468BD0();
-    EXPORT char_type sub_468C70();
-    EXPORT char_type sub_468DE0();
+    EXPORT void sub_468C70();
+    EXPORT void sub_468DE0();
     EXPORT char_type sub_468E80();
     EXPORT s32 sub_469010();
     EXPORT void sub_469030();
     EXPORT void sub_469060();
     EXPORT void sub_469BD0();
     EXPORT char_type sub_469BF0();
-    EXPORT s32 sub_469D60();
+    EXPORT void sub_469D60();
     EXPORT void sub_469E10();
-    EXPORT s32 sub_469E30();
-    EXPORT s32 sub_469E50();
-    EXPORT s32 sub_469F30();
+    EXPORT void sub_469E30();
+    EXPORT void sub_469E50();
+    EXPORT void sub_469F30();
     EXPORT void sub_469FC0();
     EXPORT void sub_469FE0();
     EXPORT void sub_46A1F0();
-    EXPORT s32 sub_46A290();
+    EXPORT void sub_46A290();
     EXPORT char_type sub_46A350();
     EXPORT s32 sub_46A530();
     EXPORT void sub_46A5E0();
@@ -164,19 +169,19 @@ class Ped
     EXPORT void sub_46A7C0();
     EXPORT void sub_46A850();
     EXPORT void sub_46A8F0();
-    EXPORT s32 sub_46A9C0();
-    EXPORT char_type sub_46AAE0();
-    EXPORT char_type sub_46AB50();
+    EXPORT void sub_46A9C0();
+    EXPORT void sub_46AAE0();
+    EXPORT void sub_46AB50();
     EXPORT char_type sub_46AC20();
     EXPORT s32 sub_46B170();
     EXPORT s32 sub_46B2F0();
     EXPORT void sub_46B670();
     EXPORT void sub_46BD30();
-    EXPORT char_type sub_46BD50(u8* a2);
+    EXPORT char_type sub_46BD50(Car_BC *pCar);
     EXPORT void sub_46BDC0();
     EXPORT void sub_46C250();
-    EXPORT char_type sub_46C770();
-    EXPORT s32 sub_46C7E0();
+    EXPORT void sub_46C770();
+    EXPORT void sub_46C7E0();
     EXPORT void sub_46C8A0();
     EXPORT void sub_46C910();
     EXPORT void sub_46C9B0();
@@ -195,11 +200,11 @@ class Ped
     EXPORT void sub_46DB60();
     EXPORT void sub_46DB70();
     EXPORT void sub_46DB80();
-    EXPORT Sprite* sub_46DF50();
-    EXPORT s32 sub_46DF70(s32 a2, s32 a3);
+    EXPORT Sprite* GetSprite_46DF50();
+    EXPORT void SetupFollower_46DF70(Ped* arg0, s32 WeaponIdx);
     EXPORT bool sub_46E020(PedGroup* a2);
-    EXPORT s32 sub_46E080(s32 a2, s32 a3);
-    EXPORT u8 sub_46E200(u8 a2);
+    EXPORT void RecruitNearbyPeds_46E080(s32 desiredCount, Fix16 searchRadius);
+    EXPORT void SpawnPedGroupFollowers_46E200(u8 total);
     EXPORT u8 get_wanted_star_count_46EF00();
     EXPORT void set_wanted_level_46EF40(u16 wanted);
     EXPORT void set_wanted_star_count_46F070(u8 star_count);
@@ -207,18 +212,18 @@ class Ped
     EXPORT Weapon_30* GetWeaponFromPed_46F110();
     EXPORT void sub_46F1E0(Weapon_30* a2);
     EXPORT void ManageWeapon_46F390();
-    EXPORT s32 sub_46F490();
+    EXPORT Weapon_30* sub_46F490();
     EXPORT void ForceWeapon_46F600(s32 a2);
     EXPORT void GiveWeapon_46F650(s32 a2);
     EXPORT void sub_46F680(Ped* a2);
-    EXPORT void sub_46F720();
+    EXPORT void UpdateStatsForKiller_46F720();
     EXPORT void Kill_46F9D0();
-    EXPORT u32* sub_46FC70();
+    EXPORT void AddThreateningPedToList_46FC70();
     EXPORT void sub_46FC90(s32 a2, s32 a3);
-    EXPORT char_type sub_46FE20(s32 a2);
-    EXPORT void sub_46FF00(s32 a2, s32 a3, s32 a4);
+    EXPORT char_type ProcessWeaponHitResponse_46FE20(Object_2C* a2);
+    EXPORT void NotifyWeaponHit_46FF00(s32 a2, s32 a3, s32 a4);
     EXPORT void sub_46FFF0(s32 a2);
-    EXPORT s16 sub_470050();
+    EXPORT void AimRoofGun_470050();
     EXPORT void add_wanted_points_470160(s16 wanted_amount);
     EXPORT bool sub_4701D0();
     EXPORT void sub_470200(Fix16 a2, Fix16 a3, Fix16 a4);
@@ -241,6 +246,11 @@ class Ped
     {
         // There was no way to match this without using a bit field
         field_21C_bf.b11 = 0;
+    }
+
+    inline void clear_bit_26_482080()
+    {
+        field_21C_bf.b26 = false;
     }
 
     bool check_bit_0()
@@ -414,16 +424,36 @@ class Ped
     // TODO: to use this inline we need to fix a circular dependency issue
     inline s32 get_car_model();
 
+    inline void SetRemap_433C10(u8 remap)
+    {
+        Char_B4* p_B4 = field_168_game_object; // local necessary to match Ped::SetupFollower_46DF70
+        p_B4->field_5_remap = remap;
+        if (remap != 0xFF)
+        {
+            p_B4->field_80_sprite_ptr->SetRemap(remap);
+        }
+    }
+
+    inline void sub_433BB0(s32 value)
+    {
+        field_230 = value;
+    }
+
+    inline void sub_433BC0(s32 value)
+    {
+        field_22C = value;
+    }
+
     Marz_3 field_0[100];
     Ang16 field_12C;
     Ang16 field_12E;
     Ang16 field_130;
     Ang16 field_132;
-    Ang16 field_134;
+    Ang16 field_134_rotation;
     s16 field_136;
     s32 field_138;
     s32 field_13C;
-    s32 field_140;
+    Car_BC* field_140;
     Ped* field_144;
     Ped* field_148_objective_target_ped;
     Ped* field_14C;
@@ -442,35 +472,35 @@ class Ped
     Ped* field_180;
     s32 field_184;
     Ped* field_188_last_char_punched;
-    Ped* field_18C;
+    Marz_3* field_18C;
     Marz_96* field_190;
-    s32 field_194;
+    Marz_3* field_194;
     s32 field_198;
     Gang_144* field_19C;
     Object_2C* field_1A0_objective_target_object;
     Object_2C* field_1A4;
-    Ped* field_1A8_elvis_leader;
+    Ped* field_1A8_ped_killer;
     Fix16_Vec field_1AC_cam;
     Fix16 field_1B8_target_x;
     Fix16 field_1BC_target_y;
     Fix16 field_1C0_target_z;
-    s32 field_1C4_x;
-    s32 field_1C8_y;
-    s32 field_1CC_z;
+    Fix16 field_1C4_x;
+    Fix16 field_1C8_y;
+    Fix16 field_1CC_z;
     Fix16 field_1D0;
     Fix16 field_1D4;
     Fix16 field_1D8;
     Fix16 field_1DC_objective_target_x;
     Fix16 field_1E0_objective_target_y;
     Fix16 field_1E4_objective_target_z;
-    s32 field_1E8;
+    Fix16 field_1E8;
     s32 field_1EC;
     Fix16 field_1F0_maybe_max_speed;
-    s32 field_1F4;
+    Fix16 field_1F4;
     Fix16 field_1F8;
     s32 field_1FC;
     u32 field_200_id;
-    s32 field_204;
+    s32 field_204_killer_id;
     u16 field_208_invulnerability;
     s16 field_20A_wanted_points;
     s16 field_20C;
@@ -505,7 +535,7 @@ class Ped
     char_type field_236;
     char_type field_237;
     s32 field_238;
-    char_type field_23C;
+    u8 field_23C;
     char_type field_23D;
     char_type field_23E;
     char_type field_23F;
@@ -553,10 +583,14 @@ GTA2_ASSERT_SIZEOF_ALWAYS(Ped, 0x294)
 
 EXTERN_GLOBAL(s32, gPedId_61A89C);
 
-EXTERN_GLOBAL(u8, byte_6787CA);
+EXTERN_GLOBAL(u8, gNumberMuggersSpawned_6787CA);
 
 EXTERN_GLOBAL(u8, byte_6787CB);
 
 EXTERN_GLOBAL(u8, byte_6787CC);
 
 EXTERN_GLOBAL(u8, byte_6787CD);
+
+EXTERN_GLOBAL(u8, byte_6787EF);
+
+EXTERN_GLOBAL(Fix16, dword_678620);

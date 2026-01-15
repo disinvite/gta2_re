@@ -3,7 +3,6 @@
 #include "BitSet32.hpp"
 #include "Function.hpp"
 #include "Object_3C.hpp"
-#include "Ped.hpp"
 #include "Pool.hpp"
 #include "ang16.hpp"
 #include "sprite.hpp"
@@ -12,6 +11,8 @@ class Sprite_3C;
 class Ped;
 class Car_BC;
 class Sprite;
+
+EXTERN_GLOBAL(Fix16, dword_678620);
 
 class Char_B4
 {
@@ -119,6 +120,26 @@ class Char_B4
         return field_80_sprite_ptr->field_1C_zpos;
     }
 
+    inline void sub_433970(Fix16 a1)
+    {
+        if (field_38_velocity < a1)
+        {
+            field_38_velocity += dword_678620;
+        }
+        else
+        {
+            if (field_38_velocity > a1)
+            {
+                field_38_velocity -= dword_678620;
+            }
+        }
+    }
+
+    inline void SetMaxSpeed_433920(Fix16 max_speed)
+    {
+        field_38_velocity = max_speed;
+    }
+
     Char_B4();
     ~Char_B4();
 
@@ -136,9 +157,9 @@ class Char_B4
     EXPORT void sub_5455F0();
     EXPORT void sub_545600();
     EXPORT void sub_5456A0();
-    EXPORT s32 IsOnScreen_545700();
+    EXPORT bool IsOnScreen_545700();
     EXPORT void sub_545720(Fix16 a2);
-    EXPORT char_type sub_5459C0();
+    EXPORT void sub_5459C0();
     EXPORT void DrownPed_5459E0();
     EXPORT void sub_546360();
     EXPORT void sub_548590();
@@ -177,115 +198,20 @@ class Char_B4
     EXPORT void state_9_552E90();
 
     EXPORT bool sub_5532C0();
+    EXPORT char_type IsThreatToSearchingPed_553330();
     EXPORT bool sub_553340(Sprite* pSprite);
     EXPORT char_type sub_5535B0(Object_2C* p2c);
-    EXPORT bool sub_553640(Object_2C* p2c);
-    EXPORT char_type sub_5537F0(Object_2C* p2c);
+    EXPORT bool OnObjectTouched_553640(Object_2C* p2c);
+    EXPORT char_type HandlePedObjectHit_5537F0(Object_2C* p2c);
     EXPORT void sub_5538A0(Car_BC* pCar, s32 a3, s32 a4, s32 a5);
     EXPORT void sub_553E00(Ang16 ang, Fix16 a3, Fix16 a4, char_type a5);
 
     EXPORT void nullsub_28();
 };
 
-class Char_B4_Pool
-{
-  public:
-    Char_B4_Pool()
-    {
-    }
-
-    ~Char_B4_Pool()
-    {
-    }
-
-    // inline 0x4355C0
-    void DeAllocate(Char_B4* pB4)
-    {
-        field_0_pool.DeAllocate(pB4);
-    }
-
-    PoolBasic<Char_B4, 400> field_0_pool;
-};
-
-class Char_8
-{
-  public:
-
-  void PoolAllocate() 
-  {
-    
-  }
-
-    Ped* field_0_char_ped;
-    Char_8* mpNext;
-};
-
-class Char_8_Pool
-{
-  public:
-    PoolBasic<Char_8, 99> field_0_pool;
-
-    s8 field_31c;
-    s8 field_31d;
-    s8 field_31e;
-    s8 field_31f;
-    s32 field_320_in_use;
-
-    Char_8_Pool()
-    {
-        field_320_in_use = 0;
-    }
-};
-
-class PedManager
-{
-  public:
-    EXPORT void sub_46EB60(u32* a2);
-    EXPORT void PedsService_4703F0();
-    EXPORT PedManager();
-    EXPORT ~PedManager();
-    EXPORT Ped* SpawnPedAt(Fix16 xpos, Fix16 ypos, Fix16 zpos, u8 remap, Ang16 rotation);
-    EXPORT Ped* SpawnDriver_470B00(Car_BC* pCar);
-    EXPORT Ped* SpawnGangDriver_470BA0(Car_BC* pCar, Gang_144* pGang);
-    EXPORT Ped* sub_470CC0(Car_BC* pCar);
-    EXPORT Ped* sub_470D60();
-    EXPORT Ped* sub_470E30();
-    EXPORT Ped* sub_470F30();
-    EXPORT Ped* sub_470F90(Ped* pSrc);
-    EXPORT void DoIanTest_471060(s16 a1);
-    EXPORT Ped* PedById(s32 pedId);
-
-    EXPORT void Dummies_470330();
-
-    s16 field_0;
-    char_type field_2;
-    char_type field_3;
-    char_type field_4;
-    u8 field_5_fbi_army_count;
-    char_type field_6_num_peds_on_screen;
-    char_type field_7_make_all_muggers;
-    Sprite* field_8;
-};
-
-class PedPool
-{
-  public:
-    EXPORT ~PedPool();
-
-    Ped* Allocate()
-    {
-        return field_0_pool.Allocate();
-    }
-
-    Pool<Ped, 200> field_0_pool;
-};
-
-EXTERN_GLOBAL(PedManager*, gPedManager_6787BC);
-
-EXTERN_GLOBAL(PedPool*, gPedPool_6787B8);
-
-EXTERN_GLOBAL(Char_B4_Pool*, gChar_B4_Pool_6FDB44);
-
-EXTERN_GLOBAL(Char_8_Pool*, gChar_8_Pool_678b50);
-
 EXPORT void __stdcall sub_544F70();
+EXPORT void __stdcall sub_553F90();
+
+EXTERN_GLOBAL(u8, unk_6787EF);
+
+EXTERN_GLOBAL(u16, gNumPedsOnScreen_6787EC);
