@@ -236,7 +236,7 @@ void CarPhysics_B0::sub_559DD0()
 }
 
 STUB_FUNC(0x559e20)
-u32 CarPhysics_B0::sub_559E20(s32 a2)
+u32 CarPhysics_B0::sub_559E20(Object_2C* a2)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -563,7 +563,7 @@ void CarPhysics_B0::EmitImpactParticles_55B7E0(u8 apply_to_corners_mask)
     s32 not_used = 0;
     u32 cornerCount = 0;
 
-    if (!pCar->field_50_car_sprite->IsOnWater_59E1D0() && !field_5C_pCar->sub_40F890())
+    if (!pCar->field_50_car_sprite->IsOnWater_59E1D0() && !field_5C_pCar->IsMaxDamage_40F890())
     {
         if (apply_to_corners_mask == 0)
         {
@@ -1406,8 +1406,8 @@ void CarPhysics_B0::UpdateReferencePoint_563460()
 MATCH_FUNC(0x563560)
 void CarPhysics_B0::SetSprite_563560(Sprite* a2)
 {
-    field_38_cp1.x = a2->field_14_xpos.x;
-    field_38_cp1.y = a2->field_14_xpos.y;
+    field_38_cp1.x = a2->field_14_xy.x;
+    field_38_cp1.y = a2->field_14_xy.y;
     field_6C_cp3 = a2->field_1C_zpos;
     field_58_theta = a2->field_0;
     field_78_pointing_ang_rad = 0;

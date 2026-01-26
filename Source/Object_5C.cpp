@@ -89,7 +89,7 @@ void Object_2C::PoolDeallocate()
     else if (f5C == 3)
     {
         --gObject_5C_6F8F84->field_14;
-        gObject_5C_6F8F84->field_1C.sub_5A6B60(this->field_4);
+        gObject_5C_6F8F84->field_1C.RemoveSpriteSafe_5A6B60(this->field_4);
     }
 
     --dword_6F8F88;
@@ -514,8 +514,8 @@ void Object_2C::sub_525190(u8 varrok_idx)
         if (field_8->field_48 == 13)
         {
             sub_5291D0();
-            Object_2C* pExplosion = gObject_5C_6F8F84->CreateExplosion_52A3D0(this->field_4->field_14_xpos.x,
-                                                                              this->field_4->field_14_xpos.y,
+            Object_2C* pExplosion = gObject_5C_6F8F84->CreateExplosion_52A3D0(this->field_4->field_14_xy.x,
+                                                                              this->field_4->field_14_xy.y,
                                                                               this->field_4->field_1C_zpos,
                                                                               kZeroAng_6F8F68,
                                                                               19,
@@ -816,7 +816,7 @@ s16 Object_2C::sub_526B40(s32 a2)
 }
 
 STUB_FUNC(0x527070)
-char_type Object_2C::sub_527070(s16* a2, s32 a3, s16* a4, s32 a5)
+bool Object_2C::sub_527070(Sprite* pSprite, Fix16 x, Fix16 y, Ang16 rot)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -840,10 +840,10 @@ void Object_2C::sub_527630(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, 
     }
 
     Sprite* pSprite = field_4;
-    if (pSprite->field_14_xpos.x != xpos || pSprite->field_14_xpos.y != ypos || pSprite->field_1C_zpos != zpos)
+    if (pSprite->field_14_xy.x != xpos || pSprite->field_14_xy.y != ypos || pSprite->field_1C_zpos != zpos)
     {
-        pSprite->field_14_xpos.x = xpos;
-        pSprite->field_14_xpos.y = ypos;
+        pSprite->field_14_xy.x = xpos;
+        pSprite->field_14_xy.y = ypos;
         pSprite->field_1C_zpos = zpos;
         pSprite->ResetZCollisionAndDebugBoxes_59E7B0();
     }
@@ -1212,8 +1212,8 @@ MATCH_FUNC(0x529240)
 s32 Object_2C::sub_529240()
 {
     s32 result;
-    gmp_block_info* pBlockInfo = gMap_0x370_6F6268->get_block_4DFE10(field_4->field_14_xpos.x.ToInt(),
-                                                                     field_4->field_14_xpos.y.ToInt(),
+    gmp_block_info* pBlockInfo = gMap_0x370_6F6268->get_block_4DFE10(field_4->field_14_xy.x.ToInt(),
+                                                                     field_4->field_14_xy.y.ToInt(),
                                                                      field_4->field_1C_zpos.ToInt());
     switch (field_26_varrok_idx)
     {
@@ -1442,14 +1442,14 @@ void Object_5C::sub_529300()
 {
     for (s32 i = field_14 - 88; i >= 0; i--)
     {
-        Sprite* pSprite = field_1C.sub_5A6DC0();
+        Sprite* pSprite = field_1C.PopBackSprite_5A6DC0();
         Object_2C* o2c = pSprite->As2C_40FEC0();
         if (o2c->field_18_model == 10)
         {
             if (gGame_0x40_67E008->sub_4B97E0(pSprite, kFpZero_6F8E10))
             {
-                Object_5C::CreateExplosion_52A3D0(pSprite->field_14_xpos.x,
-                                                  pSprite->field_14_xpos.y,
+                Object_5C::CreateExplosion_52A3D0(pSprite->field_14_xy.x,
+                                                  pSprite->field_14_xy.y,
                                                   pSprite->field_1C_zpos,
                                                   kZeroAng_6F8F68,
                                                   18,
@@ -1512,7 +1512,7 @@ Object_5C::Object_5C()
     }
 
     field_58 = gSprite_Pool_703818->get_new_sprite();
-    field_58->sub_451950(0, 0, 0);
+    field_58->set_xyz_lazy_451950(0, 0, 0);
 
     field_58->set_ang_lazy_420690(kZeroAng_6F8F68);
     field_58->AllocInternal_59F950(0, 0, 0);
@@ -1627,9 +1627,11 @@ Object_2C* Object_5C::sub_529A40(s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, u8 a7)
 }
 
 // https://decomp.me/scratch/vf1YG need to inline sub_482D60
-STUB_FUNC(0x529ab0)
-Object_2C* Object_5C::sub_529AB0(s32 light_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, s32 argb, s32 radius_flags, u8 intensity)
+WIP_FUNC(0x529ab0)
+Object_2C* Object_5C::NewLight_529AB0(s32 light_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, s32 argb, s32 radius_flags, u8 intensity)
 {
+    WIP_IMPLEMENTED;
+    
     Object_2C* pNewObj = Object_5C::sub_529C00(light_type, xpos, ypos, zpos, kZeroAng_6F8F68, 0);
     if (pNewObj)
     {
@@ -1713,7 +1715,8 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
 
     if (bUnknown &&
         (pNew2C->field_4->sub_59E7D0(0) ||
-         (pPhi->field_40_collision_bucket_category == collision_bucket_category::purple_doom_2_region_bucket_3 && gPurpleDoom_2_67920C->FindNearestSpriteOfType_477E60(pNew2C->field_4, 0))))
+         (pPhi->field_40_collision_bucket_category == collision_bucket_category::purple_doom_2_region_bucket_3 &&
+          gPurpleDoom_2_67920C->FindNearestSpriteOfType_477E60(pNew2C->field_4, 0))))
     {
         if (pNew2C->field_20 == 1) // 154: ~> cmpl    $0x1,0x0(%ebp)
         {
@@ -1730,7 +1733,7 @@ Object_2C* Object_5C::sub_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 
     if (pPhi->field_5C == 3) // 1e0
     {
         ++field_14;
-        field_1C.sub_5A6CD0(pNew2C->field_4);
+        field_1C.AddSprite_5A6CD0(pNew2C->field_4);
     }
 
     switch (pPhi->field_34_behavior_type)
@@ -1959,12 +1962,9 @@ void Object_2C::ReactivateObjectAfterImpact_52A6D0(Sprite* pSprite)
 
     PoolTake_522360();
 
-    if (pSprite->field_30_sprite_type_enum == sprite_types_enum::car)
+    Car_BC* pObj = pSprite->AsCar_40FEB0();
+    if (pObj)
     {
-        Car_BC* pObj = pSprite->field_8_car_bc_ptr;
-        if (pObj)
-        {
-            field_4->field_28_num = pObj->GetCrashSoundCategory_4435B0();
-        }
+        field_4->field_28_num = pObj->GetCrashSoundCategory_4435B0();
     }
 }

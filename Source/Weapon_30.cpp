@@ -287,7 +287,7 @@ char_type Weapon_30::sub_5DFB60(char_type a2, Sprite* a3, Ang16 a4)
 MATCH_FUNC(0x5e06b0)
 void Weapon_30::shocker_5E06B0()
 {
-    gWeapon_8_707018->field_0.sub_5A6E10();
+    gWeapon_8_707018->field_0.ClearList_5A6E10();
 
     sub_5DFB60(0,
                this->field_24_pPed->field_168_game_object->field_80_sprite_ptr,
@@ -537,4 +537,28 @@ char_type Weapon_30::IsExplosiveWeapon_5E3BD0()
             break;
     }
     return result;
+}
+
+WIP_FUNC(0x5E3F90)
+void Weapon_30::GetSoundPos_5E3F90(Fix16* pX, Fix16* pY, Fix16* pZ)
+{
+    WIP_IMPLEMENTED;
+
+    Ped* pPed = field_24_pPed;
+    if (pPed)
+    {
+        *pX = pPed->field_1AC_cam.x;
+        *pY = pPed->field_1AC_cam.y;
+        *pZ = pPed->field_1AC_cam.z;
+    }
+    else
+    {
+        Car_BC* pCar = field_14_car;
+        if (pCar)
+        {
+            *pX = pCar->field_50_car_sprite->field_14_xy.x;
+            *pY = pCar->field_50_car_sprite->field_14_xy.y;
+            *pZ = pCar->field_50_car_sprite->field_1C_zpos;
+        }
+    }
 }

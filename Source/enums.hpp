@@ -418,26 +418,41 @@ enum
 // static_assert(sizeof(ped_state1_enum) == 0x4);
 } // namespace ped_state1_enum
 
-namespace ped_state2_enum
+namespace ped_state_2
 {
 enum
 {
-    ped2_walking = 0,
-    New_Name = 1,
-    New_Name_1 = 2,
-    New_Name_2 = 3,
-    ped2_following_a_car = 4,
-    New_Name_3 = 5,
-    ped2_entering_a_car = 6,
-    ped2_getting_out_a_car = 7,
-    New_Name_4 = 8,
-    New_Name_5 = 9,
-    ped2_driving = 10,
-    ped2_staying = 14,
-    ped_unknown = 15
+    ped2_walking_0 = 0,
+    Unknown_1 = 1,
+    Unknown_2 = 2,
+    Unknown_3 = 3,
+    ped2_following_a_car_4 = 4,
+    Unknown_5 = 5,
+    ped2_entering_a_car_6 = 6,
+    ped2_getting_out_a_car_7 = 7,
+    Unknown_8 = 8,
+    Unknown_9 = 9,
+    ped2_driving_10 = 10,
+    ped2_staying_14 = 14,
+    Unknown_15 = 15,
+    Unknown_16 = 16,
+    Unknown_17 = 17,
+    Unknown_18 = 18,
+    falling_19 = 19,
+    sinking_20 = 20,
+    Unknown_21 = 21,
+    busted_22 = 22,
+    Unknown_23 = 23,
+    Unknown_24 = 24,
+    Unknown_25 = 25,
+    Unknown_26 = 26,
+    electrocuted_27 = 27,
+    Unknown_28 = 28,
+    Unknown_29 = 29,
+    Unknown_30 = 30,
 };
-// static_assert(sizeof(ped_state2_enum) == 0x4);
-} // namespace ped_state2_enum
+// static_assert(sizeof(ped_state_2) == 0x4);
+} // namespace ped_state_2
 
 namespace ped_type_enum
 {
@@ -677,6 +692,16 @@ enum
 };
 } // namespace threat_reaction_enum
 
+namespace objective_status
+{
+enum
+{
+    not_finished_0 = 0,
+    passed_1 = 1,
+    failed_2 = 2,
+};
+} // namespace objective_status
+
 namespace objectives_enum
 {
 enum
@@ -757,6 +782,24 @@ enum
     line_of_sight_player_threat_only_4 = 4,
     area_player_only_5 = 5,
     line_of_sight_player_only_6 = 6,
+};
+} // namespace threat_search_enum
+
+namespace ped_state_1
+{
+enum
+{
+    walking_0 = 0,
+    flee_or_running_1 = 1,
+    findind_path_2 = 2,
+    entering_car_3 = 3,
+    exiting_car_4 = 4,
+    unknown_5 = 5,
+    unknown_6 = 6,
+    standing_still_7 = 7,
+    immobilized_8 = 8, // ped lying on ground, or getting repeled by blast waves, or getting pushed, or on air, or sinking
+    dead_9 = 9,
+    in_car_10 = 10,
 };
 } // namespace threat_search_enum
 

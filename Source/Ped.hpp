@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Function.hpp"
 #include "BitSet32.hpp"
-#include "char.hpp"
+#include "Fix16_Point.hpp"
+#include "Function.hpp"
 #include "Marz_1D7E.hpp"
 #include "ang16.hpp"
+#include "char.hpp"
 #include "enums.hpp"
 #include "fix16.hpp"
-#include "Fix16_Point.hpp"
 #include "miss2_xyz.hpp"
 #include "sprite.hpp"
 #include <cstdio>
@@ -29,7 +29,7 @@ class Ped
   public:
     EXPORT Ped(); // 45AE70
     EXPORT ~Ped(); // 45AF00
-    EXPORT char_type sub_45AFC0();
+    EXPORT char_type Reset_45AFC0();
     EXPORT void PoolAllocate();
     EXPORT char_type sub_45B4E0();
     EXPORT Fix16_Point sub_45B520();
@@ -39,7 +39,7 @@ class Ped
     EXPORT s32 CopyStatsFromPed_45B5B0(s32 a2);
     EXPORT Car_BC* sub_45BBF0();
     EXPORT void TeleportToCoord_45BC10(Fix16 xpos, Fix16 ypos);
-    EXPORT void sub_45BC70();
+    EXPORT void ManageShocking_45BC70();
     EXPORT bool sub_45BD20(Car_BC* pCar);
     EXPORT s32 sub_45BE30();
     EXPORT void SetOnFire();
@@ -58,26 +58,26 @@ class Ped
     EXPORT void RespawnPed_45C350(gmp_map_zone* pZone);
     EXPORT void sub_45C410();
     EXPORT void sub_45C4B0();
-    EXPORT void sub_45C500(s32 a2);
-    EXPORT void sub_45C540(s32 a2);
-    EXPORT void sub_45C5A0();
+    EXPORT void ChangeNextPedState1_45C500(s32 a2);
+    EXPORT void ChangeNextPedState2_45C540(s32 a2);
+    EXPORT void RestorePreviousPedState_45C5A0();
     EXPORT void sub_45C5C0();
     EXPORT void SpawnDriverRunAway_45C650(Car_BC* pCar, Ped* pPed);
     EXPORT void SpawnPedInCar_45C730(Car_BC* pCar);
     EXPORT void EnterCarAsDriver(Car_BC* a2);
     EXPORT void sub_45C7F0(Car_BC* pCar);
     EXPORT char_type AllocCharB4_45C830(Fix16 xpos, Fix16 ypos, Fix16 zpos);
-    EXPORT Ang16& sub_45C900(Ang16& a2);
-    EXPORT Fix16 sub_45C920();
+    EXPORT Ang16 get_field8_45C900();
+    EXPORT Fix16 GetPedVelocity_45C920();
     EXPORT Ang16 GetRotation();
-    EXPORT Fix16& sub_45C9B0(Fix16& a2);
+    EXPORT Fix16 get_fieldC_45C9B0();
     EXPORT s16* ComputeAimAngle_45C9D0(s16* a2);
     EXPORT void HandleClosePedInteraction_45CAA0();
     EXPORT void TakeDamage(s16 damage);
     EXPORT void sub_45CF20(Object_2C* a2);
     EXPORT char_type HandlePedHitByObject_45D000(Object_2C* a2);
     EXPORT char_type AddWeaponWithAmmo_45DD30(s32 weapon_kind, char_type ammo);
-    EXPORT char_type HandlePickupCollision_45DE80(Object_2C *pPickUp);
+    EXPORT bool HandlePickupCollision_45DE80(Object_2C* pPickUp);
     EXPORT void SpawnWeaponOnDeath_45E080();
     EXPORT void sub_45E4A0();
     EXPORT void sub_45EA00();
@@ -93,7 +93,7 @@ class Ped
     EXPORT char_type sub_461530();
     EXPORT void sub_461630();
     EXPORT char_type RoadBlockTank_AI_4619F0();
-    EXPORT s16 sub_461A60();
+    EXPORT void UpdateFacingAngle_461A60();
     EXPORT void Occupation_AI_461F20();
     EXPORT void sub_462280();
     EXPORT void sub_4624A0();
@@ -101,7 +101,7 @@ class Ped
     EXPORT void sub_462550();
     EXPORT void ForceDoNothing_462590();
     EXPORT void sub_462620();
-    EXPORT char_type sub_4626B0();
+    EXPORT char_type StateMachineTick_4626B0();
     EXPORT void sub_462B80();
     EXPORT bool PoolUpdate();
     EXPORT void ProcessObjective_4632E0();
@@ -128,25 +128,25 @@ class Ped
     EXPORT char_type sub_467090();
     EXPORT Sprite* sub_467280();
     EXPORT char_type sub_4672E0(Fix16 a2, s32 a3);
-    EXPORT void sub_4678E0();
+    EXPORT void FleeOnFootTillSafe_4678E0();
     EXPORT void sub_467960();
-    EXPORT void sub_467A20();
+    EXPORT void FleeFromCharOnFootAlways_467A20();
     EXPORT void sub_467AD0();
     EXPORT void sub_467BD0();
     EXPORT void sub_467CA0();
-    EXPORT void sub_467E20();
+    EXPORT void KillCharAnyMeans_467E20();
     EXPORT void sub_467FB0();
     EXPORT void sub_467FD0();
     EXPORT s16 sub_468040();
     EXPORT void sub_4682A0();
     EXPORT void sub_468310();
-    EXPORT void sub_4686C0();
-    EXPORT void sub_468820();
-    EXPORT void sub_468930();
-    EXPORT void sub_468A00();
+    EXPORT void EnterTargetObjectiveCar_4686C0();
+    EXPORT void LeaveTargetObjectiveCar_468820();
+    EXPORT void EnterTrain_468930();
+    EXPORT void LeaveTrain_468A00();
     EXPORT void sub_468BD0();
-    EXPORT void sub_468C70();
-    EXPORT void sub_468DE0();
+    EXPORT void PatrolOnFoot_468C70();
+    EXPORT void GotoAreaOnFoot_468DE0();
     EXPORT char_type sub_468E80();
     EXPORT s32 sub_469010();
     EXPORT void sub_469030();
@@ -158,16 +158,16 @@ class Ped
     EXPORT void sub_469E30();
     EXPORT void sub_469E50();
     EXPORT void sub_469F30();
-    EXPORT void sub_469FC0();
+    EXPORT void WaitInCurrentCar_469FC0();
     EXPORT void sub_469FE0();
     EXPORT void sub_46A1F0();
-    EXPORT void sub_46A290();
+    EXPORT void FollowCarInCurrCar_46A290();
     EXPORT char_type sub_46A350();
     EXPORT s32 sub_46A530();
     EXPORT void sub_46A5E0();
     EXPORT s16 sub_46A6D0();
-    EXPORT void sub_46A7C0();
-    EXPORT void sub_46A850();
+    EXPORT void DestroyTargetObject_46A7C0();
+    EXPORT void DestroyTargetCar_46A850();
     EXPORT void sub_46A8F0();
     EXPORT void sub_46A9C0();
     EXPORT void sub_46AAE0();
@@ -177,7 +177,7 @@ class Ped
     EXPORT s32 sub_46B2F0();
     EXPORT void sub_46B670();
     EXPORT void sub_46BD30();
-    EXPORT char_type sub_46BD50(Car_BC *pCar);
+    EXPORT char_type sub_46BD50(Car_BC* pCar);
     EXPORT void sub_46BDC0();
     EXPORT void sub_46C250();
     EXPORT void sub_46C770();
@@ -237,11 +237,17 @@ class Ped
     EXPORT void nullsub_11();
     EXPORT void nullsub_12();
 
+    inline void ClearGroupAndGroupIdx_403A30()
+    {
+        this->field_164_ped_group = 0;
+        this->field_23C = 0;
+    }
+
     inline s32 sub_420B70()
     {
         return field_238;
     }
-        
+
     void inline_clear_bit()
     {
         // There was no way to match this without using a bit field
@@ -258,15 +264,15 @@ class Ped
         return field_21C_bf.b0 != 0;
     }
 
+    bool check_bit_11()
+    {
+        return field_21C_bf.b11 != 0;
+    }
+
     // 9.6f inline 0x450CB0
     inline u8 sub_450CB0()
     {
-        return field_225;
-    }
-
-    bool sub_433DA0()
-    {
-      return (field_21C & 0x2000000) != 0 && field_168_game_object;
+        return field_225_objective_status;
     }
 
     void reset_ped_group()
@@ -297,18 +303,25 @@ class Ped
 
     s32 get_ped_state1() const
     {
-        return field_278;
+        return field_278_ped_state_1;
     }
 
-    void set_field_14C(Ped* pSrc)
+    // 9.6f inline 0x403AE0
+    void set_field_14C_403AE0(Ped* pSrc)
     {
         field_14C = pSrc;
+    }
+
+    // 9.6f inline 0x403950
+    inline void SetBit2_403950()
+    {
+        field_21C_bf.b2 = true;
     }
 
     bool get_bitset_0x04()
     {
         return field_21C & ped_bit_status_enum::k_ped_0x00000004 ? true : false;
-    }    
+    }
 
     void unset_bitset_0x04()
     {
@@ -378,14 +391,39 @@ class Ped
         return field_200_id;
     }
 
-    inline Fix16 get_field_1F0()
+    inline Fix16 get_max_speed_1F0()
     {
         return field_1F0_maybe_max_speed;
     }
-    
+
+    inline void Set_B4_F16_To_1_433B50()
+    {
+        field_168_game_object->field_16 = 1;
+    }
+
     inline u8 get_remap_433BA0()
     {
         return field_244_remap;
+    }
+
+    inline bool is_player_41B0A0()
+    {
+        return field_15C_player != 0;
+    }
+
+    inline void Set_F250_IfBit_433DD0(s32 a2)
+    {
+        // TODO: Check if (HIBYTE(this->field_21C) & 1)
+        // is correct
+        if (field_21C_bf.b24 == 0)
+        {
+            field_250 = a2;
+        }
+    }
+
+    inline u8 get_target_car_door_403A60()
+    {
+        return field_24C_target_car_door;
     }
 
     // 9.6f inline 0x433B90
@@ -444,7 +482,27 @@ class Ped
         field_22C = value;
     }
 
-    Marz_3 field_0[100];
+    inline bool CheckBit0_433B40()
+    {
+        return field_21C_bf.b0;
+    }
+
+    inline s32 GetPedState_403990()
+    {
+        return field_278_ped_state_1;
+    }
+
+    inline bool sub_433DA0()
+    {
+        return field_21C_bf.b25 && field_168_game_object;
+    }
+
+    inline u8 GetBit11_433CA0()
+    {
+        return field_21C_bf.b11;
+    }
+
+    Marz_3 field_0_patrol_points[100];
     Ang16 field_12C;
     Ang16 field_12E;
     Ang16 field_130;
@@ -505,14 +563,14 @@ class Ped
     s16 field_20A_wanted_points;
     s16 field_20C;
     s16 field_20e;
-    u16 field_210;
-    u16 field_212;
+    u16 field_210_shock_counter;
+    u16 field_212_electrocution_threshold;
     s16 field_214;
     s16 field_216_health;
     u16 field_218_objective_timer;
     u16 field_21A_car_state_timer;
 
-    union 
+    union
     {
         CompilerBitField32 field_21C_bf;
         // TODO: Move everything to use the above field and remove union
@@ -521,7 +579,7 @@ class Ped
 
     s32 field_220;
     char_type field_224;
-    u8 field_225;
+    u8 field_225_objective_status; // it uses objective_status enum
     char_type field_226;
     char_type field_227;
     char_type field_228;
@@ -571,15 +629,17 @@ class Ped
     s32 field_26C_graphic_type;
     s32 field_270;
     s32 field_274_gang_car_model;
-    s32 field_278;
-    s32 field_27C;
-    s32 field_280;
-    s32 field_284;
+    s32 field_278_ped_state_1;
+    s32 field_27C_ped_state_2;
+    s32 field_280_stored_ped_state_1;
+    s32 field_284_stored_ped_state_2;
     s32 field_288_threat_search;
     s32 field_28C_threat_reaction;
     s32 field_290;
 };
 GTA2_ASSERT_SIZEOF_ALWAYS(Ped, 0x294)
+
+EXPORT void __stdcall CarDoorAlignmentSolver_545AF0(s32 a1, Car_BC* a2, s8 a3, Fix16& a4, Fix16& a5, Ang16& a6);
 
 EXTERN_GLOBAL(s32, gPedId_61A89C);
 

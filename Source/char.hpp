@@ -13,6 +13,9 @@ class Car_BC;
 class Sprite;
 
 EXTERN_GLOBAL(Fix16, dword_678620);
+EXTERN_GLOBAL(Fix16, dword_6FD7F8);
+EXTERN_GLOBAL(Fix16, dword_6FD800);
+EXTERN_GLOBAL(Fix16, dword_6FD7FC);
 
 class Char_B4
 {
@@ -57,7 +60,11 @@ class Char_B4
     s8 field_55;
     s8 field_56;
     s8 field_57;
-    CompilerBitField32 field_58_flags_bf;
+    union
+    {
+        u32 field_58_flags; // TODO: Only use CompilerBitField32
+        CompilerBitField32 field_58_flags_bf;
+    };
     u8 field_5C;
     s8 field_5D;
     s8 field_5E;
@@ -95,6 +102,11 @@ class Char_B4
     Fix16 field_AC_zpos;
     s32 field_B0;
 
+    inline void Set_F8_ped_state_1_433910(s32 a2)
+    {
+        field_8_ped_state_1 = a2;
+    }
+
     inline Ang16 get_rotation_433A40()
     {
         return field_40_rotation;
@@ -107,12 +119,12 @@ class Char_B4
 
     inline Fix16 get_sprite_xpos()
     {
-        return field_80_sprite_ptr->field_14_xpos.x;
+        return field_80_sprite_ptr->field_14_xy.x;
     }
 
     inline Fix16 get_sprite_ypos()
     {
-        return field_80_sprite_ptr->field_14_xpos.y;
+        return field_80_sprite_ptr->field_14_xy.y;
     }
 
     inline Fix16 get_sprite_zpos()
@@ -140,6 +152,21 @@ class Char_B4
         field_38_velocity = max_speed;
     }
 
+    inline Ped* get_ped_433A20()
+    {
+        return field_7C_pPed;
+    }
+
+    inline void SetPedState1_433910(s32 new_state)
+    {
+        field_8_ped_state_1 = new_state;
+    }
+
+    inline void SetPedState2_433A50(s32 new_state)
+    {
+        field_C_ped_state_2 = new_state;
+    }
+
     Char_B4();
     ~Char_B4();
 
@@ -161,7 +188,7 @@ class Char_B4
     EXPORT void sub_545720(Fix16 a2);
     EXPORT void sub_5459C0();
     EXPORT void DrownPed_5459E0();
-    EXPORT void sub_546360();
+    EXPORT void UpdateAnimState_546360();
     EXPORT void sub_548590();
     EXPORT void sub_548670(char_type a2);
     EXPORT void sub_548840(Object_2C* a2);

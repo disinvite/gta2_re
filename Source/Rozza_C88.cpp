@@ -71,7 +71,7 @@ void Rozza_A::sub_40B890(Car_BC* pCar)
                 Object_2C* p2C = gRozza_679188.field_20_pSprite->As2C_40FEC0();
 
                 field_18_model_copy = p2C->get_model_40FEF0();
-                if (field_18_model_copy == 166)
+                if (field_18_model_copy == objects::object_166)
                 {
                     field_0 = 5;
                     field_20_map_block_spec = p2C->sub_529240();
@@ -119,7 +119,7 @@ void Rozza_A::sub_40B980()
             {
                 Object_2C* p2C = gRozza_679188.field_20_pSprite->As2C_40FEC0();
                 field_18_model_copy = p2C->get_model_40FEF0();
-                if (field_18_model_copy == 166)
+                if (field_18_model_copy == objects::object_166)
                 {
                     field_0 = 8;
                     field_20_map_block_spec = p2C->sub_529240();
@@ -183,7 +183,7 @@ bool Rozza_A::sub_40BA60(Object_2C* pObj)
                 }
 
                 field_1C = o2c->get_model_40FEF0();
-                if (field_1C == 166)
+                if (field_1C == objects::object_166)
                 {
                     field_0 = 10;
                     field_20_map_block_spec = o2c->sub_529240();
@@ -232,7 +232,7 @@ void Rozza_C88::OtherType_40BBA0(Sprite* pSprite, Fix16 physics_value)
             }
         }
 
-        pRA->set_xyz_40B870(pSprite->field_14_xpos.x, pSprite->field_14_xpos.y, pSprite->field_1C_zpos);
+        pRA->set_xyz_40B870(pSprite->field_14_xy.x, pSprite->field_14_xy.y, pSprite->field_1C_zpos);
         pRA->sub_40FF10(physics_value);
         field_C84_count++;
     }
@@ -244,7 +244,7 @@ void Rozza_C88::Type4_40BC40(Sprite* pSprite)
     if (!bSkip_audio_67D6BE)
     {
         Rozza_A* pRA = &field_4_pool[field_C84_count];
-        pRA->set_xyz_40B870(pSprite->field_14_xpos.x, pSprite->field_14_xpos.y, pSprite->field_1C_zpos);
+        pRA->set_xyz_40B870(pSprite->field_14_xy.x, pSprite->field_14_xy.y, pSprite->field_1C_zpos);
         pRA->sub_40FF10(dword_66AE98);
 
         Car_BC* pCar = pSprite->AsCar_40FEB0();
@@ -263,8 +263,8 @@ void Rozza_C88::Type4_40BC40(Sprite* pSprite)
             pRA->field_0 = 1;
             pRA->field_18_model_copy = p2c->get_model_40FEF0();
         }
-        pRA->field_20_map_block_spec = gMap_0x370_6F6268->GetBlockSpec_4E00A0(pSprite->field_14_xpos.x,
-                                                                              pSprite->field_14_xpos.y,
+        pRA->field_20_map_block_spec = gMap_0x370_6F6268->GetBlockSpec_4E00A0(pSprite->field_14_xy.x,
+                                                                              pSprite->field_14_xy.y,
                                                                               pSprite->field_1C_zpos - dword_66AE9C);
         field_C84_count++;
     }
@@ -276,7 +276,7 @@ void Rozza_C88::Type5_40BD10(Sprite* pSprite)
     if (!bSkip_audio_67D6BE)
     {
         Rozza_A* pRA = &this->field_4_pool[this->field_C84_count];
-        pRA->set_xyz_40B870(pSprite->field_14_xpos.x, pSprite->field_14_xpos.y, pSprite->field_1C_zpos);
+        pRA->set_xyz_40B870(pSprite->field_14_xy.x, pSprite->field_14_xy.y, pSprite->field_1C_zpos);
         pRA->sub_40FF10(dword_66AE98);
 
         Car_BC* pCar = pSprite->AsCar_40FEB0();
@@ -296,7 +296,7 @@ void Rozza_C88::Type5_40BD10(Sprite* pSprite)
             pRA->field_18_model_copy = p2c->get_model_40FEF0();
         }
         pRA->field_20_map_block_spec =
-            gMap_0x370_6F6268->GetBlockSpec_4E00A0(pSprite->field_14_xpos.x, pSprite->field_14_xpos.y, pSprite->field_1C_zpos);
+            gMap_0x370_6F6268->GetBlockSpec_4E00A0(pSprite->field_14_xy.x, pSprite->field_14_xy.y, pSprite->field_1C_zpos);
         field_C84_count++;
     }
 }

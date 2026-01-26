@@ -58,7 +58,7 @@ class Object_2C
     EXPORT void sub_526790(s32 a2);
     EXPORT s32 sub_526830(s32 a1);
     EXPORT s16 sub_526B40(s32 a2);
-    EXPORT char_type sub_527070(s16* a2, s32 a3, s16* a4, s32 a5);
+    EXPORT bool sub_527070(Sprite* pSprite, Fix16 x, Fix16 y, Ang16 rot);
     EXPORT void sub_527630(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation);
     EXPORT void Light_527990();
     EXPORT void AssignToBucket_527AE0();
@@ -185,7 +185,7 @@ class Object_5C
     EXPORT Object_2C* NewPhysicsObj_5299B0(s32 object_type, Fix16 a3, Fix16 a4, Fix16 a5, Ang16 a6);
     EXPORT Object_2C* sub_5299F0(s32 a2, u32 a3, Fix16 a4, Fix16 a5, Fix16 a6);
     EXPORT Object_2C* sub_529A40(s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, u8 a7);
-    EXPORT Object_2C* sub_529AB0(s32 a2, Fix16 a3, Fix16 a4, Fix16 a5, s32 a6, s32 a7, u8 a8);
+    EXPORT Object_2C* NewLight_529AB0(s32 a2, Fix16 a3, Fix16 a4, Fix16 a5, s32 a6, s32 a7, u8 a8);
     EXPORT Object_2C* sub_529B20(s32 obj_type,
                                  s32 a3,
                                  s32 a4,

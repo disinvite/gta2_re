@@ -3,10 +3,12 @@
 #include "Function.hpp"
 #include "ang16.hpp"
 #include "fix16.hpp"
+#include "gtx_0x106C.hpp"
 #include <windows.h>
 
 class Gang_144;
 class Sprite;
+class Fix16_Rect;
 
 struct gmp_col_info
 {
@@ -302,12 +304,12 @@ class Map_0x370
     EXPORT char_type sub_4E0110();
     EXPORT char_type sub_4E0120();
     EXPORT char_type sub_4E0130(s32 a2, s32 a3, s32 a4, s32 a5, u8* a6, char_type a7);
-    EXPORT char_type sub_4E11E0(s32* a2);
+    EXPORT char_type sub_4E11E0(Fix16_Rect* a2);
     EXPORT char_type sub_4E1520(s32 a2);
     EXPORT bool sub_4E18A0(s32 x_min, s32 x_max, s32 y_min, s32 y_max, s32 z);
     EXPORT char_type sub_4E1A30(s32 a2, s32 a3, s32 a4, s32 a5, s32 a6);
-    EXPORT char_type sub_4E1E00(s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8);
-    EXPORT char_type sub_4E4460(s32 a2, s32 a3, s32 a4, Sprite* a5, s16 a6);
+    EXPORT char_type CanSpriteEnterTile_4E1E00(s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8);
+    EXPORT char_type CanSpriteEnterMovementRegion_4E4460(s32 a2, s32 a3, s32 a4, Sprite* a5, s16 a6);
     EXPORT char_type sub_4E4630(Fix16 a2);
     EXPORT bool sub_4E4770(Fix16 z_pos);
     EXPORT char_type sub_4E4820(u32* a2, char_type a3);
@@ -325,7 +327,7 @@ class Map_0x370
     EXPORT char_type sub_4E52A0(Fix16 x, Fix16 y, Fix16 z);
     EXPORT bool CheckZCollisionAtCoord_4E5300(Fix16 x, Fix16 y, Fix16 z, Fix16 second_z);
     EXPORT bool sub_4E5480(Fix16 x, Fix16 y, Fix16 z, Fix16 unk_z_coord, Fix16* found_z);
-    EXPORT char_type sub_4E5640(s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9);
+    EXPORT char_type sub_4E5640(Fix16 a1, Fix16 a2, Fix16 a3, Fix16 a4, Fix16 a5, Fix16 a6, Fix16 a7, Fix16 a8, Fix16 a9);
     EXPORT Fix16* FindGroundZForCoord_4E5B60(Fix16* found_z, Fix16 x_pos, Fix16 y_pos);
     EXPORT u8 UpdateZFromSlopeAtCoord_4E5BF0(Fix16 x_pos, Fix16 y_pos, Fix16& z_pos);
     EXPORT s32 sub_4E5FC0(gmp_block_info* a2, char_type a3);
@@ -336,10 +338,10 @@ class Map_0x370
     EXPORT Fix16* sub_4E6400(Fix16* found_z, Fix16 x_pos, Fix16 y_pos, Fix16 z_pos);
     EXPORT Fix16* GetRailwayZCoordAtXY_4E6510(Fix16* found_z, Fix16 x, Fix16 y);
     EXPORT void sub_4E65A0(Fix16 x, Fix16 y, Fix16* z_pos, char_type a5, char_type a6);
-    EXPORT s32 sub_4E6660(s32* a2, s32* a3, s32* a4, s32 a5);
-    EXPORT s32 sub_4E7190(s32* a2, s32* a3, s32* a4, s32 a5);
+    EXPORT s32 sub_4E6660(Fix16* a2, Fix16* a3, Fix16* a4, Fix16 a5);
+    EXPORT s32 sub_4E7190(Fix16* a2, Fix16* a3, Fix16* a4, Fix16 a5);
     EXPORT char_type sub_4E7E90(u8* a2, char_type* a3);
-    EXPORT char_type sub_4E7FC0(Fix16 a2, Fix16 a3, Fix16 a4);
+    EXPORT char_type CheckColumnHasSolidAbove_4E7FC0(Fix16 a2, Fix16 a3, Fix16 a4);
     EXPORT s32 sub_4E8140(gmp_block_info* pBlockInfo);
     EXPORT s32 sub_4E8180(u32 read_block_idx);
     EXPORT s32 sub_4E81D0(u32 column_idx);
@@ -385,6 +387,12 @@ class Map_0x370
     EXPORT Map_0x370();
 
     EXPORT ~Map_0x370();
+
+    inline bool sub_4B9F40(s32 x, s32 y, s32 z)
+    {
+        gmp_block_info* pBlock = get_block_4DFE10(x, y, z);
+        return pBlock && gGtx_0x106C_703DD4->sub_49E540(pBlock->field_8_lid & 0x3FF);
+    }
 
     // 9.6f inline 0x4634E0
     inline Fix16 get_grad_scale_from_size_4634E0(Fix16& scale, u8 gradient_size)

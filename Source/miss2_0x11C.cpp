@@ -289,7 +289,7 @@ void miss2_0x11C::SCRCMD_PLAYER_PED_503A20(SCR_PLAYER_PED* pCmd)
             pCmd->field_8_ped = pPed;
 
             Sprite* v6 = pPed->GetSprite_46DF50();
-            v6->sub_5A2A30();
+            v6->ResolveCollisionWithCarPedOrObject_5A2A30();
         }
     }
 }
@@ -308,7 +308,7 @@ void miss2_0x11C::SCRCMD_CAR_DECSET_503BC0(SCR_CAR_DATA_DEC* pCmd, SCR_POINTER* 
         Ang16 rotation;
         rotation.ConvertAndMultiply(&word_6F8044, &pCmd->field_18_rot);
         rotation.sub_406C20();
-        pPointer->field_8_car = gCar_6C_677930->sub_426E10(pCmd->field_C_pos.field_0_x,
+        pPointer->field_8_car = gCar_6C_677930->SpawnCar_426E10(pCmd->field_C_pos.field_0_x,
                                                            pCmd->field_C_pos.field_4_y,
                                                            pCmd->field_C_pos.field_8_z,
                                                            rotation,
@@ -319,7 +319,7 @@ void miss2_0x11C::SCRCMD_CAR_DECSET_503BC0(SCR_CAR_DATA_DEC* pCmd, SCR_POINTER* 
         Ang16 rotation;
         rotation.ConvertAndMultiply(&word_6F8044, &pCmd->field_18_rot);
         rotation.sub_406C20();
-        pPointer->field_8_car = gCar_6C_677930->sub_4764A0(pCmd->field_C_pos.field_0_x,
+        pPointer->field_8_car = gCar_6C_677930->SpawnCar_4764A0(pCmd->field_C_pos.field_0_x,
                                                            pCmd->field_C_pos.field_4_y,
                                                            pCmd->field_C_pos.field_8_z,
                                                            rotation,
@@ -335,12 +335,12 @@ void miss2_0x11C::SCRCMD_CAR_DECSET_503BC0(SCR_CAR_DATA_DEC* pCmd, SCR_POINTER* 
     {
         if (pCmd->field_1C_car_id == car_model_enum::TRUKTRNS) // 66 = TRUKTRNS Truck Trailer, Flatbed
         {
-            Car_BC* v7 = gCar_6C_677930->sub_446230_shortened(pCmd->field_1E_trailer_id);
+            Car_BC* v7 = gCar_6C_677930->SpawnCar_shortened(pCmd->field_1E_trailer_id);
             Ang16 rotation;
             rotation.ConvertAndMultiply(&word_6F8044, &pCmd->field_18_rot);
             rotation.Normalize();
 
-            pPointer->field_8_car = gCar_6C_677930->sub_426E10(pCmd->field_C_pos.field_0_x,
+            pPointer->field_8_car = gCar_6C_677930->SpawnCar_426E10(pCmd->field_C_pos.field_0_x,
                                                                pCmd->field_C_pos.field_4_y,
                                                                pCmd->field_C_pos.field_8_z,
                                                                rotation,
@@ -385,7 +385,7 @@ void miss2_0x11C::SCRCMD_CAR_DECSET_503BC0(SCR_CAR_DATA_DEC* pCmd, SCR_POINTER* 
             pPointer->field_8_car->field_98 = 2;
         }
         pPointer->field_8_car->IncrementCarStats_443D70(8);
-        pPointer->field_8_car->field_50_car_sprite->sub_5A2A30();
+        pPointer->field_8_car->field_50_car_sprite->ResolveCollisionWithCarPedOrObject_5A2A30();
 
         if (pCmd->field_2_type >= 0x18Au //  create gang car
             && pCmd->field_2_type <= 0x18Du)
@@ -441,7 +441,7 @@ void miss2_0x11C::SCRCMD_CHAR_DECSET_2D_3D_503FB0(SCR_CHAR_DATA_DEC* pCmd, SCR_P
         a2->field_8_char->SetObjective(objectives_enum::wait_on_foot_26, 9999);
         a2->field_8_char->field_216_health = 100;
         Sprite* v6 = a2->field_8_char->GetSprite_46DF50();
-        v6->sub_5A2A30();
+        v6->ResolveCollisionWithCarPedOrObject_5A2A30();
     }
 }
 
@@ -2008,13 +2008,13 @@ void miss2_0x11C::sub_509810()
 
     if (pPed != NULL)
     {
-        switch (pPed->field_225)
+        switch (pPed->field_225_objective_status)
         {
-            case 2:
-            case 0:
+            case objective_status::failed_2:
+            case objective_status::not_finished_0:
                 field_8 = false;
                 break;
-            case 1:
+            case objective_status::passed_1:
                 field_8 = true;
                 break;
             default:
@@ -2032,9 +2032,9 @@ void miss2_0x11C::sub_509880()
 
     if (pPed != NULL)
     {
-        switch (pPed->field_225)
+        switch (pPed->field_225_objective_status)
         {
-            case 2:
+            case objective_status::failed_2:
                 field_8 = true;
                 break;
             default:
@@ -2109,7 +2109,7 @@ void miss2_0x11C::SCRCMD_HAS_CHAR_DIED_509BB0()
 
     v2 = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
 
-    if (v2->field_8_char && v2->field_8_char->field_278 == 9)
+    if (v2->field_8_char && v2->field_8_char->field_278_ped_state_1 == ped_state_1::dead_9)
     {
         field_8 = 1;
     }
@@ -3330,7 +3330,7 @@ void miss2_0x11C::SCRCMD_IS_CHAR_STUNNED_50C3B0()
     SCR_POINTER* pPointer = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
     Ped* pPed = pPointer->field_8_char;
 
-    if (pPed->field_27C == 22 || pPed->field_216_health <= 25)
+    if (pPed->field_27C_ped_state_2 == ped_state_2::busted_22 || pPed->field_216_health <= 25)
     {
         field_8 = true;
     }
@@ -3763,7 +3763,8 @@ void miss2_0x11C::SCRCMD_CHAR_IN_AIR_50DE50()
     SCR_POINTER* pPointer = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
     Ped* pPed = pPointer->field_8_char;
 
-    if (pPed->field_27C == 19 && pPed->field_278 == 8)
+    if (pPed->field_27C_ped_state_2 == ped_state_2::falling_19 
+        && pPed->field_278_ped_state_1 == ped_state_1::immobilized_8)
     {
         field_8 = true;
     }
@@ -3780,7 +3781,8 @@ void miss2_0x11C::SCRCMD_CHAR_SUNK_50DEB0()
     SCR_POINTER* pPointer = (SCR_POINTER*)gfrosty_pasteur_6F8060->GetBasePointer_512770(gBasePtr_6F8070[1].field_0_cmd_this);
     Ped* pPed = pPointer->field_8_char;
 
-    if (pPed->field_27C == 20 && pPed->field_278 == 8)
+    if (pPed->field_27C_ped_state_2 == ped_state_2::sinking_20 
+        && pPed->field_278_ped_state_1 == ped_state_1::immobilized_8)
     {
         field_8 = true;
     }
@@ -4813,7 +4815,7 @@ void miss2_0x11C::sub_510280()
 
             Ped* pPed = pPlayerPedCmdPointer->field_8_char;
 
-            if (pPed->field_278 == 9 || pPed->field_21C_bf.b5 != 0)
+            if (pPed->field_278_ped_state_1 == ped_state_1::dead_9 || pPed->field_21C_bf.b5 != 0)
             {
                 gGame_0x40_67E008->field_38_orf1->field_2D4_scores.field_1A8_unk.field_0[pBonusType->field_8_index].sub_431DB0();
                 pPlayerPedCmdPointer->field_8_char->field_15C_player->ClearKFWeapon_5647D0();

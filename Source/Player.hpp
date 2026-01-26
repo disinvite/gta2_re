@@ -178,8 +178,8 @@ class Player
     EXPORT void sub_569CB0();
     EXPORT void sub_569E70();
     EXPORT char* GetDeathText_569F00();
-    EXPORT s32 sub_569F40();
-    EXPORT s32 DisableAllControls_569FF0();
+    EXPORT void sub_569F40();
+    EXPORT void DisableAllControls_569FF0();
     EXPORT void EnableAllControls_56A000();
     EXPORT void EnableKFMode_56A010();
     EXPORT void DisableKFMode_56A020();
@@ -200,6 +200,18 @@ class Player
     inline u8 IsUser_41DC70()
     {
         return field_0_bIsUser;
+    }
+
+    inline Ped* GetPlayerPed_4A5130()
+    {
+        if (field_68 == 2)
+        {
+            return field_2C8_unkq;
+        }
+        else
+        {
+            return field_2C4_player_ped;
+        }
     }
 
     u8 field_0_bIsUser;

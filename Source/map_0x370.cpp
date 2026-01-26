@@ -891,7 +891,7 @@ char_type Map_0x370::sub_4E0130(s32 a2, s32 a3, s32 a4, s32 a5, u8* a6, char_typ
 }
 
 STUB_FUNC(0x4E11E0)
-char_type Map_0x370::sub_4E11E0(s32* a2)
+char_type Map_0x370::sub_4E11E0(Fix16_Rect* a2)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -965,26 +965,26 @@ char_type Map_0x370::sub_4E1A30(s32 a2, s32 a3, s32 a4, s32 a5, s32 a6)
 }
 
 STUB_FUNC(0x4E1E00)
-char_type Map_0x370::sub_4E1E00(s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8)
+char_type Map_0x370::CanSpriteEnterTile_4E1E00(s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8)
 {
     NOT_IMPLEMENTED;
     return 0;
 }
 
 MATCH_FUNC(0x4E4460)
-char_type Map_0x370::sub_4E4460(s32 a2, s32 a3, s32 a4, Sprite* a5, s16 a6)
+char_type Map_0x370::CanSpriteEnterMovementRegion_4E4460(s32 a2, s32 a3, s32 a4, Sprite* a5, s16 a6)
 {
     gSprite_6F61E8 = a5;
     word_6F6002 = a6;
     if (gPurple_right_6F5B80 - gPurple_left_6F5FD4 >= 3 || a2 > gPurple_left_6F5FD4 + 1 || a2 < gPurple_right_6F5B80 - 1)
     {
-        if (sub_4E1E00(a2 - 1, a2 + 1, gPurple_top_6F6108, gPurple_bottom_6F5F38, a2, a3, a4))
+        if (CanSpriteEnterTile_4E1E00(a2 - 1, a2 + 1, gPurple_top_6F6108, gPurple_bottom_6F5F38, a2, a3, a4))
         {
             return 1;
         }
         else if (gPurple_right_6F5B80 == a2 + 2)
         {
-            return sub_4E1E00(gPurple_right_6F5B80 - 1,
+            return CanSpriteEnterTile_4E1E00(gPurple_right_6F5B80 - 1,
                               gPurple_right_6F5B80,
                               gPurple_top_6F6108,
                               gPurple_bottom_6F5F38,
@@ -994,7 +994,7 @@ char_type Map_0x370::sub_4E4460(s32 a2, s32 a3, s32 a4, Sprite* a5, s16 a6)
         }
         else
         {
-            return sub_4E1E00(gPurple_left_6F5FD4,
+            return CanSpriteEnterTile_4E1E00(gPurple_left_6F5FD4,
                               gPurple_left_6F5FD4 + 1,
                               gPurple_top_6F6108,
                               gPurple_bottom_6F5F38,
@@ -1005,13 +1005,13 @@ char_type Map_0x370::sub_4E4460(s32 a2, s32 a3, s32 a4, Sprite* a5, s16 a6)
     }
     else if (gPurple_bottom_6F5F38 - gPurple_top_6F6108 >= 3 || a3 > gPurple_top_6F6108 + 1 || a3 < gPurple_bottom_6F5F38 - 1)
     {
-        if (sub_4E1E00(gPurple_left_6F5FD4, gPurple_right_6F5B80, a3 - 1, a3 + 1, a2, a3, a4))
+        if (CanSpriteEnterTile_4E1E00(gPurple_left_6F5FD4, gPurple_right_6F5B80, a3 - 1, a3 + 1, a2, a3, a4))
         {
             return 1;
         }
         else if (gPurple_bottom_6F5F38 == a3 + 2)
         {
-            return sub_4E1E00(gPurple_left_6F5FD4,
+            return CanSpriteEnterTile_4E1E00(gPurple_left_6F5FD4,
                               gPurple_right_6F5B80,
                               gPurple_bottom_6F5F38 - 1,
                               gPurple_bottom_6F5F38,
@@ -1021,7 +1021,7 @@ char_type Map_0x370::sub_4E4460(s32 a2, s32 a3, s32 a4, Sprite* a5, s16 a6)
         }
         else
         {
-            return sub_4E1E00(gPurple_left_6F5FD4,
+            return CanSpriteEnterTile_4E1E00(gPurple_left_6F5FD4,
                               gPurple_right_6F5B80,
                               gPurple_top_6F6108,
                               gPurple_top_6F6108 + 1,
@@ -1032,7 +1032,7 @@ char_type Map_0x370::sub_4E4460(s32 a2, s32 a3, s32 a4, Sprite* a5, s16 a6)
     }
     else
     {
-        return sub_4E1E00(gPurple_left_6F5FD4, gPurple_right_6F5B80, gPurple_top_6F6108, gPurple_bottom_6F5F38, a2, a3, a4);
+        return CanSpriteEnterTile_4E1E00(gPurple_left_6F5FD4, gPurple_right_6F5B80, gPurple_top_6F6108, gPurple_bottom_6F5F38, a2, a3, a4);
     }
 }
 
@@ -1584,7 +1584,7 @@ gmp_map_slope::gmp_map_slope(u8 gradient_direction, u8 gradient_size, u8 gradien
 }
 
 STUB_FUNC(0x4E5640)
-char_type Map_0x370::sub_4E5640(s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9)
+char_type Map_0x370::sub_4E5640(Fix16 a1, Fix16 a2, Fix16 a3, Fix16 a4, Fix16 a5, Fix16 a6, Fix16 a7, Fix16 a8, Fix16 a9)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -1857,14 +1857,14 @@ void Map_0x370::sub_4E65A0(Fix16 x, Fix16 y, Fix16* z_pos, char_type a5, char_ty
 }
 
 STUB_FUNC(0x4E6660)
-s32 Map_0x370::sub_4E6660(s32* a2, s32* a3, s32* a4, s32 a5)
+s32 Map_0x370::sub_4E6660(Fix16* a2, Fix16* a3, Fix16* a4, Fix16 a5)
 {
     NOT_IMPLEMENTED;
     return 0;
 }
 
 STUB_FUNC(0x4E7190)
-s32 Map_0x370::sub_4E7190(s32* a2, s32* a3, s32* a4, s32 a5)
+s32 Map_0x370::sub_4E7190(Fix16* a2, Fix16* a3, Fix16* a4, Fix16 a5)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -1878,7 +1878,7 @@ char_type Map_0x370::sub_4E7E90(u8* a2, char_type* a3)
 }
 
 STUB_FUNC(0x4E7FC0)
-char_type Map_0x370::sub_4E7FC0(Fix16 a2, Fix16 a3, Fix16 a4)
+char_type Map_0x370::CheckColumnHasSolidAbove_4E7FC0(Fix16 a2, Fix16 a3, Fix16 a4)
 {
     NOT_IMPLEMENTED;
     return 0;

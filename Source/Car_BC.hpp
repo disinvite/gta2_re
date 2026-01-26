@@ -244,19 +244,19 @@ class Car_6C
     EXPORT ~Car_6C();
 
     // 9.6f inlined
-    inline Car_BC* sub_426E10(Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation, s32 car_info_idx)
+    inline Car_BC* SpawnCar_426E10(Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation, s32 car_info_idx)
     {
         return SpawnCarAt_446230(xpos, ypos, zpos, rotation, car_info_idx, dword_6F77C4);
     }
 
     // 9.6f inlined
-    inline Car_BC* sub_4764A0(Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation, s32 car_info_idx)
+    inline Car_BC* SpawnCar_4764A0(Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation, s32 car_info_idx)
     {
         return SpawnCarAt_446230(xpos, ypos, zpos, rotation, car_info_idx, dword_6F7690);
     }
 
     // unknown inlined function
-    inline Car_BC* sub_446230_shortened(s32 car_info_idx)
+    inline Car_BC* SpawnCar_shortened(s32 car_info_idx)
     {
         return SpawnCarAt_446230(dword_6F77D4, dword_6F77D4, dword_6F77C0, dword_6F804C, car_info_idx, dword_6F77C4);
     }
@@ -374,7 +374,7 @@ class Car_BC
     EXPORT Fix16_Point get_linvel_43A450();
     EXPORT Fix16 GetVelocity_43A4C0();
     EXPORT Fix16 sub_43A590();
-    EXPORT u32* sub_43A5B0(u32* a2);
+    EXPORT Fix16 sub_43A5B0();
     EXPORT void RemoveAllDamage();
     EXPORT bool AllowResprayOrPlates();
     EXPORT bool IsNotCurrentRemap(u8 remap);
@@ -386,27 +386,27 @@ class Car_BC
     EXPORT void sub_43A970();
     EXPORT void SetDriver(Ped* a2);
     EXPORT void sub_43A9F0();
-    EXPORT Car_BC* Deactivate_43AA60();
+    EXPORT void Deactivate_43AA60();
     EXPORT char_type IsThreatToSearchingPed_43AAE0();
     EXPORT char_type sub_43AAF0(Sprite* a2);
     EXPORT void ProcessCarToCarImpact_43ADC0(Sprite* a2);
     EXPORT bool CanExitCar_43AF10();
     EXPORT void sub_43AF40();
     EXPORT void sub_43AF60();
-    EXPORT char_type sub_43AFE0(s32 a2);
+    EXPORT char_type sub_43AFE0(s32 target_door);
     EXPORT bool sub_43B140(s32 a2);
     EXPORT bool sub_43B2B0(Ped* a2);
     EXPORT Car_Door_10* GetDoor(u8 door_idx);
     EXPORT char_type GetRemap();
     EXPORT void sub_43B380();
-    EXPORT char_type sub_43B3D0();
+    EXPORT void sub_43B3D0();
     EXPORT s32 sub_43B420(s32 a2, u32* a3, u32* a4);
     EXPORT bool sub_43B540(u8 targetDoor);
-    EXPORT s32* sub_43B5A0(s32 a2, u32* a3, s32* a4);
+    EXPORT s32* sub_43B5A0(s32 a2, Fix16* a3, Fix16* a4);
     EXPORT char_type sub_43B730();
     EXPORT char_type sub_43B750();
     EXPORT void sub_43B770();
-    EXPORT char_type sub_43B7B0(Car_BC* a2);
+    EXPORT void sub_43B7B0(Car_BC* a2);
     EXPORT bool sub_43B850(s32 a2);
     EXPORT void sub_43B870(s32 a2, s32 a3);
     EXPORT s32 sub_43BB90(u8 a1);
@@ -435,7 +435,7 @@ class Car_BC
     EXPORT Car_BC* sub_43CDF0(char_type a2);
     EXPORT void DamageArea_43CF30(s32 damage_area);
     EXPORT bool IsAreaDamaged_43D1C0(s32 damage_area);
-    EXPORT void sub_43D2C0(char_type a2, s32 a3);
+    EXPORT void TryDamageArea_43D2C0(u8 damage_area, s32 damageAmount);
     EXPORT s32 sub_43D400();
     EXPORT void ExplodeCar_43D690(s32 a3, Fix16 x, Fix16 y);
     EXPORT void sub_43D7B0(s32 a2);
@@ -476,7 +476,7 @@ class Car_BC
     EXPORT void sub_441360();
     EXPORT void sub_4436A0();
     EXPORT void sub_441380();
-    EXPORT char_type sub_4413B0(s32 a2, s32 a3, s32 a4);
+    EXPORT void UpdateTrainCarriagesOnTrack_4413B0(Fix16 xpos, Fix16 ypos, Fix16 zpos);
     EXPORT void sub_441520();
     EXPORT void UpdateBrakeLights_4415C0();
     EXPORT u32* sub_441600(u32* a2);
@@ -500,7 +500,7 @@ class Car_BC
     EXPORT void sub_441A70();
     EXPORT void sub_441B00();
     EXPORT void sub_441B20();
-    EXPORT char_type sub_441B50();
+    EXPORT void sub_441B50();
     EXPORT void sub_441C00();
     EXPORT s16 sub_441D40();
     EXPORT void sub_441E70();
@@ -521,11 +521,11 @@ class Car_BC
     EXPORT char_type TrailerUpdate_443130();
     EXPORT char_type PoolUpdate();
     EXPORT void sub_443330();
-    EXPORT char_type sub_443360(s32 a2, s32 a3, s32 a4, s16 a5);
+    EXPORT bool sub_443360(Sprite* pSprite, Fix16 x, Fix16 y, Ang16 rot);
     EXPORT void sub_4435A0();
     EXPORT s32 GetCrashSoundCategory_4435B0();
     EXPORT void sub_4435F0();
-    EXPORT Car_6C* sub_443710(s32 a2);
+    EXPORT void sub_443710(Fix16_Point* a2);
     EXPORT static s32 __stdcall get_car_weapon_cost_443A50(s32 weapon_kind);
     EXPORT void BuyCarWeapon_4438C0(s32 weapon_kind);
     EXPORT static void __stdcall sub_443AB0(Player* pPlayer, s32 weapon_cost);
@@ -554,7 +554,7 @@ class Car_BC
     EXPORT bool sub_564300();
 
     // Inlined 0x4118d0
-    bool is_driven_by_player() const
+    s32 is_driven_by_player() const
     {
         if (field_54_driver != NULL && field_54_driver->field_15C_player != NULL)
         {
@@ -589,19 +589,24 @@ class Car_BC
         return field_64_pTrailer && field_64_pTrailer->field_C_pCarOnTrailer == pExcludeCar && this != pExcludeCar;
     }
 
+    bool IsCargoCarOf_4BA390(Car_BC* pOther) const
+    {
+        return field_64_pTrailer && field_64_pTrailer->field_8_truck_cab == pOther && this != pOther;
+    }
+
     inline bool IsWithinArea(SCR_Rect_f* rect)
     {
-        Fix16 x_pos = field_50_car_sprite->field_14_xpos.x;
+        Fix16 x_pos = field_50_car_sprite->field_14_xy.x;
         Fix16 width = rect->field_C_size.field_0_x;
         Fix16 y_pos, z_pos;
         Fix16 height;
         Fix16 z_target;
         return (
             x_pos >= rect->field_0_pos.field_0_x - width && x_pos <= rect->field_0_pos.field_0_x + width &&
-            (y_pos = field_50_car_sprite->field_14_xpos.y,
+            (y_pos = field_50_car_sprite->field_14_xy.y,
              height = rect->field_C_size.field_4_y,
              y_pos >= rect->field_0_pos.field_4_y - height) &&
-            field_50_car_sprite->field_14_xpos.y <= rect->field_0_pos.field_4_y + height &&
+            field_50_car_sprite->field_14_xy.y <= rect->field_0_pos.field_4_y + height &&
             (z_pos = field_50_car_sprite->field_1C_zpos, z_target = rect->field_0_pos.field_8_z, z_pos.ToUInt8() == z_target.ToUInt8()));
     }
 
@@ -609,9 +614,9 @@ class Car_BC
     {
         Sprite* pSprite = field_50_car_sprite;
         Fix16 car_z_pos;
-        return (pSprite->field_14_xpos.x >= pos->field_0_x.ToUInt8() && pSprite->field_14_xpos.x < (pos->field_0_x.ToUInt8() + 1)
+        return (pSprite->field_14_xy.x >= pos->field_0_x.ToUInt8() && pSprite->field_14_xy.x < (pos->field_0_x.ToUInt8() + 1)
 
-                && pSprite->field_14_xpos.y >= pos->field_4_y.ToUInt8() && pSprite->field_14_xpos.y < (pos->field_4_y.ToUInt8() + 1)
+                && pSprite->field_14_xy.y >= pos->field_4_y.ToUInt8() && pSprite->field_14_xy.y < (pos->field_4_y.ToUInt8() + 1)
 
                 && (car_z_pos = pSprite->field_1C_zpos, car_z_pos.ToUInt8() == pos->field_8_z.ToUInt8()));
     }
@@ -635,7 +640,7 @@ class Car_BC
         return (gGtx_0x106C_703DD4->get_car_info_5AA3B0(field_84_car_info_idx)->info_flags & 2) == 2;
     }
 
-    bool sub_40F890()
+    bool IsMaxDamage_40F890()
     {
         return field_74_damage == 32001;
     }
@@ -646,25 +651,31 @@ class Car_BC
     }
 
     // 9.6f inline 0x421700
-    inline bool sub_421700()
+    inline bool inline_check_0x2_info_421700()
     {
         return (gGtx_0x106C_703DD4->get_car_info_5AA3B0(field_84_car_info_idx)->info_flags_2 & 2) == 2;
     }
 
     // 9.6f inline 0x421660
-    inline bool sub_421660()
+    inline bool inline_check_0x4_info_421660()
     {
         return (gGtx_0x106C_703DD4->get_car_info_5AA3B0(field_84_car_info_idx)->info_flags & 4) == 4;
     }
 
     // 9.6f inline 0x4216C0
-    inline bool sub_4216C0()
+    inline bool inline_check_0x20_info_4216C0()
     {
         return (gGtx_0x106C_703DD4->get_car_info_5AA3B0(field_84_car_info_idx)->info_flags & 0x20) == 0x20;
     }
 
-    // TODO: Get 9.6f addr
-    inline bool inline_check_0x80_info()
+    // 9.6f inline 0x421680
+    inline bool inline_check_0x40_info_421680()
+    {
+        return (gGtx_0x106C_703DD4->get_car_info_5AA3B0(field_84_car_info_idx)->info_flags & 0x40) == 0x40;
+    }
+
+    // 9.6f inline 0x4216A0
+    inline bool inline_check_0x80_info_4216A0()
     {
         return (gGtx_0x106C_703DD4->get_car_info_5AA3B0(field_84_car_info_idx)->info_flags & 0x80) == 0x80;
     }
@@ -672,7 +683,7 @@ class Car_BC
     // 9.6f inline 0x425650
     inline void sub_425650()
     {
-        if (sub_421700())
+        if (inline_check_0x2_info_421700())
         {
             // clear left and right rear door frames
             field_8_damaged_areas.clear_bit(11);
@@ -687,7 +698,7 @@ class Car_BC
         }
         field_8_damaged_areas.clear_bit(6); // clear left front headlight
         field_8_damaged_areas.clear_bit(23); // clear right front headlight
-        if (sub_421660())
+        if (inline_check_0x4_info_421660())
         {
             field_8_damaged_areas.clear_bit(15); // clear right siren light or roof light
         }
@@ -718,7 +729,7 @@ class Car_BC
     {
         if (!field_8_damaged_areas.mask_bit(2)) // if not front left damage
         {
-            if (sub_421700())
+            if (inline_check_0x2_info_421700())
             {
                 field_8_damaged_areas.set_bit(11); // set left rear door open/close frame 1 ????
             }
@@ -730,7 +741,7 @@ class Car_BC
 
         if (!field_8_damaged_areas.mask_bit(3)) // if not front right damage
         {
-            if (sub_421700())
+            if (inline_check_0x2_info_421700())
             {
                 field_8_damaged_areas.set_bit(28); // set right rear door open/close frame 1 ????
             }
@@ -739,7 +750,7 @@ class Car_BC
                 field_8_damaged_areas.set_bit(23); // set right front headlight
             }
         }
-        if (sub_421660())
+        if (inline_check_0x4_info_421660())
         {
             field_8_damaged_areas.set_bit(15); // set right siren light or roof light
         }
@@ -771,6 +782,11 @@ class Car_BC
     bool sub_4214D0()
     {
         return field_88 == 7;
+    }
+
+    void SetF_88_4214E0()
+    {
+        field_88 = 7;
     }
 
     bool IsGunJeep_411910()
@@ -823,12 +839,12 @@ class Car_BC
 
     Fix16 get_x_41E430()
     {
-        return field_50_car_sprite->field_14_xpos.x;
+        return field_50_car_sprite->field_14_xy.x;
     }
 
     Fix16 get_y_41E440()
     {
-        return field_50_car_sprite->field_14_xpos.y;
+        return field_50_car_sprite->field_14_xy.y;
     }
 
     Fix16 get_z_41E450()
