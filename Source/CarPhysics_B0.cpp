@@ -1,6 +1,7 @@
 #include "CarPhysics_B0.hpp"
 #include "CarInfo_808.hpp"
 #include "Globals.hpp"
+#include "Object_5C.hpp"
 #include "Particle_8.hpp"
 #include "PurpleDoom.hpp"
 #include "Rozza_C88.hpp"
@@ -30,6 +31,9 @@ DEFINE_GLOBAL_INIT(Fix16, dword_6FE1C0, k_dword_6FE210, 0x6FE1C0);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FDFE4, Fix16(0x1333, 0), 0x6FDFE4);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FE0A8, dword_6FDFE4, 0x6FE0A8);
 
+DEFINE_GLOBAL(Fix16, k_dword_6FDF34, 0x6FDF34);
+DEFINE_GLOBAL(Fix16, dword_6FE2E0, 0x6FE2E0);
+
 DEFINE_GLOBAL(Fix16_Point, g_cm1_6FDF10, 0x6FDF10);
 DEFINE_GLOBAL(Fix16, g_cp3_6FDF08, 0x6FDF08);
 DEFINE_GLOBAL(Ang16, g_theta_6FE344, 0x6FE344);
@@ -55,11 +59,23 @@ DEFINE_GLOBAL(Fix16, k_dword_6FE1B8, 0x6FE1B8);
 DEFINE_GLOBAL(Fix16_Point, stru_6FDF50, 0x6FDF50);
 DEFINE_GLOBAL(Fix16, dword_6FE0B0, 0x6FE0B0);
 
-STUB_FUNC(0x559E90)
+MATCH_FUNC(0x559E90)
 Fix16 CarPhysics_B0::ComputeZPosition_559E90()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    if (field_70 > kFP16Zero_6FE20C)
+    {
+        Fix16 cp3 = field_6C_cp3;
+        cp3 += k_dword_6FE210;
+        if (cp3 > k_dword_6FDF34)
+        {
+            cp3 = k_dword_6FDF34;
+        }
+        return cp3;
+    }
+    else
+    {
+        return field_6C_cp3;
+    }
 }
 
 MATCH_FUNC(0x40B560)
@@ -147,20 +163,17 @@ void CarPhysics_B0::set_field_A0_559B90(const s32& a2)
 MATCH_FUNC(0x559ba0)
 void CarPhysics_B0::SpinOutOnOil_559BA0()
 {
-    if (!field_5C_pCar->is_train_model())
+    if (!field_5C_pCar->IsTrainModel_403BA0())
     {
         if (field_A0 != 1 && field_A0 != 2)
         {
-            s32 rndMax = 2;
-            if (stru_6F6784.get_int_4F7AE0((s16*)&rndMax))
+            if (stru_6F6784.get_int_4F7AE0(2))
             {
-                rndMax = 1;
-                set_field_A0_559B90(rndMax);
+                set_field_A0_559B90(1);
             }
             else
             {
-                rndMax = 2;
-                set_field_A0_559B90(rndMax);
+                set_field_A0_559B90(2);
             }
         }
         this->field_A4 = 30;
@@ -192,7 +205,7 @@ void CarPhysics_B0::ScarePedsOnDrivingFast_559C30()
         {
             if (field_5C_pCar->field_54_driver)
             {
-                if (!field_5C_pCar->is_train_model())
+                if (!field_5C_pCar->IsTrainModel_403BA0())
                 {
                     //Fix16 linvel_length = get_car_lin_vel_4754D0();
 
@@ -235,11 +248,19 @@ void CarPhysics_B0::sub_559DD0()
     }
 }
 
-STUB_FUNC(0x559e20)
-u32 CarPhysics_B0::sub_559E20(Object_2C* a2)
+MATCH_FUNC(0x559e20)
+void CarPhysics_B0::sub_559E20(Object_2C* pObj)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    s8 v1;
+    s8 v2;
+    sub_529050(pObj->field_26_varrok_idx, &v1, &v2);
+    stru_6FDF50.x += dword_6FE2E0 * v1;
+    stru_6FDF50.y += dword_6FE2E0 * v2;
+    u32 rng = rng_dword_67AB34->field_0_rng + 15;
+    if (rng > this->field_8_total_damage_q)
+    {
+        this->field_8_total_damage_q = rng;
+    }
 }
 
 STUB_FUNC(0x559ec0)
@@ -452,7 +473,7 @@ void CarPhysics_B0::HandleGravityOnSlope_55AA00()
     }
 
     // Trains ignore slope gravity
-    if (field_5C_pCar->is_train_model())
+    if (field_5C_pCar->IsTrainModel_403BA0())
     {
         return;
     }
@@ -876,11 +897,10 @@ s32 CarPhysics_B0::sub_55F800(Fix16_Point* a2, Fix16_Point* a3, s32 a4)
     return 0;
 }
 
-STUB_FUNC(0x55f930)
-s32 CarPhysics_B0::sub_55F930(Fix16_Point* a2)
+MATCH_FUNC(0x55f930)
+void CarPhysics_B0::sub_55F930(Fix16_Point* a2)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    field_48 += (*a2 * dword_6FE258->field_4_mass);
 }
 
 MATCH_FUNC(0x55f970)

@@ -68,42 +68,6 @@ static inline s32 clamp_z_from_column(s32 height, s32 offset, s32 z_pos)
     }
 }
 
-static inline u8 get_slope_bits(u8& slope_byte) // slope_byte but with its first 2 bits cleared
-{
-    return slope_byte & 0xFCu;
-}
-
-static inline u8 get_slope_idx(u8& slope_byte) // 0 to 63
-{
-    return slope_byte >> 2;
-}
-
-static inline bool is_air_type(u8& slope_byte)
-{
-    return (slope_byte & 3) == 0;
-}
-
-static inline bool is_gradient_slope(u8& slope_byte)
-{
-    u8 slope = get_slope_bits(slope_byte);
-    return slope > 0 && slope < 0xB4u; // slope idx in range 1 to 45
-}
-
-static inline u8 get_block_type(u8& slope_byte)
-{
-    return slope_byte & 3;
-}
-
-static inline bool is_partial_block(s32& slope)
-{
-    return slope >= 0xD4 && slope <= 0xF4;
-}
-
-static inline bool is_diagonal_block(s32& slope)
-{
-    return slope >= 0xC4 && slope <= 0xD0;
-}
-
 static inline u16 get_tile_idx(u16& side_word)
 {
     return side_word & 1023;
@@ -210,7 +174,7 @@ void Init_gmp_slopes_array()
     byte_6F5BA8[61] = gmp_map_slope(0, 0, 0, dword_6F610C, dword_6F610C);
     byte_6F5BA8[62] = gmp_map_slope(0, 0, 0, dword_6F610C, dword_6F610C);
     byte_6F5BA8[63] = gmp_map_slope(0, 0, 0, dword_6F610C, dword_6F610C);
-    printf("Map slopes info array initialized!");
+    printf("Map slopes info array initialized!\n");
 }
 
 MATCH_FUNC(0x452980)
@@ -884,7 +848,7 @@ char_type Map_0x370::sub_4E0120()
 }
 
 STUB_FUNC(0x4E0130)
-char_type Map_0x370::sub_4E0130(s32 a2, s32 a3, s32 a4, s32 a5, u8* a6, char_type a7)
+char_type Map_0x370::CanMoveOntoSlopeTile_4E0130(s32 a2, s32 a3, s32 a4, s32 a5, u8* a6, char_type a7)
 {
     NOT_IMPLEMENTED;
     return 0;

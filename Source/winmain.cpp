@@ -156,9 +156,9 @@ void force_link()
     lewin.GetIdx_4881E0();
     lewin.sub_5645B0(0);
     lewin.PromoteCarInHistory_564610(0, 0);
-    lewin.sub_564680(0);
-    lewin.sub_564710(0, 0);
-    lewin.sub_564790(0);
+    lewin.PushCarInfo_564680(0);
+    lewin.SetKFCarWeapon_564710(0, 0);
+    lewin.SetKFWeapon_564790(0);
     lewin.ClearKFWeapon_5647D0();
     lewin.GetCurrPlayerWeapon_5648F0();
     lewin.sub_564910(0);
@@ -167,7 +167,7 @@ void force_link()
     lewin.SelectNextOrPrevWeapon_5649D0(0, 0);
     lewin.sub_564AD0(0);
     lewin.sub_564B60();
-    lewin.sub_564B80();
+    lewin.CleanupEmptyAmmoWeapons_564B80();
     lewin.sub_564C00();
     lewin.RemovePlayerWeapons_564C50();
     lewin.sub_564CC0();
@@ -209,11 +209,11 @@ void force_link()
     lewin.get_pos_569920(0, 0, 0);
     lewin.ChangeLifeCountByAmount_5699F0(0);
     lewin.sub_569A10();
-    lewin.sub_569C20();
+    lewin.SetScoreTextColour_569C20();
     lewin.sub_569CB0();
     lewin.sub_569E70();
     lewin.GetDeathText_569F00();
-    lewin.sub_569F40();
+    lewin.DisableInputs_569F40();
     lewin.DisableAllControls_569FF0();
     lewin.EnableAllControls_56A000();
     lewin.EnableKFMode_56A010();

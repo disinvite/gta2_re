@@ -7,6 +7,7 @@ class Object_3C;
 class Collide_8;
 class Fix16_Rect;
 class struct_4;
+class Ped;
 
 struct PurpleDoom_C
 {
@@ -27,6 +28,30 @@ struct PurpleDoom_C
 class PurpleDoom
 {
   public:
+    inline Collide_8* sub_446820(s32 x_find, s32 y_pos)
+    {
+        if (y_pos <= 255 && y_pos >= 0)
+        {
+            for (PurpleDoom_C* i = field_0[y_pos]; i; i = i->mpNext)
+            {
+                s32 x_len = i->field_0_x_len;
+
+                if (x_len > x_find)
+                {
+                    return NULL;
+                }
+
+                if (x_len == x_find)
+                {
+                    return i->field_4_p8;
+                }
+            }
+        }
+
+        return NULL;
+    }
+
+    EXPORT void Empty_478A10();
     EXPORT void DrawSpritesClipped_477A40();
     EXPORT void AddToSingleBucket_477AE0(Sprite* pSprite);
     EXPORT void Remove_477B00(Sprite* pSprite);
@@ -53,7 +78,7 @@ class PurpleDoom
     EXPORT ~PurpleDoom();
 
     // height = how many rows to scan downward from gPurpleDoom_start_y_679098
-    EXPORT u32 SearchTileColumnForClosestSprite_478160(u8 height);
+    EXPORT void SearchTileColumnForClosestSprite_478160(u8 height);
 
     // pBucketList = linked list of Collide_8 at a single (x,y) tile
     EXPORT void CheckTileSpritesForClosestMatch_478060(Collide_8* pBucketList);
@@ -63,7 +88,7 @@ class PurpleDoom
     EXPORT void AddToDrawList_478240(s32 left, s32 right, s32 top, s32 bottom);
     EXPORT void DoRemove_4782C0(s32 xpos, s32 ypos, Sprite* pSprite);
 
-private:
+  private:
     EXPORT void AddToColumnBuckets_478370(s32 y_pos, Sprite* pSprite);
     EXPORT void AddToSingleBucket_478440(s32 xpos, s32 ypos, Sprite* pSprite);
     EXPORT void AddToRowBuckets_4784D0(s32 y_pos, Sprite* pSprite);
@@ -89,3 +114,4 @@ EXTERN_GLOBAL(s32, gPurple_top_6F6108);
 EXTERN_GLOBAL(s32, gPurple_bottom_6F5F38);
 
 EXTERN_GLOBAL(Sprite*, gPurpleDoom_exclusion_sprite_678F84);
+EXTERN_GLOBAL(Ped*, gPurpleDoom_ped_678F64);

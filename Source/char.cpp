@@ -1,6 +1,7 @@
 #include "char.hpp"
 #include "Car_BC.hpp"
 #include "Char_Pool.hpp"
+#include "Door_4D4.hpp"
 #include "Game_0x40.hpp"
 #include "Gang.hpp"
 #include "Globals.hpp"
@@ -8,16 +9,17 @@
 #include "Object_3C.hpp"
 #include "Object_5C.hpp"
 #include "Particle_8.hpp"
+#include "PedGroup.hpp"
 #include "Player.hpp"
 #include "Police_7B8.hpp"
 #include "PurpleDoom.hpp"
 #include "Varrok_7F8.hpp"
+#include "Weapon_30.hpp"
 #include "debug.hpp"
 #include "error.hpp"
 #include "frosty_pasteur_0xC1EA8.hpp"
 #include "rng.hpp"
 #include "sprite.hpp"
-#include "Weapon_30.hpp"
 
 DEFINE_GLOBAL(s8, byte_6FDB48, 0x6FDB48);
 DEFINE_GLOBAL(s8, byte_6FDB49, 0x6FDB49);
@@ -27,6 +29,7 @@ DEFINE_GLOBAL(s32, dword_623F44, 0x623F44);
 DEFINE_GLOBAL(Fix16, dword_6FD80C, 0x6FD80C);
 
 DEFINE_GLOBAL_INIT(Ang16, word_6FD936, Ang16(720), 0x6FD936);
+DEFINE_GLOBAL_INIT(Ang16, word_6FD938, Ang16(1260), 0x6FD938);
 
 DEFINE_GLOBAL(u8, byte_6FDB55, 0x6FDB55);
 
@@ -42,14 +45,15 @@ DEFINE_GLOBAL_INIT(Fix16, dword_6FD7A4, Fix16(0x1000, 0), 0x6FD7A4);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD7B0, k_dword_6FD9E4, 0x6FD7B0);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD7C0, k_dword_6FD9E4, 0x6FD7C0);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD7DC, k_dword_6FD9E4, 0x6FD7DC);
-DEFINE_GLOBAL_INIT(Fix16, dword_6FD868, Fix16(256, 0), 0x6FD868);
-DEFINE_GLOBAL_INIT(Fix16, gRunOrJumpSpeed_6FD7D0, dword_6FD9F4* dword_6FD868, 0x6FD7D0);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD868, Fix16(256, 0), 0x6FD868);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD9B4, Fix16(0x2000, 0), 0x6FD9B4);
+DEFINE_GLOBAL_INIT(Fix16, gRunOrJumpSpeed_6FD7D0, dword_6FD9F4* k_dword_6FD868, 0x6FD7D0);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD8B4, k_dword_6FD9E4, 0x6FD8B4);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD8B8, k_dword_6FD9E4, 0x6FD8B8);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD8BC, k_dword_6FD9E4, 0x6FD8BC);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD8D8, Fix16(0xCCC, 0), 0x6FD8D8);
-DEFINE_GLOBAL_INIT(Fix16, dword_6FD870, dword_6FD868 * 2, 0x6FD870);
-DEFINE_GLOBAL_INIT(Fix16, gCollisionRepulsionSpeed_6FD7BC, dword_6FD870, 0x6FD7BC);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD870, k_dword_6FD868 * 2, 0x6FD870);
+DEFINE_GLOBAL_INIT(Fix16, k_CollisionRepulsionSpeed_6FD7BC, dword_6FD870, 0x6FD7BC);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FD9B0, Fix16(0x333, 0), 0x6FD9B0);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FDAE4, dword_6FD9B0, 0x6FDAE4);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD9EC, Fix16(2), 0x6FD9EC);
@@ -59,8 +63,19 @@ DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD9F0, Fix16(3), 0x6FD9F0);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD9F8, Fix16(5), 0x6FD9F8);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD9FC, Fix16(6), 0x6FD9FC);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_6FDA00, Fix16(7), 0x6FDA00);
-DEFINE_GLOBAL_INIT(Fix16, dword_6FDAC8, dword_6FD868 * 6, 0x6FDAC8);
-DEFINE_GLOBAL_INIT(Fix16, dword_6FD99C, dword_6FD868 / dword_6FD9F4, 0x6FD99C);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FDAC8, k_dword_6FD868 * 6, 0x6FDAC8);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FD99C, k_dword_6FD868 / dword_6FD9F4, 0x6FD99C);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD7B8, k_dword_6FD868, 0x6FD7B8);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD7CC, k_dword_6FD9F0* k_dword_6FD868, 0x6FD7CC);
+DEFINE_GLOBAL_INIT(Ang16, k_dword_6FD892, Ang16(48), 0x6FD892);
+
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD8DC, Fix16(0x666, 0), 0x6FD8DC);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FD8E4, Fix16(0x2000, 0), 0x6FD8E4);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FDB28, k_dword_6FD8E4, 0x6FDB28);
+
+DEFINE_GLOBAL(Fix16, k_dword_6FDA9C, 0x6FDA9C);
+
+
 
 DEFINE_GLOBAL(u16, gNumPedsOnScreen_6787EC, 0x6787EC);
 
@@ -75,33 +90,19 @@ DEFINE_GLOBAL(u8, byte_6FDAD8, 0x6FDAD8);
 DEFINE_GLOBAL(u8, byte_6FDAD9, 0x6FDAD9);
 DEFINE_GLOBAL(u8, byte_6FDB57, 0x6FDB57);
 
+DEFINE_GLOBAL_INIT(Ang16, word_6FD808, Ang16(0), 0x6FD808);
+DEFINE_GLOBAL_INIT(Ang16, word_6FD8A2, Ang16(360), 0x6FD8A2);
+DEFINE_GLOBAL_INIT(Ang16, word_6FD940, Ang16(64), 0x6FD940);
+DEFINE_GLOBAL_INIT(Ang16, word_6FD8F8, Ang16(1376), 0x6FD8F8);
+DEFINE_GLOBAL_INIT(Ang16, word_6FD94C, Ang16(1080), 0x6FD94C);
+
+DEFINE_GLOBAL(Ang16, word_6FD8E8, 0x6FD8E8);
+DEFINE_GLOBAL(Ang16, word_6FDB3C, 0x6FDB3C);
+DEFINE_GLOBAL(Ang16, word_6FDA64, 0x6FDA64);
+DEFINE_GLOBAL(Ang16, word_6FD904, 0x6FD904);
+
 EXTERN_GLOBAL(Ang16, word_6FDB34);
 EXTERN_GLOBAL(Ped_List_4, gThreateningPedsList_678468);
-
-// 9.6f inline (TODO: check if it's a Fix16 method)
-static inline void sub_41FC20(Ang16& angle, Fix16& unk, Fix16& ret1, Fix16& ret2)
-{
-    ret1 = unk * Ang16::sine_40F500(angle);
-    ret2 = unk * Ang16::cosine_40F520(angle);
-}
-
-// TODO: provisory functions, they must be referenced to map_0x370.
-// They are not 9.6f inlines but they help reading and understanding the code
-static inline u8 get_slope_bits(u8& slope_byte)
-{
-    return slope_byte & 0xFCu;
-}
-
-static inline bool is_gradient_slope(u8& slope_byte)
-{
-    u8 slope = get_slope_bits(slope_byte);
-    return slope > 0 && slope < 0xB4u; // slope idx in range 1 to 45
-}
-
-static inline bool is_air_type(u8& slope_byte)
-{
-    return (slope_byte & 3) == 0;
-}
 
 //https://decomp.me/scratch/iQH9l
 MATCH_FUNC(0x544F70)
@@ -139,7 +140,7 @@ Char_B4::Char_B4()
     field_6 = 0;
     field_8_ped_state_1 = 11;
     field_C_ped_state_2 = 28;
-    field_10 = 36;
+    field_10_char_state = 36;
     field_14 = word_6FDB34;
     field_16 = 0;
     field_18 = 0;
@@ -163,7 +164,7 @@ Char_B4::Char_B4()
     mpNext = 0;
     field_7C_pPed = 0;
     field_80_sprite_ptr = 0;
-    field_68 = 0;
+    field_68_animation_frame = 0;
     field_69 = 0;
     field_58_flags_bf.b0 = 0;
     field_74 = word_6FDB34;
@@ -172,8 +173,8 @@ Char_B4::Char_B4()
     field_88_obj_2c.sub_5A7010();
     field_8C = k_dword_6FD9E4;
     field_58_flags_bf.b2 = 0;
-    field_6C = 18;
-    field_70 = 0;
+    field_6C_animation_state = 18;
+    field_70_frame_timer = 0;
     field_71 = 0;
     field_90 = k_dword_6FD9E4;
     field_94 = k_dword_6FD9E4;
@@ -209,7 +210,7 @@ void Char_B4::PoolAllocate()
     field_6 = 0;
     field_8_ped_state_1 = 11;
     field_C_ped_state_2 = 28;
-    field_10 = 36;
+    field_10_char_state = 36;
     field_14 = word_6FDB34;
     field_16 = 0;
     field_18 = 0;
@@ -233,7 +234,7 @@ void Char_B4::PoolAllocate()
     field_4A = 500;
     mpNext = 0;
     field_7C_pPed = 0;
-    field_68 = 0;
+    field_68_animation_frame = 0;
     field_69 = 0;
     field_74 = word_6FDB34;
     field_6A = 0;
@@ -242,8 +243,8 @@ void Char_B4::PoolAllocate()
     field_88_obj_2c.sub_5A7010();
     field_8C = k_dword_6FD9E4;
     field_58_flags_bf.b2 = 0;
-    field_6C = 18;
-    field_70 = 0;
+    field_6C_animation_state = 18;
+    field_70_frame_timer = 0;
     field_71 = 0;
     field_90 = k_dword_6FD9E4;
     field_94 = k_dword_6FD9E4;
@@ -290,7 +291,8 @@ bool Char_B4::sub_5451C0()
         return false;
     }
 
-    if (field_C_ped_state_2 != 22 && field_10 != 15 && field_C_ped_state_2 != 27 && !field_7C_pPed->sub_433DA0())
+    if (field_C_ped_state_2 != 22 && field_10_char_state != Char_B4_state::Jumping_15 && field_C_ped_state_2 != 27 &&
+        !field_7C_pPed->sub_433DA0())
     {
         return true;
     }
@@ -307,32 +309,42 @@ void Char_B4::sub_545430()
     field_B0 = 10; // Start screaming timer
 }
 
+MATCH_FUNC(0x46DD50)
+void Char_B4::SetRemap_46DD50(u8 remap)
+{
+    this->field_5_remap = remap;
+    if (remap != 0xFF)
+    {
+        field_80_sprite_ptr->SetRemap(remap);
+    }
+}
+
 MATCH_FUNC(0x5454B0)
 void Char_B4::sub_5454B0()
 {
     field_B0 = -1;
-    field_88_obj_2c.sub_5A7080();
+    field_88_obj_2c.CleanupSpriteList_5A7080();
 }
 
 MATCH_FUNC(0x5454d0)
-void Char_B4::sub_5454D0()
+void Char_B4::DoJump_5454D0()
 {
-    if (field_8_ped_state_1 != 8)
+    if (field_8_ped_state_1 != ped_state_1::immobilized_8)
     {
-        if (field_10 == 15 && field_6C == 5)
+        if (field_10_char_state == Char_B4_state::Jumping_15 && field_6C_animation_state == Char_Anim_state::Jumping_5)
         {
-            if (field_68 >= 5u)
+            if (field_68_animation_frame >= 5u)
             {
-                field_68 = 5;
+                field_68_animation_frame = 5;
                 field_71 = 2;
-                field_70 = 0;
+                field_70_frame_timer = 0;
             }
         }
         else
         {
-            field_10 = 15;
-            field_6C = 5;
-            field_68 = 0;
+            field_10_char_state = Char_B4_state::Jumping_15;
+            field_6C_animation_state = Char_Anim_state::Jumping_5;
+            field_68_animation_frame = 0;
             field_38_velocity = gRunOrJumpSpeed_6FD7D0;
             field_8C = Fix16(field_80_sprite_ptr->field_1C_zpos.ToUInt8());
         }
@@ -464,16 +476,16 @@ void Char_B4::sub_545720(Fix16 a2)
         }
         if (field_A0)
         {
-            if (field_8_ped_state_1 != 9)
+            if (field_8_ped_state_1 != ped_state_1::dead_9)
             {
                 field_80_sprite_ptr->field_28_num = 34;
             }
         }
-        if (field_10 == 15)
+        if (field_10_char_state == Char_B4_state::Jumping_15)
         {
-            if (field_6C != 5 && field_8_ped_state_1 != 9)
+            if (field_6C_animation_state != Char_Anim_state::Jumping_5 && field_8_ped_state_1 != ped_state_1::dead_9)
             {
-                Char_B4::sub_5454D0();
+                Char_B4::DoJump_5454D0();
             }
         }
         else
@@ -557,7 +569,7 @@ void Char_B4::UpdateAnimState_546360()
     Ped* pPed = field_7C_pPed;
     s32 v124 = 0;
 
-    field_70++;
+    field_70_frame_timer++;
 
     Fix16 v129 = k_dword_6FD9E4;
     Fix16 newx = k_dword_6FD9E4;
@@ -636,7 +648,7 @@ void Char_B4::UpdateAnimState_546360()
             {
                 if (pWeapon->field_1C_idx == weapon_type::molotov || pWeapon->field_1C_idx == weapon_type::grenade)
                 {
-                    field_6C = 4;
+                    field_6C_animation_state = 4;
                     bUnknown = 1;
                 }
             }
@@ -671,24 +683,24 @@ void Char_B4::UpdateAnimState_546360()
                 if ((pWeapon->field_1C_idx == weapon_type::molotov || pWeapon->field_1C_idx == weapon_type::grenade) &&
                     pPlayer->field_8D_bWasAttackPressed)
                 {
-                    field_6C = 4;
-                    field_68 = 0;
+                    field_6C_animation_state = 4;
+                    field_68_animation_frame = 0;
                 }
             }
         }
     }
 
-    switch (field_6C)
+    switch (field_6C_animation_state)
     {
         case 0:
-            if (field_70 > 2u)
+            if (field_70_frame_timer > 2u)
             {
-                field_68++;
-                if ((u8)field_68 > 7u)
+                field_68_animation_frame++;
+                if ((u8)field_68_animation_frame > 7u)
                 {
-                    field_68 = 0;
+                    field_68_animation_frame = 0;
                 }
-                field_70 = 0;
+                field_70_frame_timer = 0;
             }
 
             v17 = 37;
@@ -697,29 +709,29 @@ void Char_B4::UpdateAnimState_546360()
                 v17 = 0;
             }
 
-            if (field_10)
+            if (field_10_char_state)
             {
-                newId_ = v17 + baseId + (u8)field_68;
+                newId_ = v17 + baseId + (u8)field_68_animation_frame;
             }
             else
             {
-                if (field_68 > 5u)
+                if (field_68_animation_frame > 5u)
                 {
-                    field_68 = 0;
+                    field_68_animation_frame = 0;
                 }
-                newId_ = (u8)field_68 + baseId + 143;
+                newId_ = (u8)field_68_animation_frame + baseId + 143;
             }
             goto LABEL_277;
 
         case 1:
-            if (field_70 > 1u)
+            if (field_70_frame_timer > 1u)
             {
-                field_68++;
-                if (field_68 > 7u)
+                field_68_animation_frame++;
+                if (field_68_animation_frame > 7u)
                 {
-                    field_68 = 0;
+                    field_68_animation_frame = 0;
                 }
-                field_70 = 0;
+                field_70_frame_timer = 0;
             }
 
             v19 = 37;
@@ -728,17 +740,17 @@ void Char_B4::UpdateAnimState_546360()
                 v19 = 0;
             }
 
-            if (field_10)
+            if (field_10_char_state)
             {
-                newId_ = (u8)field_68 + v19 + baseId + 8;
+                newId_ = (u8)field_68_animation_frame + v19 + baseId + 8;
             }
             else
             {
-                if (field_68 > 5u)
+                if (field_68_animation_frame > 5u)
                 {
-                    field_68 = 0;
+                    field_68_animation_frame = 0;
                 }
-                newId_ = (u8)field_68 + baseId + 135;
+                newId_ = (u8)field_68_animation_frame + baseId + 135;
             }
             goto LABEL_277;
 
@@ -749,13 +761,13 @@ void Char_B4::UpdateAnimState_546360()
             }
 
             s32 v21;
-            if (field_10 == 35)
+            if (field_10_char_state == Char_B4_state::Smoking_35)
             {
                 s32 f70_limit;
-                if (field_68 == 5)
+                if (field_68_animation_frame == 5)
                 {
                     f70_limit = 40;
-                    if (field_70 == 1)
+                    if (field_70_frame_timer == 1)
                     {
                         gParticle_8_6FD5E8->SpawnCigaretteSmokePuff_5406B0(field_80_sprite_ptr, 1);
                     }
@@ -766,31 +778,31 @@ void Char_B4::UpdateAnimState_546360()
                 }
 
                 v21 = 4;
-                if ((u32)field_70 > f70_limit)
+                if ((u32)field_70_frame_timer > f70_limit)
                 {
-                    field_68++;
-                    if ((u8)field_68 > 7u)
+                    field_68_animation_frame++;
+                    if ((u8)field_68_animation_frame > 7u)
                     {
-                        field_68 = 0;
-                        field_10 = 7;
+                        field_68_animation_frame = 0;
+                        field_10_char_state = 7;
                     }
-                    field_70 = 0;
+                    field_70_frame_timer = 0;
                 }
             }
             else
             {
-                if (field_70 > 8u)
+                if (field_70_frame_timer > 8u)
                 {
-                    field_68++;
-                    if ((u8)field_68 > 3u)
+                    field_68_animation_frame++;
+                    if ((u8)field_68_animation_frame > 3u)
                     {
-                        field_68 = 0;
+                        field_68_animation_frame = 0;
                     }
-                    field_70 = 0;
+                    field_70_frame_timer = 0;
                 }
                 v21 = 0;
             }
-            newId_ = (u8)field_68 + v21 + baseId + 53;
+            newId_ = (u8)field_68_animation_frame + v21 + baseId + 53;
             goto LABEL_277;
 
         case 3:
@@ -801,33 +813,33 @@ void Char_B4::UpdateAnimState_546360()
         case 4:
             if (field_38_velocity <= k_dword_6FD7C0)
             {
-                if ((u8)field_70 > 2u)
+                if ((u8)field_70_frame_timer > 2u)
                 {
-                    field_68++;
-                    if ((u8)field_68 > 7u)
+                    field_68_animation_frame++;
+                    if ((u8)field_68_animation_frame > 7u)
                     {
-                        field_68 = 0;
+                        field_68_animation_frame = 0;
                     }
-                    field_70 = 0;
+                    field_70_frame_timer = 0;
                 }
-                newId_ = (u8)field_68 + baseId + 115;
+                newId_ = (u8)field_68_animation_frame + baseId + 115;
             }
             else
             {
-                if ((u8)field_70 > 2u)
+                if ((u8)field_70_frame_timer > 2u)
                 {
-                    field_68++;
-                    if (field_68 > 7u)
+                    field_68_animation_frame++;
+                    if (field_68_animation_frame > 7u)
                     {
-                        field_68 = 0;
+                        field_68_animation_frame = 0;
                     }
-                    field_70 = 0;
+                    field_70_frame_timer = 0;
                 }
-                newId_ = (u8)field_68 + baseId + 123;
+                newId_ = (u8)field_68_animation_frame + baseId + 123;
             }
             goto LABEL_277;
 
-        case 5:
+        case Char_Anim_state::Jumping_5:
             if (field_7C_pPed->field_15C_player)
             {
                 field_71 = 2;
@@ -837,7 +849,7 @@ void Char_B4::UpdateAnimState_546360()
                 field_71 = 1;
             }
 
-            switch (field_68)
+            switch (field_68_animation_frame)
             {
                 case 0:
                     field_54 = 0;
@@ -867,8 +879,8 @@ void Char_B4::UpdateAnimState_546360()
                 case 6:
                 case 7:
                     v129 = *gMap_0x370_6F6268->FindGroundZForCoord_4E5B60(&v129,
-                                                                                this->field_80_sprite_ptr->field_14_xy.x,
-                                                                                this->field_80_sprite_ptr->field_14_xy.y);
+                                                                          this->field_80_sprite_ptr->field_14_xy.x,
+                                                                          this->field_80_sprite_ptr->field_14_xy.y);
                     gMap_0x370_6F6268->UpdateZFromSlopeAtCoord_4E5BF0(field_80_sprite_ptr->field_14_xy.x,
                                                                       field_80_sprite_ptr->field_14_xy.y,
                                                                       v129);
@@ -882,16 +894,16 @@ void Char_B4::UpdateAnimState_546360()
                         dword_6FD7FC -= v109;
                         dword_6FD7FC = SnapZTo16_4F79B0(dword_6FD7FC);
                     LABEL_226:
-                        Char_B4::sub_548590();
+                        Char_B4::ManageZCoordAndSlopes_548590();
                     }
 
                 LABEL_227:
                     field_54++;
-                    v111 = field_68 + baseId + 16;
-                    if (field_70 > (u32)field_71)
+                    v111 = field_68_animation_frame + baseId + 16;
+                    if (field_70_frame_timer > (u32)field_71)
                     {
-                        field_70 = 0;
-                        field_68++;
+                        field_70_frame_timer = 0;
+                        field_68_animation_frame++;
                     }
 
                     field_80_sprite_ptr->set_id_lazy_4206C0(197);
@@ -901,7 +913,7 @@ void Char_B4::UpdateAnimState_546360()
                     {
                         v115 = field_54;
                     LABEL_235:
-                        field_80_sprite_ptr->sub_59E4C0((k_dword_6FD9E8 + ((dword_6FD9A8 * v115))).ToInt(), 0);
+                        field_80_sprite_ptr->sub_59E4C0((k_dword_6FD9E8 + ((dword_6FD9A8 * v115))), 0);
                         return;
                     }
                     if (field_54 < 24)
@@ -912,9 +924,9 @@ void Char_B4::UpdateAnimState_546360()
                     break;
 
                 case 8:
-                    this->field_10 = 1;
-                    this->field_6C = 2;
-                    this->field_68 = 0;
+                    this->field_10_char_state = 1;
+                    this->field_6C_animation_state = 2;
+                    this->field_68_animation_frame = 0;
                     newId = baseId + 23;
                     v129 = *gMap_0x370_6F6268->FindGroundZForCoord_4E5B60(&v129,
                                                                           this->field_80_sprite_ptr->field_14_xy.x,
@@ -931,7 +943,7 @@ void Char_B4::UpdateAnimState_546360()
                     {
                         dword_6FD7FC -= v102;
                         dword_6FD7FC = SnapZTo16_4F79B0(dword_6FD7FC);
-                        Char_B4::sub_548590();
+                        Char_B4::ManageZCoordAndSlopes_548590();
                     }
 
                     if (field_80_sprite_ptr->field_1C_zpos < field_8C)
@@ -947,41 +959,31 @@ void Char_B4::UpdateAnimState_546360()
             }
             return;
 
-        case 6:
+        case Char_Anim_state::Entering_Car_6:
         case 9:
             field_84->field_76 = 0;
-            if ((u8)field_68 > 12u)
+            if ((u8)field_68_animation_frame > 12u)
             {
                 goto LABEL_125;
             }
             break;
 
-        case 7:
+        case Char_Anim_state::Exiting_Car_7:
             field_84->field_76 = 0;
-            switch (field_68)
+            switch (field_68_animation_frame)
             {
                 case 0u:
                     if ((this->field_58_flags & 0x10) != 0)
                     {
                         Car_Door_10* pDoor = field_84->GetDoor(field_7C_pPed->field_24C_target_car_door);
                         pDoor->sub_439E60();
-                        newId_ = baseId + (u8)this->field_68;
+                        newId_ = baseId + (u8)this->field_68_animation_frame;
                         v124 = 0;
-                        CarDoorAlignmentSolver_545AF0(0,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(0, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                     }
                     else
                     {
-                        CarDoorAlignmentSolver_545AF0(7,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(7, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                         v124 = 3;
                         this->field_80_sprite_ptr->field_28_num = 9;
                         newId_ = baseId + 36;
@@ -991,23 +993,13 @@ void Char_B4::UpdateAnimState_546360()
                 case 1u:
                     if ((this->field_58_flags & 0x10) != 0)
                     {
-                        newId_ = baseId + field_68;
+                        newId_ = baseId + field_68_animation_frame;
                         v124 = 0;
-                        CarDoorAlignmentSolver_545AF0(1,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(1, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                     }
                     else
                     {
-                        CarDoorAlignmentSolver_545AF0(6,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(6, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                         v124 = 3;
                         this->field_80_sprite_ptr->field_28_num = 9;
                         newId_ = baseId + 35;
@@ -1017,23 +1009,13 @@ void Char_B4::UpdateAnimState_546360()
                 case 2u:
                     if ((this->field_58_flags & 0x10) != 0)
                     {
-                        newId_ = baseId + field_68;
+                        newId_ = baseId + field_68_animation_frame;
                         v124 = 0;
-                        CarDoorAlignmentSolver_545AF0(2,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(2, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                     }
                     else
                     {
-                        CarDoorAlignmentSolver_545AF0(5,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(5, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                         v124 = 3;
                         this->field_80_sprite_ptr->field_28_num = 9;
                         newId_ = baseId + 34;
@@ -1043,23 +1025,13 @@ void Char_B4::UpdateAnimState_546360()
                 case 3u:
                     if ((this->field_58_flags & 0x10) != 0)
                     {
-                        newId_ = baseId + field_68;
+                        newId_ = baseId + field_68_animation_frame;
                         v124 = 0;
-                        CarDoorAlignmentSolver_545AF0(3,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(3, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                     }
                     else
                     {
-                        CarDoorAlignmentSolver_545AF0(4,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(4, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                         v124 = 3;
                         this->field_80_sprite_ptr->field_28_num = 9;
                         newId_ = baseId + 33;
@@ -1069,14 +1041,9 @@ void Char_B4::UpdateAnimState_546360()
                 case 4u:
                     if ((this->field_58_flags & 0x10) != 0)
                     {
-                        newId_ = baseId + field_68;
+                        newId_ = baseId + field_68_animation_frame;
                         v124 = 0;
-                        CarDoorAlignmentSolver_545AF0(4,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(4, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                         goto LABEL_162;
                     }
                     CarDoorAlignmentSolver_545AF0(0, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
@@ -1085,89 +1052,59 @@ void Char_B4::UpdateAnimState_546360()
                 case 5u:
                     if ((this->field_58_flags & 0x10) != 0)
                     {
-                        newId_ = baseId + field_68;
+                        newId_ = baseId + field_68_animation_frame;
                         v124 = 0;
-                        CarDoorAlignmentSolver_545AF0(5,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(5, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                     }
                     else
                     {
-                        CarDoorAlignmentSolver_545AF0(1,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(1, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                         v124 = 1;
                         this->field_80_sprite_ptr->field_28_num = 23;
-                        newId_ = (u8)this->field_68 + baseId + 24;
+                        newId_ = (u8)this->field_68_animation_frame + baseId + 24;
                     }
                     goto LABEL_162;
                 case 6u:
                     if ((this->field_58_flags & 0x10) != 0)
                     {
-                        newId_ = baseId + field_68;
+                        newId_ = baseId + field_68_animation_frame;
                         v124 = 0;
-                        CarDoorAlignmentSolver_545AF0(6,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(6, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                     }
                     else
                     {
-                        CarDoorAlignmentSolver_545AF0(2,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(2, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                         v124 = 1;
                         this->field_80_sprite_ptr->field_28_num = 23;
-                        newId_ = (u8)this->field_68 + baseId + 24;
+                        newId_ = (u8)this->field_68_animation_frame + baseId + 24;
                     }
                     goto LABEL_162;
                 case 7u:
                     if ((this->field_58_flags & 0x10) != 0)
                     {
-                        newId_ = baseId + field_68;
+                        newId_ = baseId + field_68_animation_frame;
                         v124 = 0;
-                        CarDoorAlignmentSolver_545AF0(7,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(7, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                     }
                     else
                     {
-                        CarDoorAlignmentSolver_545AF0(3,
-                                                      field_84,
-                                                      field_7C_pPed->field_24C_target_car_door,
-                                                      newx,
-                                                      newy,
-                                                      field_40_rotation);
+                        CarDoorAlignmentSolver_545AF0(3, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
                     LABEL_191:
                         v124 = 1;
                         this->field_80_sprite_ptr->field_28_num = 23;
-                        newId_ = (u8)this->field_68 + baseId + 24;
+                        newId_ = (u8)this->field_68_animation_frame + baseId + 24;
                     }
                 LABEL_162:
                     pNewZ = *gMap_0x370_6F6268->sub_4E4E50(&pNewZ, newx, newy, field_84->field_50_car_sprite->field_1C_zpos);
 
                     field_80_sprite_ptr->set_xyz_lazy_420600(newx, newy, pNewZ);
 
-                    if (field_70 > v124)
+                    if (field_70_frame_timer > v124)
                     {
                         goto LABEL_167;
                     }
 
-                    if (field_70 == 1 && !this->field_68)
+                    if (field_70_frame_timer == 1 && !this->field_68_animation_frame)
                     {
                         Car_Door_10* pDoor_ = field_84->GetDoor(field_7C_pPed->field_24C_target_car_door);
                         if ((this->field_58_flags & 0x10) == 0)
@@ -1198,19 +1135,20 @@ void Char_B4::UpdateAnimState_546360()
                     }
                     else
                     {
-                        gmp_block_info* pBlock = gMap_0x370_6F6268->get_block_4DFE10(this->field_80_sprite_ptr->field_14_xy.x.ToInt(),
-                                                                                     this->field_80_sprite_ptr->field_14_xy.y.ToInt(),
-                                                                                     (this->field_80_sprite_ptr->field_1C_zpos.ToInt()) - 1);
+                        gmp_block_info* pBlock =
+                            gMap_0x370_6F6268->get_block_4DFE10(this->field_80_sprite_ptr->field_14_xy.x.ToInt(),
+                                                                this->field_80_sprite_ptr->field_14_xy.y.ToInt(),
+                                                                (this->field_80_sprite_ptr->field_1C_zpos.ToInt()) - 1);
                         if (pBlock && ((pBlock->field_B_slope_type & 0xFC) != 0) && (pBlock->field_B_slope_type & 0xFCu) < 0xB4 &&
                             (pBlock->field_B_slope_type & 3) != 0)
                         {
                             byte_6FDB54 = 1;
-                            Char_B4::sub_548590();
+                            Char_B4::ManageZCoordAndSlopes_548590();
                         }
                         else
                         {
                             byte_6FDB54 = 0;
-                            Char_B4::sub_548590();
+                            Char_B4::ManageZCoordAndSlopes_548590();
                         }
                     }
                     return;
@@ -1222,7 +1160,7 @@ void Char_B4::UpdateAnimState_546360()
             field_84->field_76 = 0;
 
             // Note: was if/else
-            switch (field_68)
+            switch (field_68_animation_frame)
             {
                 case 0: // and default?
                     CarDoorAlignmentSolver_545AF0(4, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
@@ -1242,8 +1180,8 @@ void Char_B4::UpdateAnimState_546360()
             this->field_80_sprite_ptr->field_28_num = 6;
 
             pBlock_ = gMap_0x370_6F6268->get_block_4DFE10(field_80_sprite_ptr->field_14_xy.x.ToInt(),
-                                                                          field_80_sprite_ptr->field_14_xy.y.ToInt(),
-                                                                          field_80_sprite_ptr->field_1C_zpos.ToInt() - 1);
+                                                          field_80_sprite_ptr->field_14_xy.y.ToInt(),
+                                                          field_80_sprite_ptr->field_1C_zpos.ToInt() - 1);
             bUnknown_1 = 0;
             if (pBlock_)
             {
@@ -1254,11 +1192,11 @@ void Char_B4::UpdateAnimState_546360()
                 }
             }
             byte_6FDB54 = bUnknown_1;
-            Char_B4::sub_548590();
-            if (field_70 > 2u)
+            Char_B4::ManageZCoordAndSlopes_548590();
+            if (field_70_frame_timer > 2u)
             {
-                field_70 = 0;
-                field_68 = field_68 + 1;
+                field_70_frame_timer = 0;
+                field_68_animation_frame = field_68_animation_frame + 1;
             }
             newId_ = baseId + 36;
             goto LABEL_277;
@@ -1267,10 +1205,10 @@ void Char_B4::UpdateAnimState_546360()
             newId_ = baseId + 72;
             goto LABEL_277;
 
-        case 11:
-        case 12:
+        case Char_Anim_state::Normal_Fall_11:
+        case Char_Anim_state::Letal_Fall_12:
             field_71 = 1;
-            switch (field_68)
+            switch (field_68_animation_frame)
             {
                 case 0u:
                 case 1u:
@@ -1289,25 +1227,25 @@ void Char_B4::UpdateAnimState_546360()
                 case 0xDu:
                     field_7C_pPed->TakeDamage(4);
                 LABEL_240:
-                    newId_ = field_68 + baseId + 81;
+                    newId_ = field_68_animation_frame + baseId + 81;
                     break;
                 case 0xEu:
                 case 0xFu:
                 case 0x10u:
-                    field_6C = 12;
-                    newId_ = field_68 + baseId + 81;
+                    field_6C_animation_state = Char_Anim_state::Letal_Fall_12;
+                    newId_ = field_68_animation_frame + baseId + 81;
                     break;
                 default:
                     break;
             }
 
-            if (field_70 > (u32)field_71)
+            if (field_70_frame_timer > (u32)field_71)
             {
-                if (field_68 < 16u)
+                if (field_68_animation_frame < 16u)
                 {
-                    field_68++;
+                    field_68_animation_frame++;
                 }
-                field_70 = 0;
+                field_70_frame_timer = 0;
             }
             goto LABEL_277;
 
@@ -1320,76 +1258,74 @@ void Char_B4::UpdateAnimState_546360()
             goto LABEL_277;
 
         case 15:
-            if ((u32)this->field_70 > (u8)(4 - (field_68 > 5u)))
+            if ((u32)this->field_70_frame_timer > (u8)(4 - (field_68_animation_frame > 5u)))
             {
-                field_68++;
-                if (field_68 > 7u)
+                field_68_animation_frame++;
+                if (field_68_animation_frame > 7u)
                 {
-                    s16 max_rng = 2;
-                    s32 rng_val = stru_6F6784.get_int_4F7AE0((s16*)&max_rng);
+                    s32 rng_val = stru_6F6784.get_int_4F7AE0(2);
                     // NOTE: was if else
                     switch (rng_val)
                     {
                         case 0:
-                            field_6C = 19;
+                            field_6C_animation_state = 19;
                             break;
 
                         case 1:
-                            field_6C = 13;
+                            field_6C_animation_state = 13;
                             break;
                     }
-                    field_68 = 7;
+                    field_68_animation_frame = 7;
                 }
             }
-            newId_ = (u8)field_68 + baseId + 65;
+            newId_ = (u8)field_68_animation_frame + baseId + 65;
             goto LABEL_277;
 
         case 16:
-            if ((u32)field_70 > (u8)(4 - (field_68 > 5u)))
+            if ((u32)field_70_frame_timer > (u8)(4 - (field_68_animation_frame > 5u)))
             {
-                field_68++;
-                if (field_68 > 7u)
+                field_68_animation_frame++;
+                if (field_68_animation_frame > 7u)
                 {
-                    s16 max_rng_ = 3;
-                    s32 rng_val_ = stru_6F6784.get_int_4F7AE0((s16*)&max_rng_);
+                    s32 rng_val_ = stru_6F6784.get_int_4F7AE0(3);
                     // NOTE: Was if else
                     switch (rng_val_)
                     {
                         case 0:
-                            field_6C = 14;
+                            field_6C_animation_state = 14;
                             break;
 
                         case 1:
-                            field_6C = 19;
+                            field_6C_animation_state = 19;
                             break;
 
                         case 2:
-                            field_6C = 20;
+                            field_6C_animation_state = 20;
                             break;
                     }
-                    field_68 = 7;
+                    field_68_animation_frame = 7;
                 }
             }
-            newId_ = (u8)field_68 + baseId + 73;
+            newId_ = (u8)field_68_animation_frame + baseId + 73;
             goto LABEL_277;
 
         case 17:
-            if (field_70 > 3u)
+            if (field_70_frame_timer > 3u)
             {
-                field_68++;
-                if ((u8)field_68 > 4u)
+                field_68_animation_frame++;
+                if ((u8)field_68_animation_frame > 4u)
                 {
-                    field_68 = 0;
+                    field_68_animation_frame = 0;
                 }
-                field_70 = 0;
+                field_70_frame_timer = 0;
             }
 
-            if (field_68)
+            if (field_68_animation_frame)
             {
                 field_80_sprite_ptr->field_34 = 2;
             }
             field_80_sprite_ptr->field_28_num = 6;
-            newId_ = (u8)field_68 + baseId + 151;
+            newId_ = (u8)field_68_animation_frame + baseId + 151;
             goto LABEL_277;
         case 19:
             newId_ = baseId + 156;
@@ -1404,7 +1340,7 @@ void Char_B4::UpdateAnimState_546360()
             goto LABEL_277;
     }
 
-    switch (field_68)
+    switch (field_68_animation_frame)
     {
         case 0:
             pDoor___ = field_84->GetDoor(field_7C_pPed->field_24C_target_car_door);
@@ -1412,30 +1348,30 @@ void Char_B4::UpdateAnimState_546360()
             {
                 v124 = 1;
                 pDoor___->sub_439E60();
-                newId_ = baseId + (u8)field_68;
+                newId_ = baseId + (u8)field_68_animation_frame;
                 CarDoorAlignmentSolver_545AF0(7, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
             }
             else
             {
-                if (field_70 == 1)
+                if (field_70_frame_timer == 1)
                 {
                     if (pDoor___->field_4_state)
                     {
                         if (pDoor___->field_4_state != 6)
                         {
-                            field_68 = 4;
+                            field_68_animation_frame = 4;
                             field_71 = 0;
                         }
                     }
                 }
-                CarDoorAlignmentSolver_545AF0(field_68,
+                CarDoorAlignmentSolver_545AF0(field_68_animation_frame,
                                               field_84,
                                               field_7C_pPed->field_24C_target_car_door,
                                               newx,
                                               newy,
                                               field_40_rotation);
                 v124 = 5;
-                newId_ = (u8)field_68 + baseId + 24;
+                newId_ = (u8)field_68_animation_frame + baseId + 24;
             }
             goto LABEL_125;
 
@@ -1445,25 +1381,25 @@ void Char_B4::UpdateAnimState_546360()
             if ((this->field_58_flags & 0x10) != 0)
             {
                 v124 = 1;
-                CarDoorAlignmentSolver_545AF0(7 - field_6C,
+                CarDoorAlignmentSolver_545AF0(7 - field_6C_animation_state,
                                               field_84,
                                               field_7C_pPed->field_24C_target_car_door,
                                               newx,
                                               newy,
                                               field_40_rotation);
                 field_80_sprite_ptr->field_28_num = 9;
-                newId_ = baseId + (u8)field_68;
+                newId_ = baseId + (u8)field_68_animation_frame;
             }
             else
             {
-                CarDoorAlignmentSolver_545AF0(field_6C,
+                CarDoorAlignmentSolver_545AF0(field_6C_animation_state,
                                               field_84,
                                               field_7C_pPed->field_24C_target_car_door,
                                               newx,
                                               newy,
                                               field_40_rotation);
                 v124 = 3;
-                newId_ = (u8)field_68 + baseId + 24;
+                newId_ = (u8)field_68_animation_frame + baseId + 24;
             }
             goto LABEL_125;
 
@@ -1474,18 +1410,18 @@ void Char_B4::UpdateAnimState_546360()
             if ((this->field_58_flags & 0x10) != 0)
             {
                 v124 = 1;
-                CarDoorAlignmentSolver_545AF0(7 - field_6C,
+                CarDoorAlignmentSolver_545AF0(7 - field_6C_animation_state,
                                               field_84,
                                               field_7C_pPed->field_24C_target_car_door,
                                               newx,
                                               newy,
                                               field_40_rotation);
-                newId_ = baseId + (u8)field_68;
+                newId_ = baseId + (u8)field_68_animation_frame;
                 field_80_sprite_ptr->field_28_num = 9;
             }
             else
             {
-                CarDoorAlignmentSolver_545AF0(field_6C,
+                CarDoorAlignmentSolver_545AF0(field_6C_animation_state,
                                               field_84,
                                               field_7C_pPed->field_24C_target_car_door,
                                               newx,
@@ -1493,12 +1429,17 @@ void Char_B4::UpdateAnimState_546360()
                                               field_40_rotation);
                 v124 = 1;
                 field_80_sprite_ptr->field_28_num = 9;
-                newId_ = (u8)field_68 + baseId + 28;
+                newId_ = (u8)field_68_animation_frame + baseId + 28;
             }
             goto LABEL_125;
 
         case 8:
-            CarDoorAlignmentSolver_545AF0(field_6C, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
+            CarDoorAlignmentSolver_545AF0(field_6C_animation_state,
+                                          field_84,
+                                          field_7C_pPed->field_24C_target_car_door,
+                                          newx,
+                                          newy,
+                                          field_40_rotation);
             field_80_sprite_ptr->field_28_num = 9;
             field_7C_pPed->ChangeNextPedState2_45C540(10);
             field_7C_pPed->ChangeNextPedState1_45C500(ped_state_1::in_car_10);
@@ -1509,7 +1450,7 @@ void Char_B4::UpdateAnimState_546360()
         case 9:
             pDriver = field_84->field_54_driver;
             v124 = 2;
-            newId_ = (u8)field_6C + baseId + 19;
+            newId_ = (u8)field_6C_animation_state + baseId + 19;
 
             if (!pDriver)
             {
@@ -1593,7 +1534,7 @@ void Char_B4::UpdateAnimState_546360()
             }
 
         LABEL_123:
-            CarDoorAlignmentSolver_545AF0(field_68,
+            CarDoorAlignmentSolver_545AF0(field_68_animation_frame,
                                           field_84,
                                           field_7C_pPed->get_target_car_door_403A60(),
                                           newx,
@@ -1609,17 +1550,17 @@ void Char_B4::UpdateAnimState_546360()
                 field_40_rotation = field_40_rotation + word_6FD936;
             }
 
-            if (field_70 > v124)
+            if (field_70_frame_timer > v124)
             {
             LABEL_167:
-                field_70 = 0;
-                field_68 = field_68 + 1;
-                if (field_68 == 12)
+                field_70_frame_timer = 0;
+                field_68_animation_frame = field_68_animation_frame + 1;
+                if (field_68_animation_frame == 12)
                 {
-                    field_68 = 4;
+                    field_68_animation_frame = 4;
                 }
             }
-            else if (field_70 == 5 && !field_68)
+            else if (field_70_frame_timer == 5 && !field_68_animation_frame)
             {
                 pDoor = field_84->GetDoor(field_7C_pPed->field_24C_target_car_door);
                 if ((this->field_58_flags & 0x10) == 0)
@@ -1636,23 +1577,153 @@ void Char_B4::UpdateAnimState_546360()
         case 10:
         case 11:
         case 12:
-            CarDoorAlignmentSolver_545AF0(field_6C, field_84, field_7C_pPed->field_24C_target_car_door, newx, newy, field_40_rotation);
+            CarDoorAlignmentSolver_545AF0(field_6C_animation_state,
+                                          field_84,
+                                          field_7C_pPed->field_24C_target_car_door,
+                                          newx,
+                                          newy,
+                                          field_40_rotation);
             v124 = 2;
-            newId_ = (u8)field_68 + baseId + 19;
+            newId_ = (u8)field_68_animation_frame + baseId + 19;
             goto LABEL_125;
     }
 }
 
-STUB_FUNC(0x548590)
-void Char_B4::sub_548590()
+MATCH_FUNC(0x548590)
+void Char_B4::ManageZCoordAndSlopes_548590()
 {
-    NOT_IMPLEMENTED;
+    Fix16 zpos = k_dword_6FD9E4;
+    zpos = field_80_sprite_ptr->field_1C_zpos;
+
+    if (byte_6FDB54 == 1)
+    {
+        zpos -= Fix16(1);
+    }
+    u8 gradient_direction =
+        gMap_0x370_6F6268->UpdateZFromSlopeAtCoord_4E5BF0(field_80_sprite_ptr->field_14_xy.x, field_80_sprite_ptr->field_14_xy.y, zpos);
+
+    if (gradient_direction == NO_GRADIENT_SLOPE_0)
+    {
+        if (field_45)
+        {
+            Fix16 frac = zpos.GetFracValue();
+            zpos = zpos.GetRoundValue();
+
+            if (frac > dword_6FDB28)
+            {
+                zpos += Fix16(1);
+            }
+        }
+        else
+        {
+            field_58_flags_bf.b0 = false;
+            zpos = Fix16(zpos.ToUInt8());
+        }
+        field_45 = 0;
+    }
+    else
+    {
+        field_45 = gradient_direction;
+        field_58_flags_bf.b0 = true;
+    }
+    field_80_sprite_ptr->set_xyz_lazy_420600(field_80_sprite_ptr->field_14_xy.x, field_80_sprite_ptr->field_14_xy.y, zpos);
 }
 
-STUB_FUNC(0x548670)
+// 9.6f 0x499F00
+MATCH_FUNC(0x548670)
 void Char_B4::sub_548670(char_type a2)
 {
-    NOT_IMPLEMENTED;
+    u8 bUnknown; // bl
+    if (this->field_69 == 1 && this->field_20 && this->field_24 != 3)
+    {
+        bUnknown = 1;
+    }
+    else
+    {
+        bUnknown = a2;
+    }
+
+    Sprite* pNearSprite = field_80_sprite_ptr->sub_59E7D0(2);
+    if (pNearSprite)
+    {
+        s32 sprite_type_enum = pNearSprite->field_30_sprite_type_enum;
+        switch (pNearSprite->get_type_416B40())
+        {
+
+            case 3: // char_b4
+                if (bUnknown == byte_623F48)
+                {
+                    this->field_18 = 0;
+                }
+                else
+                {
+                    if (field_7C_pPed->field_238 >= 2 && field_7C_pPed->field_238 <= 6)
+                    {
+                        Char_B4::sub_548BD0(pNearSprite->AsCharB4_40FEA0());
+                        this->field_18 = 0;
+                    }
+                }
+                break;
+
+            case 2: // car
+            {
+                Sprite* pNearSprite2 = field_80_sprite_ptr->sub_59E7D0(1);
+                if (pNearSprite2->get_type_416B40() == 1) // object
+                {
+                    if (pNearSprite2->As2C_40FEC0())
+                    {
+                        Char_B4::sub_548840(pNearSprite2->As2C_40FEC0());
+                        this->field_20 = 3;
+                    }
+                }
+                else
+                {
+                    Char_B4::sub_54A530(pNearSprite->AsCar_40FEB0(), 0, 0);
+                    this->field_20 = 1;
+                }
+                break;
+            }
+            case 1:
+            case 4:
+            case 5: // object
+                Char_B4::sub_548840(pNearSprite->As2C_40FEC0());
+                this->field_20 = 3;
+                break;
+
+            default:
+                return;
+        }
+    }
+    else
+    {
+        if (field_10_char_state != 10)
+        {
+            if (field_10_char_state == Char_B4_state::Colliding_With_Car_27)
+            {
+                this->field_10_char_state = 1;
+                this->field_1C = 0;
+                this->field_20 = 0;
+                this->field_18 = 0;
+            }
+            else
+            {
+                this->field_18 = 0;
+            }
+        }
+        else
+        {
+            this->field_10_char_state = 1;
+            this->field_18 = 0;
+        }
+
+        if (field_38_velocity == k_dword_6FD7C0 || field_7C_pPed->IsField238_45EDE0(2) && !this->field_8_ped_state_1)
+        {
+            this->field_1C = 0;
+            this->field_20 = 0;
+            this->field_69 = 0;
+            this->field_2A = word_6FDB34;
+        }
+    }
 }
 
 STUB_FUNC(0x548840)
@@ -1662,7 +1733,7 @@ void Char_B4::sub_548840(Object_2C* a2)
 }
 
 STUB_FUNC(0x548bd0)
-void Char_B4::sub_548BD0(s32 a2)
+void Char_B4::sub_548BD0(Char_B4* a2)
 {
     NOT_IMPLEMENTED;
 }
@@ -1680,18 +1751,184 @@ char_type Char_B4::sub_54B8F0()
     return 0;
 }
 
-STUB_FUNC(0x54c090)
-s32 Char_B4::sub_54C090()
+WIP_FUNC(0x54c090)
+void Char_B4::sub_54C090()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+
+    s32 AngleFace_4F78F0 = Ang16::GetAngleFace_4F78F0(field_40_rotation);
+    if (!sub_54C1A0(AngleFace_4F78F0))
+    {
+        switch (AngleFace_4F78F0)
+        {
+            case 1:
+                AngleFace_4F78F0 = field_40_rotation > word_6FD8E8;
+                break;
+            case 2:
+                AngleFace_4F78F0 = field_40_rotation > word_6FDB3C;
+                break;
+            case 3:
+                AngleFace_4F78F0 = field_40_rotation > word_6FDA64;
+                break;
+            case 4:
+                AngleFace_4F78F0 = field_40_rotation > word_6FD904;
+                break;
+            default:
+                //v3 = v7;
+                break;
+        }
+
+        switch (AngleFace_4F78F0)
+        {
+            case 1:
+                AngleFace_4F78F0 = AngleFace_4F78F0 + 3;
+                break;
+            case 2:
+                AngleFace_4F78F0 = AngleFace_4F78F0 - 4;
+                break;
+            case 3:
+                AngleFace_4F78F0 = AngleFace_4F78F0 - 2;
+                break;
+            case 4:
+                AngleFace_4F78F0 = AngleFace_4F78F0 + 1;
+                break;
+            default:
+                AngleFace_4F78F0 = 2;
+                break;
+        }
+    }
+
+    field_40_rotation = sub_4F7940(&AngleFace_4F78F0);
+
+    if (field_10_char_state != 15)
+    {
+        this->field_10_char_state = 1;
+    }
+    this->field_46 = 100;
 }
 
-STUB_FUNC(0x54c1a0)
+WIP_FUNC(0x54c1a0)
 char_type Char_B4::sub_54C1A0(s32 a2)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+
+    Sprite* pSprite; // eax
+    Fix16 x_fp; // ebp
+    Fix16 y_fp; // edi
+    s32 y; // edi
+    s32 x; // ebp
+    gmp_block_info* pBlock1; // eax
+    gmp_block_info* pBlock3; // eax
+    gmp_block_info* block2; // eax
+    gmp_block_info* pBlock4; // eax
+    Fix16 zpos_frac; // ecx
+    char_type result; // al
+    char bUnknown; // [esp+12h] [ebp-Eh]
+    u8 v16; // [esp+13h] [ebp-Dh] BYREF
+    s32 tmpZ; // [esp+18h] [ebp-8h]
+    Fix16 zpos; // [esp+1Ch] [ebp-4h]
+
+    u8 slope_type = 0;
+    pSprite = this->field_80_sprite_ptr;
+    bUnknown = 0;
+    x_fp = pSprite->field_14_xy.x;
+    y_fp = pSprite->field_14_xy.y;
+    zpos = pSprite->field_1C_zpos;
+    tmpZ = (zpos.ToInt()) - 1;
+    if (this->field_10_char_state == 15 || this->field_8_ped_state_1 == ped_state_1::dead_9 || field_7C_pPed->IsField238_45EDE0(2) ||
+        this->field_7C_pPed->field_240_occupation == ped_ocupation_enum::drone)
+    {
+        bUnknown = 1;
+    }
+    if ((this->field_58_flags & 1) == 1)
+    {
+        tmpZ = zpos.ToInt();
+    }
+    y = y_fp.ToInt();
+    x = x_fp.ToInt();
+    if (gMap_0x370_6F6268->CanMoveOntoSlopeTile_4E0130(x, y, zpos.ToInt(), a2, &v16, 0))
+    {
+        return 0;
+    }
+    switch (a2)
+    {
+        case 1:
+            pBlock1 = gMap_0x370_6F6268->get_block_4DFE10(x, y - 1, tmpZ);
+            if (!pBlock1)
+            {
+                goto LABEL_18;
+            }
+            slope_type = pBlock1->field_B_slope_type & 3;
+            break;
+        case 2:
+            block2 = gMap_0x370_6F6268->get_block_4DFE10(x, y + 1, tmpZ);
+            if (!block2)
+            {
+                goto LABEL_18;
+            }
+            slope_type = block2->field_B_slope_type & 3;
+            break;
+        case 3:
+            pBlock3 = gMap_0x370_6F6268->get_block_4DFE10(x + 1, y, tmpZ);
+            if (!pBlock3)
+            {
+                goto LABEL_18;
+            }
+            slope_type = pBlock3->field_B_slope_type & 3;
+            break;
+        case 4:
+            pBlock4 = gMap_0x370_6F6268->get_block_4DFE10(x - 1, y, tmpZ);
+            if (pBlock4)
+            {
+                slope_type = pBlock4->field_B_slope_type & 3;
+            }
+            else
+            {
+            LABEL_18:
+                slope_type = 0;
+            }
+            break;
+        default:
+            break;
+    }
+
+    switch (slope_type)
+    {
+        case 0:
+            if ((this->field_58_flags & 1) != 1)
+            {
+                return 0;
+            }
+            zpos_frac = zpos.GetFracValue();
+            if (zpos_frac < k_dword_6FD8DC)
+            {
+                this->field_58_flags &= ~1;
+                result = sub_54C1A0(a2);
+                this->field_58_flags |= 1u;
+                return result;
+            }
+
+            if (zpos_frac <= k_dword_6FD8E4)
+            {
+                return 0;
+            }
+
+            this->field_58_flags &= ~1;
+            this->field_80_sprite_ptr->field_1C_zpos += Fix16(1);
+            result = sub_54C1A0(a2);
+            this->field_80_sprite_ptr->field_1C_zpos -= Fix16(1);
+            this->field_58_flags |= 1u;
+            break;
+        case 1:
+        case 3:
+            return bUnknown != 0;
+        case 2:
+        case 4:
+            return 1;
+        default:
+            return 0;
+    }
+    return result;
 }
 
 STUB_FUNC(0x54c3e0)
@@ -1701,31 +1938,211 @@ char_type Char_B4::sub_54C3E0()
     return 0;
 }
 
-STUB_FUNC(0x54c500)
-char_type Char_B4::sub_54C500(char_type a2, char_type a3)
+// 9.6f 0x495540
+WIP_FUNC(0x54c500)
+char_type Char_B4::sub_54C500(char_type x, char_type y)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+
+    Fix16 tx = field_80_sprite_ptr->field_14_xy.x;
+    char_type dx = x - tx.ToInt();
+    Fix16 ty = field_80_sprite_ptr->field_14_xy.y;
+    char_type dy = y - ty.ToInt();
+
+    // No movement
+    if (dx == 0 && dy == 0)
+    {
+        return 1;
+    }
+
+    // Diagonal movement not allowed
+    if (dx != 0 && dy != 0)
+    {
+        return 0;
+    }
+
+    // Pure horizontal
+    if (dx != 0)
+    {
+        return (dx == -1) ? Char_B4::sub_54C1A0(4) : Char_B4::sub_54C1A0(3);
+    }
+
+    return (dy == -1) ? Char_B4::sub_54C1A0(1) : Char_B4::sub_54C1A0(2);
 }
 
-STUB_FUNC(0x54c580)
+MATCH_FUNC(0x54c580)
 void Char_B4::sub_54C580()
 {
-    NOT_IMPLEMENTED;
+    if (!this->field_46)
+    {
+        switch (byte_6FDB48)
+        {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            {
+                this->field_10_char_state = 1;
+                this->field_6C_animation_state = 0;
+                this->field_46 = stru_6F6784.get_int_4F7AE0(400);
+                break;
+            }
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            {
+                this->field_10_char_state = 3;
+                this->field_6C_animation_state = 0;
+                this->field_46 = stru_6F6784.get_int_4F7AE0(200);
+                break;
+            }
+            case 15:
+            {
+                this->field_10_char_state = 4;
+                this->field_6C_animation_state = 1;
+                this->field_46 = stru_6F6784.get_int_4F7AE0(200);
+                break;
+            }
+            case 20:
+            {
+                this->field_10_char_state = 7;
+                this->field_6C_animation_state = 2;
+                this->field_46 = stru_6F6784.get_int_4F7AE0(200);
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    if (--this->field_46 == 255 && this->field_10_char_state != 25)
+    {
+        this->field_46 = 0;
+    }
 }
 
 STUB_FUNC(0x54c6c0)
-s16 Char_B4::sub_54C6C0(s32 a2)
+void Char_B4::sub_54C6C0()
 {
     NOT_IMPLEMENTED;
-    return 0;
 }
 
-STUB_FUNC(0x54c900)
-s16 Char_B4::sub_54C900(s32 a2)
+STUB_FUNC(0x4056C0)
+EXPORT Ang16 __stdcall ComputeShortestAngleDelta_4056C0(Ang16& a2, Ang16& a3)
 {
     NOT_IMPLEMENTED;
-    return 0;
+    return a2 - a3; // TODO: Buncha other math missing
+}
+
+MATCH_FUNC(0x54c900)
+void Char_B4::sub_54C900()
+{
+    switch (this->field_10_char_state)
+    {
+        case 1:
+            sub_54C6C0();
+            this->field_38_velocity = k_dword_6FD7B8;
+            byte_6FDB51 = 1;
+            byte_6FDB52 = 1;
+            byte_6FDB53 = 0;
+            break;
+
+        case 3:
+            if (this->field_46)
+            {
+                this->field_38_velocity = k_CollisionRepulsionSpeed_6FD7BC;
+                sub_54C6C0();
+            }
+            else
+            {
+                this->field_38_velocity = k_dword_6FD7B8;
+                this->field_10_char_state = 1;
+                this->field_6C_animation_state = 0;
+            }
+            byte_6FDB53 = 0;
+            byte_6FDB51 = 1;
+            byte_6FDB52 = 1;
+            break;
+
+        case 4:
+            if (this->field_46)
+            {
+                this->field_38_velocity = k_dword_6FD7CC;
+                sub_54C6C0();
+            }
+            else
+            {
+                this->field_38_velocity = k_dword_6FD7B8;
+                this->field_10_char_state = 1;
+                this->field_6C_animation_state = 0;
+            }
+            byte_6FDB53 = 0;
+            byte_6FDB51 = 1;
+            byte_6FDB52 = 1;
+            break;
+
+        case 7:
+            if (this->field_46)
+            {
+                this->field_38_velocity = k_dword_6FD7C0;
+                this->field_6C_animation_state = 2;
+                this->field_68_animation_frame = 0;
+            }
+            else
+            {
+                this->field_6C_animation_state = 0;
+                this->field_68_animation_frame = 0;
+                this->field_10_char_state = 1;
+                this->field_38_velocity = k_dword_6FD7B8;
+            }
+            byte_6FDB53 = 0;
+            byte_6FDB51 = 1;
+            byte_6FDB52 = 1;
+            break;
+
+        case 8:
+        case 9:
+            if (!this->field_46)
+            {
+                this->field_46 = 100;
+                field_40_rotation.SnapToAng4_405640();
+                this->field_10_char_state = 1;
+                this->field_6C_animation_state = 0;
+            }
+            byte_6FDB52 = 0;
+            byte_6FDB53 = 0;
+            byte_6FDB51 = 1;
+            break;
+
+        case 25:
+            sub_54CAE0();
+            if (ComputeShortestAngleDelta_4056C0(this->field_40_rotation, this->field_14) < k_dword_6FD892)
+            {
+                this->field_38_velocity = k_dword_6FD7B8;
+                this->field_10_char_state = 1;
+                this->field_6C_animation_state = 0;
+                this->field_46 = 0;
+            }
+            byte_6FDB51 = 0;
+            byte_6FDB52 = 0;
+            byte_6FDB53 = 0;
+            break;
+
+        case 36:
+            this->field_10_char_state = 1;
+            break;
+
+        default:
+            return;
+    }
 }
 
 STUB_FUNC(0x54cae0)
@@ -1744,68 +2161,46 @@ void Char_B4::sub_54CC40()
 MATCH_FUNC(0x54dd70)
 void Char_B4::sub_54DD70()
 {
-    if (this->field_8_ped_state_1 != 9 && this->field_10 != 15)
+    if (this->field_8_ped_state_1 != ped_state_1::dead_9 && this->field_10_char_state != Char_B4_state::Jumping_15)
     {
         sub_5459C0();
 
         if (field_7C_pPed->check_bit_11() && field_7C_pPed->field_21C_bf.b9)
         {
-            if (this->field_6C != 4)
+            if (this->field_6C_animation_state != 4)
             {
-                this->field_6C = 4;
-                this->field_68 = 0;
+                this->field_6C_animation_state = 4;
+                this->field_68_animation_frame = 0;
             }
             else
             {
                 field_7C_pPed->HandleClosePedInteraction_45CAA0();
             }
         }
-        else if (this->field_6C != 4 || this->field_68 == 6)
+        else if (this->field_6C_animation_state != 4 || this->field_68_animation_frame == 6)
         {
             if (field_38_velocity != k_dword_6FD7C0)
             {
-                this->field_6C = field_38_velocity > gCollisionRepulsionSpeed_6FD7BC;
+                this->field_6C_animation_state = field_38_velocity > k_CollisionRepulsionSpeed_6FD7BC;
             }
             else
             {
-                this->field_6C = 2;
+                this->field_6C_animation_state = 2;
             }
         }
     }
 }
 
-// https://decomp.me/scratch/lJG4n
-STUB_FUNC(0x54ddf0)
+// https://decomp.me/scratch/56qkT
+WIP_FUNC(0x54ddf0)
 void Char_B4::state_0_54DDF0()
 {
-    NOT_IMPLEMENTED;
-    s32 v38;
-    bool v3; // zf
-    //int v4; // eax
-    //int v5; // edi
-    //int v15; // edi
-    //u32* v16; // eax
-    //__int32 v18; // eax
-    //int v19; // edi
-    //gmp_block_info* v72; // eax
-    bool v74; // al
-    //int v76; // ebp
-    //Sprite* v79; // ecx
-    //int v80; // eax
-    //__int32 v81; // edx
-    //gmp_block_info* v82; // eax
-    //bool v84; // al
-    //int v85; // [esp-8h] [ebp-38h]
-    //int v86; // [esp-4h] [ebp-34h]
-    char v88; // [esp+12h] [ebp-1Eh]
-    char v89; // [esp+13h] [ebp-1Dh]
-    //char v90; // [esp+13h] [ebp-1Dh]
-    //char v91; // [esp+13h] [ebp-1Dh]
-    //int v92; // [esp+14h] [ebp-1Ch] BYREF
-    s16 v93; // [esp+18h] [ebp-18h] BYREF
-    //int v94; // [esp+1Ch] [ebp-14h]
-    //__int32 field_1C_zpos; // [esp+24h] [ebp-Ch] BYREF
-    //__int64 v97; // [esp+28h] [ebp-8h] BYREF
+    WIP_IMPLEMENTED;
+    bool v3;
+    u8 v74;
+    char v88;
+    char v89;
+    u8 v91;
 
     byte_6FDB51 = 1;
     byte_6FDB52 = 1;
@@ -1818,7 +2213,7 @@ void Char_B4::state_0_54DDF0()
     v89 = 1;
     v88 = 0;
     u8 v87 = 1;
-    v93 = 0;
+    Ang16 v93(0);
     Ang16 v95(0); //v95 = 0;
 
     Fix16 unknown_v97(0);
@@ -1839,7 +2234,7 @@ void Char_B4::state_0_54DDF0()
 
         if (pBlock == NULL || block_type == 0)
         {
-        //LABEL_9:
+            //LABEL_9:
             block_type =
                 gMap_0x370_6F6268->GetBlockTypeAtCoord_420420(dword_6FD7F8.ToInt(), dword_6FD800.ToInt(), dword_6FD7FC.ToInt() - 1);
             pBlock = gMap_0x370_6F6268->get_block_4DFE10(dword_6FD7F8.ToInt(), dword_6FD800.ToInt(), dword_6FD7FC.ToInt() - 1);
@@ -1853,7 +2248,8 @@ void Char_B4::state_0_54DDF0()
         field_58_flags = field_58_flags ^ (v10 ^ (u8)this->field_58_flags) & 1;
         //v5 = this->field_58_flags ^ (v10 ^ (u8)this->field_58_flags) & 1;
         //this->field_58_flags = v5;
-        if (gGtx_0x106C_703DD4->IsElectrifiedFloorType_491F80(pBlock->field_8_lid & 0x3FF) && field_10 != 15)
+        if (gGtx_0x106C_703DD4->IsElectrifiedFloorType_491F80(pBlock->field_8_lid & 0x3FF) &&
+            field_10_char_state != Char_B4_state::Jumping_15)
         {
             //if ((field_7C_pPed->field_21C & 0x8000000) == 0)
             if (field_7C_pPed->field_21C_bf.b27 == 0)
@@ -1885,11 +2281,11 @@ void Char_B4::state_0_54DDF0()
     {
         if (field_7C_pPed->field_15C_player && field_7C_pPed->get_fieldC_45C9B0() < k_dword_6FD9E4 || (field_58_flags & 8) != 0)
         {
-            sub_41FC20(field_40_rotation + word_6FD936, dword_6FDAC8, ret1, ret2);
+            Ang16::sub_41FC20(field_40_rotation + word_6FD936, dword_6FDAC8, ret1, ret2);
         }
         else
         {
-            sub_41FC20(field_40_rotation, dword_6FDAC8, ret1, ret2);
+            Ang16::sub_41FC20(field_40_rotation, dword_6FDAC8, ret1, ret2);
         }
         // ......
 
@@ -1913,20 +2309,21 @@ void Char_B4::state_0_54DDF0()
 
         // OBS: are ret1.ToInt(), ret2.ToInt() swapped?
         block_type = gMap_0x370_6F6268->GetBlockTypeAtCoord_420420(ret1.ToInt(), ret2.ToInt(), zpos);
-        if (block_type == 0)
+        if (block_type == AIR)
         {
-            if (field_10 != 15)
+            if (field_10_char_state != Char_B4_state::Jumping_15)
             {
+                // Ped is falling
             LABEL_44:
-                field_6C = 11;
-                field_68 = 0;
-                field_7C_pPed->ChangeNextPedState1_45C500(8);
-                field_7C_pPed->ChangeNextPedState2_45C540(19);
-                field_8_ped_state_1 = 8;
-                field_C_ped_state_2 = 19;
+                field_6C_animation_state = Char_Anim_state::Normal_Fall_11;
+                field_68_animation_frame = 0;
+                field_7C_pPed->ChangeNextPedState1_45C500(ped_state_1::immobilized_8);
+                field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::falling_19);
+                field_8_ped_state_1 = ped_state_1::immobilized_8;
+                field_C_ped_state_2 = ped_state_2::falling_19;
                 if (field_7C_pPed->field_15C_player)
                 {
-                    // inline here
+                    // inline here ???
                     if (field_7C_pPed->get_fieldC_45C9B0() < k_dword_6FD9E4 || (field_58_flags & 8) != 0)
                     {
                         field_38_velocity = -field_38_velocity;
@@ -1941,59 +2338,34 @@ void Char_B4::state_0_54DDF0()
                 Char_B4::state_8_5520A0();
                 return;
             }
-            if (this->field_68 == 7 || (this->field_7C_pPed->field_21C & 0x800) != 0)
+            if (this->field_68_animation_frame == 7 || this->field_7C_pPed->field_21C_bf.b11 != 0)
             {
-                this->field_10 = 1;
+                this->field_10_char_state = 1;
                 field_7C_pPed->field_21C_bf.b11 = 0;
-                /*
-                v22 = this->field_7C_pPed;
-                this->field_10 = 1;
-                v23 = v22->field_21C;
-                BYTE1(v23) &= ~8u;
-                v22->field_21C = v23;
-                */
                 goto LABEL_44;
             }
         }
     }
 
     field_44 = block_type;
-    field_7C_pPed->IsField238_45EDE0(2);
-
-    // ...
-
-//LABEL_51:
-    //v27 = this->field_7C_pPed;
-    this->field_44 = block_type;
-    bool v28 = field_7C_pPed->IsField238_45EDE0(2);
     Fix16 field_1C_zpos = dword_6FDAC8;
-    if (v28)
+    if (field_7C_pPed->IsField238_45EDE0(2) == true)
     {
-        if (this->field_10)
+        if (this->field_10_char_state)
         {
             this->field_46 = 9999;
         }
-        field_40_rotation = field_40_rotation + field_7C_pPed->get_field8_45C900();
+        field_40_rotation += field_7C_pPed->get_field8_45C900();
 
-        if (this->field_10 == 15)
+        if (this->field_10_char_state == Char_B4_state::Jumping_15)
         {
             field_7C_pPed->field_21C_bf.b11 = 0;
-            /*
-            v29 = this->field_7C_pPed;
-            v30 = v29->field_21C;
-            BYTE1(v30) &= ~8u;
-            v29->field_21C = v30;
-            */
-            if (this->field_6C != tile_spec::electrified_floor)
+            if (this->field_6C_animation_state != 5)
             {
-                this->field_6C = tile_spec::electrified_floor;
-                this->field_68 = 0;
+                this->field_6C_animation_state = 5;
+                this->field_68_animation_frame = 0; // line 4b2
             }
-            if (field_7C_pPed->get_fieldC_45C9B0() <= k_dword_6FD9E4)
-            {
-                this->field_38_velocity = gRunOrJumpSpeed_6FD7D0;
-            }
-            else
+            if (field_7C_pPed->get_fieldC_45C9B0() > k_dword_6FD9E4)
             {
                 if (field_38_velocity == k_dword_6FD7C0)
                 {
@@ -2001,44 +2373,38 @@ void Char_B4::state_0_54DDF0()
                 }
                 else
                 {
-                    if (field_38_velocity >= field_3C_run_or_jump_speed)
+                    if (field_38_velocity < field_3C_run_or_jump_speed)
+                    {
+                        this->field_38_velocity += dword_6FD99C;
+                    }
+                    else
                     {
                         if (field_38_velocity > field_3C_run_or_jump_speed)
                         {
                             this->field_38_velocity -= dword_6FD99C;
                         }
                     }
-                    else
-                    {
-                        this->field_38_velocity += dword_6FD99C;
-                    }
                 }
+            }
+            else
+            {
+                this->field_38_velocity = gRunOrJumpSpeed_6FD7D0;
             }
         }
         else
         {
-            if (field_7C_pPed->get_fieldC_45C9B0() > k_dword_6FD9E4)
+            if (field_7C_pPed->get_fieldC_45C9B0() > k_dword_6FD9E4) // line 53c
             {
-                //v33 = this->field_38_velocity;
                 if (field_38_velocity == k_dword_6FD7C0)
                 {
-                    //v34 = this->field_58_flags;
-                    //LOBYTE(v34) = v34 & 0xF7;
                     this->field_38_velocity = this->field_3C_run_or_jump_speed;
-                    //this->field_58_flags = v34;
                     field_58_flags &= 0xF7;
                 }
                 else
                 {
-                    //v35 = this->field_3C;
                     if (field_38_velocity < field_3C_run_or_jump_speed)
                     {
                         this->field_38_velocity += dword_6FD99C;
-                        /*
-                        v36 = this->field_58_flags;
-                        LOBYTE(v36) = v36 & 0xF7;
-                        this->field_58_flags = v36;
-                        */
                         field_58_flags &= 0xF7;
                     }
                     else
@@ -2047,11 +2413,6 @@ void Char_B4::state_0_54DDF0()
                         {
                             this->field_38_velocity -= dword_6FD99C;
                         }
-                        /*
-                        v37 = this->field_58_flags;
-                        LOBYTE(v37) = v37 & 0xF7;
-                        this->field_58_flags = v37;
-                        */
                         field_58_flags &= 0xF7;
                     }
                 }
@@ -2060,21 +2421,10 @@ void Char_B4::state_0_54DDF0()
             {
                 if (field_7C_pPed->get_fieldC_45C9B0() < k_dword_6FD9E4)
                 {
-                    v38 = this->field_58_flags | 8;
                     v95 = this->field_40_rotation;
-                    this->field_58_flags = v38;
-                    /*
-                    for (this->field_40_rotation += word_6FD936; this->field_40_rotation < 0; this->field_40_rotation += 1440)
-                    {
-                        ;
-                    }
-                    for (; this->field_40_rotation >= 1440; this->field_40_rotation -= 1440)
-                    {
-                        ;
-                    }
-                    */
+                    this->field_58_flags = this->field_58_flags | 8;
                     field_40_rotation += word_6FD936;
-                    //v39 = this->field_38_velocity;
+
                     if (field_38_velocity == k_dword_6FD7C0)
                     {
                         v87 = 0;
@@ -2082,19 +2432,18 @@ void Char_B4::state_0_54DDF0()
                     }
                     else
                     {
-                        //v40 = this->field_3C;
-                        if (field_38_velocity >= field_3C_run_or_jump_speed)
+                        if (field_38_velocity < field_3C_run_or_jump_speed)
+                        {
+                            v87 = 0;
+                            this->field_38_velocity += dword_6FD99C;
+                        }
+                        else
                         {
                             if (field_38_velocity > field_3C_run_or_jump_speed)
                             {
                                 this->field_38_velocity -= dword_6FD99C;
                             }
                             v87 = 0;
-                        }
-                        else
-                        {
-                            v87 = 0;
-                            this->field_38_velocity += dword_6FD99C;
                         }
                     }
                 }
@@ -2104,40 +2453,34 @@ void Char_B4::state_0_54DDF0()
                     {
                         byte_6FDB51 = 0;
                         byte_6FDB52 = 0;
-                        field_40_rotation = this->field_40_rotation;
-                        this->field_40_rotation = this->field_74;
                         v95 = field_40_rotation;
+                        this->field_40_rotation = this->field_74;
+
                         v87 = 0;
-                        this->field_38_velocity = gCollisionRepulsionSpeed_6FD7BC;
+                        this->field_38_velocity = k_CollisionRepulsionSpeed_6FD7BC;
                     }
                     else
                     {
                         this->field_38_velocity = k_dword_6FD7C0;
-                        if (this->field_10)
+                        if (this->field_10_char_state)
                         {
-                            this->field_10 = 7;
+                            this->field_10_char_state = 7;
                         }
                     }
                 }
             }
         }
 
-        if ((this->field_7C_pPed->field_21C & 0x100) != 0)
+        if (this->field_7C_pPed->field_21C_bf.b8 != 0) // line 69a
         {
-            this->field_38_velocity = gCollisionRepulsionSpeed_6FD7BC;
+            this->field_38_velocity = k_CollisionRepulsionSpeed_6FD7BC;
         }
     }
     else
     {
-        if (this->field_69 || this->field_10 == 15)
+        if (this->field_69 || this->field_10_char_state == Char_B4_state::Jumping_15) // line 6b1
         {
-            //v45 = this->field_7C_pPed;
             v89 = 0;
-            /*
-            v46 = v45->field_21C;
-            BYTE1(v46) &= ~8u;
-            v45->field_21C = v46;
-            */
             field_7C_pPed->field_21C_bf.b11 = 0; // TODO: Check it
             byte_6FDB51 = 0;
             byte_6FDB52 = 0;
@@ -2148,90 +2491,43 @@ void Char_B4::state_0_54DDF0()
             {
                 byte_6FDB51 = 0;
                 byte_6FDB52 = 0;
-                //v42 = this->field_40_rotation;
+                v95 = field_40_rotation;
                 this->field_40_rotation = this->field_74;
                 v89 = 0;
-                v95 = field_40_rotation;
-                this->field_38_velocity = gCollisionRepulsionSpeed_6FD7BC;
+                this->field_38_velocity = k_CollisionRepulsionSpeed_6FD7BC;
                 v87 = 0;
             }
             if (this->field_38_velocity < k_dword_6FD7C0)
             {
+                // line 367 on 9.6f IDA
                 field_40_rotation = field_40_rotation + word_6FD936;
                 field_58_flags = field_58_flags | 0x8;
-                // TODO: abs Ang16
+                field_38_velocity = Fix16::Abs(field_38_velocity);
                 v87 = 0;
-                /*
-                v95 = this->field_40_rotation;
-                LOWORD(v5) = dword_6FD936 + v95;
-                if ((__int16)(dword_6FD936 + v95) < 0)
-                {
-                    LOWORD(v5) = 1440 * ((1439 - (__int16)v5) / 0x5A0u) + v5;
-                }
-                if ((__int16)v5 >= 1440)
-                {
-                    LOWORD(v5) = (__int16)v5 % 0x5A0u;
-                }
-                v43 = this->field_58_flags;
-                this->field_40_rotation = v5;
-                this->field_58_flags = v43 | 8;
-                v44 = this->field_38_velocity;
-                if (v44 <= 0)
-                {
-                    v44 = -v44;
-                }
-                this->field_38_velocity = v44;
-                v87 = 0;
-                */
             }
         }
-        //v47 = this->field_10;
-        if (field_10)
+        if (field_10_char_state)
         {
-            if (field_10 != 15 && this->field_8_ped_state_1 != 9)
+            if (field_10_char_state != 15 && this->field_8_ped_state_1 != 9)
             {
-                s32 objective;
                 switch (block_type)
                 {
-                    case 1:
-                    case 3:
-                        objective = field_7C_pPed->field_258_objective;
-                        if (objective == objectives_enum::no_obj_0 || objective == objectives_enum::objective_8)
+                    case ROAD: // 1
+                    case FIELD: // 3
+                        if (field_7C_pPed->get_objective_403A80() == objectives_enum::no_obj_0 ||
+                            field_7C_pPed->get_objective_403A80() == objectives_enum::objective_8)
                         {
                             field_7C_pPed->sub_463830(17, 9999);
                         }
                         break;
                     default:
-                        if (this->field_C_ped_state_2 == 0)
+                        if (this->field_C_ped_state_2 == 0 && v89)
                         {
-                            if (v89)
-                            {
-                                //Char_B4::sub_54C580();
-                                //Char_B4::sub_54C900();
-                            }
+                            Char_B4::sub_54C580();
+                            Char_B4::sub_54C900();
                         }
                         break;
                 }
-
-                /*
-                if ((u8)v94 == 1 || (u8)v94 == 3)
-                {
-                    //v48 = this->field_7C_pPed;
-                    s32 objective = field_7C_pPed->field_258_objective;
-                    if (objective == objectives_enum::no_obj_0 || objective == objectives_enum::objective_8)
-                    {
-                        field_7C_pPed->sub_463830(17, 9999);
-                    }
-                }
-                else if (this->field_C_ped_state_2 == 0)
-                {
-                    if (v89)
-                    {
-                        Char_B4::sub_54C580();
-                        Char_B4::sub_54C900(v5);
-                    }
-                }
-                */
             }
         }
     }
@@ -2245,24 +2541,21 @@ void Char_B4::state_0_54DDF0()
         field_58_flags &= 0xF7;
     }
 
-    //field_40_rotation->table_mul_41FC20();
-    /*
-    p_field_40_rotation = &this->field_40_rotation;
-    v52 = this->field_40_rotation;
-    v53 = gSine_table_667A80[v52];
-    v94 = gCosine_table_669260[v52];
-    HIDWORD(v97) = field_1C_zpos >> 31;
-    v54 = dword_6FD7F8 + this->field_4C + ((v53 * (__int64)field_1C_zpos) >> 14);
-    v55 = dword_6FD800 + this->field_50 + ((v94 * (__int64)field_1C_zpos) >> 14);
+    // line 401 on 9.6f IDA
+    Ang16::sub_41FC20(field_40_rotation, dword_6FDAC8, ret1, ret2);
+
+    ret1 += dword_6FD7F8 + this->field_4C;
+    ret2 += dword_6FD800 + this->field_50;
+
     if (Char_B4::sub_5532C0())
     {
         goto LABEL_148;
     }
-    if (field_7C_pPed->sub_45EDE0(2))
+    if (field_7C_pPed->IsField238_45EDE0(2))
     {
         v88 = 1;
-        word_6FD808 = *p_field_40_rotation;
-        v90 = Char_B4::sub_54EF60(v54 >> 14, v55 >> 14);
+        word_6FD808 = field_40_rotation;
+        u8 v90 = Char_B4::sub_54EF60(ret1.ToInt(), ret2.ToInt());
         if (gMap_0x370_6F6268->sub_4E0110() != 1 && !v90)
         {
             Char_B4::sub_54CC40();
@@ -2271,116 +2564,67 @@ void Char_B4::state_0_54DDF0()
         }
         goto LABEL_148;
     }
-    v91 = Char_B4::sub_54C500(v54 >> 14, v55 >> 14);
-    */
+    v91 = Char_B4::sub_54C500(ret1.ToInt(), ret2.ToInt()); //(v54 >> 14, v55 >> 14);
+
     if (byte_6FDB51)
     {
         Char_B4::sub_54C3E0();
     }
-    /*
+
     if (v91 == 1)
     {
         v88 = 1;
         if (byte_6FDB52)
         {
-            v93 = *p_field_40_rotation;
-            sub_405640(&v93);
-            v56 = (__int16)(word_6FD8A2 + v93) < 0;
-            v57 = word_6FD8A2 + v93;
+            v93 = field_40_rotation;
+            v93.SnapToAng4_405640();
             v93 += word_6FD8A2;
-            if (v56)
+            Fix16 xpos_3;
+            Fix16 ypos_3;
+            Ang16::sub_41FC20(v93, dword_6FD9B4, xpos_3, ypos_3);
+
+            xpos_3 += dword_6FD7F8;
+            ypos_3 += dword_6FD800;
+
+            if (Char_B4::sub_54C500(xpos_3.ToInt(), ypos_3.ToInt()) == 1)
             {
-                v57 += 1440 * ((1439 - v57) / 0x5A0u);
-                v93 = v57;
-            }
-            if (v57 >= 1440)
-            {
-                v57 %= 0x5A0u;
-                v93 = v57;
-            }
-            v58 = v57;
-            v59 = gSine_table_667A80[v58];
-            field_1C_zpos = gCosine_table_669260[v58];
-            HIDWORD(v97) = dword_6FD9B4 >> 31;
-            if (Char_B4::sub_54C500(
-                                    (int)(dword_6FD7F8 + ((v59 * (__int64)dword_6FD9B4) >> 14)) >> 14,
-                                    (int)(dword_6FD800 + ((field_1C_zpos * (__int64)dword_6FD9B4) >> 14)) >> 14) == 1)
-            {
-                v93 = *p_field_40_rotation;
-                sub_405640(&v93);
-                v56 = (__int16)(dword_6FD94C + v93) < 0;
-                v60 = dword_6FD94C + v93;
-                v93 += dword_6FD94C;
-                if (v56)
+                v93 = field_40_rotation;
+                v93.SnapToAng4_405640();
+                v93 += word_6FD94C;
+
+                Fix16 xpos_4;
+                Fix16 ypos_4;
+
+                Ang16::sub_41FC20(v93, dword_6FD9B4, xpos_4, ypos_4);
+
+                xpos_4 += dword_6FD7F8;
+                ypos_4 += dword_6FD800;
+
+                if (!Char_B4::sub_54C500(xpos_4.ToInt(), ypos_4.ToInt()))
                 {
-                    v60 += 1440 * ((1439 - v60) / 0x5A0u);
-                    v93 = v60;
+                    sub_4923D0();
                 }
-                if (v60 >= 1440)
-                {
-                    v60 %= 0x5A0u;
-                    v93 = v60;
-                }
-                v61 = v60;
-                v62 = gSine_table_667A80[v61];
-                field_1C_zpos = gCosine_table_669260[v61];
-                HIDWORD(v97) = dword_6FD9B4 >> 31;
-                if (Char_B4::sub_54C500((int)(dword_6FD7F8 + ((v62 * (__int64)dword_6FD9B4) >> 14)) >> 14,
-                                        (int)(dword_6FD800 + ((field_1C_zpos * (__int64)dword_6FD9B4) >> 14)) >> 14))
-                {
-                    goto LABEL_148;
-                }
-                sub_405640(&this->field_40_rotation);
-                for (*p_field_40_rotation += word_6FD940; *p_field_40_rotation < 0; *p_field_40_rotation += 1440)
-                {
-                    ;
-                }
-                for (; *p_field_40_rotation >= 1440; *p_field_40_rotation -= 1440)
-                {
-                    ;
-                }
-                this->field_10 = 9;
             }
             else
             {
-                sub_405640(&this->field_40_rotation);
-                for (*p_field_40_rotation += word_6FD8F8; *p_field_40_rotation < 0; *p_field_40_rotation += 1440)
-                {
-                    ;
-                }
-                for (; *p_field_40_rotation >= 1440; *p_field_40_rotation -= 1440)
-                {
-                    ;
-                }
-                this->field_10 = 8;
+                sub_4923A0();
             }
-            this->field_46 = 10;
         }
     LABEL_148:
         field_80_sprite_ptr = this->field_80_sprite_ptr;
-        v64 = *p_field_40_rotation;
-        v65 = gSine_table_667A80[v64];
-        field_1C_zpos = field_80_sprite_ptr->field_1C_zpos;
-        v94 = v65;
-        v66 = gCosine_table_669260[v64];
-        v67 = this->field_38_velocity;
-        v97 = v67;
-        v68 = this->field_50 + field_80_sprite_ptr->field_18_ypos + ((v66 * (__int64)v67) >> 14);
-        field_14_xpos = field_80_sprite_ptr->field_14_xpos;
-        v70 = this->field_4C + field_14_xpos + ((v94 * v97) >> 14);
-        if (field_14_xpos != v70 || field_80_sprite_ptr->field_18_ypos != v68 || field_80_sprite_ptr->field_1C_zpos != field_1C_zpos)
-        {
-            field_80_sprite_ptr->field_14_xpos = v70;
-            v71 = field_1C_zpos;
-            field_80_sprite_ptr->field_18_ypos = v68;
-            field_80_sprite_ptr->field_1C_zpos = v71;
-            Sprite::sub_59E7B0(field_80_sprite_ptr);
-        }
-        goto LABEL_152;
+
+        Ang16::sub_41FC20(field_40_rotation, field_38_velocity, ret1, ret2);
+        ret1 += field_4C;
+        ret2 += field_50;
+        field_80_sprite_ptr->set_xyz_lazy_420600(field_80_sprite_ptr->field_14_xy.x + ret1,
+                                                 field_80_sprite_ptr->field_14_xy.y + ret2,
+                                                 field_80_sprite_ptr->field_1C_zpos);
     }
-    */
-    Char_B4::sub_54C090();
-//LABEL_152:
+    else
+    {
+        Char_B4::sub_54C090();
+    }
+LABEL_152:
     field_4C = k_dword_6FD9E4;
     field_50 = k_dword_6FD9E4;
     if (v88 == 1 || (field_58_flags & 1) == 1)
@@ -2399,7 +2643,7 @@ void Char_B4::state_0_54DDF0()
             }
         }
         byte_6FDB54 = v74;
-        Char_B4::sub_548590();
+        Char_B4::ManageZCoordAndSlopes_548590();
     }
 
     Char_B4::sub_548670(byte_6FDB56);
@@ -2410,55 +2654,23 @@ void Char_B4::state_0_54DDF0()
         {
             if (Char_B4::sub_54B8F0() == 1)
             {
-
                 if (dword_6FD7F8.ToInt() != field_80_sprite_ptr->field_14_xy.x.ToInt() ||
                     dword_6FD800.ToInt() != field_80_sprite_ptr->field_14_xy.y.ToInt())
                 {
-                    if (field_80_sprite_ptr->field_14_xy.x != dword_6FD7F8 || field_80_sprite_ptr->field_14_xy.y != dword_6FD800 ||
-                        field_80_sprite_ptr->field_1C_zpos != dword_6FD7FC)
-                    {
-                        field_80_sprite_ptr->field_14_xy.x = dword_6FD7F8;
-                        field_80_sprite_ptr->field_14_xy.y = dword_6FD800;
-                        field_80_sprite_ptr->field_1C_zpos = dword_6FD7FC;
-                        field_80_sprite_ptr->ResetZCollisionAndDebugBoxes_59E7B0();
-                    }
+                    field_80_sprite_ptr->set_xyz_lazy_420600(dword_6FD7F8, dword_6FD800, dword_6FD7FC);
 
-                    // ...
-                    /////v86 = v94;
-                    /////v85 = v92;
                     field_45 = dword_6FD7B0.ToInt(); //dword_6FD7B0 >> 14;
                     //////if (Char_B4::sub_550090(v85, v86))
-                    if (Char_B4::sub_550090(0, 0))
+                    if (Char_B4::sub_550090(field_80_sprite_ptr->field_14_xy.x.ToInt(), field_80_sprite_ptr->field_14_xy.y.ToInt()))
                     {
-                        /*
-                        v79 = this->field_80_sprite_ptr;
-                        v80 = dword_6FD7FC;
-                        if (v79->field_14_xpos != v76 
-                            || v79->field_18_ypos != field_1C_zpos 
-                            || v79->field_1C_zpos != dword_6FD7FC)
-                        {
-                            v81 = field_1C_zpos;
-                            v79->field_14_xpos = v76;
-                            v79->field_18_ypos = v81;
-                            v79->field_1C_zpos = v80;
-                            Sprite::sub_59E7B0(v79);
-                        }
-                        v82 = gMap_0x370_6F6268->get_block_4DFE10(
-                                                          field_80_sprite_ptr->field_14_xpos.ToInt(),
-                                                          field_80_sprite_ptr->field_18_ypos.ToInt(),
-                                                          (field_80_sprite_ptr->field_1C_zpos - dword_6FD9E8).ToInt());
-                        v84 = 0;
-                        if (v82)
-                        {
-                            v83 = v82->field_B_slope_type;
-                            if ((v83 & 0xFC) != 0 && (v83 & 0xFCu) < 0xB4 && (v83 & 3) != 0)
-                            {
-                                v84 = 1;
-                            }
-                        }
-                        byte_6FDB54 = v84;
-                        Char_B4::sub_548590();
-                        */
+                        // Line 507 on 9.6f IDA
+                        field_80_sprite_ptr->set_xyz_lazy_420600(field_80_sprite_ptr->field_14_xy.x,
+                                                                 field_80_sprite_ptr->field_14_xy.y,
+                                                                 dword_6FD7FC);
+                        byte_6FDB54 = gMap_0x370_6F6268->sub_466CF0(field_80_sprite_ptr->field_14_xy.x.ToInt(),
+                                                                    field_80_sprite_ptr->field_14_xy.y.ToInt(),
+                                                                    (field_80_sprite_ptr->field_1C_zpos - k_dword_6FD9E8).ToInt());
+                        Char_B4::ManageZCoordAndSlopes_548590();
                     }
                     else
                     {
@@ -2489,7 +2701,7 @@ STUB_FUNC(0x54ef60)
 char_type Char_B4::sub_54EF60(char_type a2, char_type a3)
 {
     NOT_IMPLEMENTED;
-    return 0;
+    return true;
 }
 
 STUB_FUNC(0x54fec0)
@@ -2540,25 +2752,77 @@ char_type Char_B4::sub_5516F0()
     return 0;
 }
 
-STUB_FUNC(0x5519F0)
+MATCH_FUNC(0x5519F0)
 void Char_B4::state_1_5519F0()
 {
-    NOT_IMPLEMENTED;
+    Char_B4::state_1_5504F0();
 }
 
-STUB_FUNC(0x551A00)
+MATCH_FUNC(0x551A00)
 void Char_B4::state_3_551A00()
 {
-    NOT_IMPLEMENTED;
+    if (field_C_ped_state_2 == ped_state_2::ped2_following_a_car_4)
+    {
+        field_58_flags_bf.b7 = false;
+        Char_B4::state_1_5504F0();
+        if (!field_7C_pPed->GetBit11_433CA0() && field_10_char_state != 15)
+        {
+            if (field_38_velocity > k_CollisionRepulsionSpeed_6FD7BC)
+            {
+                field_6C_animation_state = 1;
+            }
+            else
+            {
+                if (field_38_velocity != k_dword_6FD7C0)
+                {
+                    field_6C_animation_state = 0;
+                }
+                else
+                {
+                    field_6C_animation_state = 2;
+                    if (field_84)
+                    {
+                        field_40_rotation = field_84->field_50_car_sprite->field_0;
+                    }
+                }
+            }
+        }
+    }
+    else if (field_C_ped_state_2 == ped_state_2::ped2_entering_a_car_6)
+    {
+        field_10_char_state = Char_B4_state::Interacting_Car_Door_36;
+        Sprite* nearestSprt = gPurpleDoom_1_679208->FindNearestSpriteOfType_477E60(field_80_sprite_ptr, 0);
+        if (!nearestSprt || nearestSprt->field_30_sprite_type_enum != sprite_types_enum::car ||
+            (nearestSprt->field_8_car_bc_ptr == field_7C_pPed->get_target_to_enter_403B10()) ||
+            nearestSprt->field_8_car_bc_ptr->is_on_trailer_421720() || field_7C_pPed->sub_45BD20(nearestSprt->field_8_car_bc_ptr))
+        {
+            if (field_6C_animation_state != Char_Anim_state::Entering_Car_6)
+            {
+                // TODO: remove Ang16 operator=(const Ang16& other) without breaking Player::DoPedControlInputs_566C80
+                field_40_rotation.rValue = field_84->field_50_car_sprite->field_0.rValue;
+                field_6C_animation_state = Char_Anim_state::Entering_Car_6;
+                field_68_animation_frame = 0;
+                if (field_84->sub_43B540(field_7C_pPed->get_target_car_door_403A60()))
+                {
+                    field_58_flags_bf.b4 = true;
+                }
+                else
+                {
+                    field_58_flags_bf.b4 = false;
+                }
+                field_70_frame_timer = 0;
+            }
+        }
+    }
 }
 
 MATCH_FUNC(0x551B30)
 void Char_B4::state_4_551B30()
 {
-    if (field_6C != 7)
+    if (field_6C_animation_state != Char_Anim_state::Exiting_Car_7)
     {
-        field_6C = 7;
-        field_68 = 0;
+        field_6C_animation_state = Char_Anim_state::Exiting_Car_7;
+        field_68_animation_frame = 0;
         s8 target_door = field_7C_pPed->field_24C_target_car_door;
         if (field_84->sub_43B540(target_door))
         {
@@ -2568,12 +2832,12 @@ void Char_B4::state_4_551B30()
         {
             field_58_flags_bf.b4 = false;
         }
-        field_70 = 0;
+        field_70_frame_timer = 0;
     }
-    if (field_10 == 15)
+    if (field_10_char_state == Char_B4_state::Jumping_15)
     {
         field_7C_pPed->ChangeNextPedState1_45C500(ped_state_1::walking_0);
-        field_7C_pPed->ChangeNextPedState2_45C540(0);
+        field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::ped2_walking_0);
     }
     if ((u8)Char_B4::IsOnWater_545570())
     {
@@ -2594,7 +2858,7 @@ void Char_B4::state_7_551CB0()
 {
     WIP_IMPLEMENTED;
     field_38_velocity = k_dword_6FD7C0;
-    if (field_10 != 15)
+    if (field_10_char_state != Char_B4_state::Jumping_15)
     {
         Char_B4::sub_5459C0();
     }
@@ -2602,7 +2866,7 @@ void Char_B4::state_7_551CB0()
     {
         field_40_rotation += field_7C_pPed->get_field8_45C900();
 
-        if (field_10 == 15)
+        if (field_10_char_state == Char_B4_state::Jumping_15)
         {
             Char_B4::state_0_54DDF0();
             SetPedState1_433910(0);
@@ -2642,27 +2906,27 @@ void Char_B4::state_7_551CB0()
                 }
             }
         }
-        if (field_6C != 4)
+        if (field_6C_animation_state != 4)
         {
-            field_6C = 2;
+            field_6C_animation_state = 2;
         }
     }
     else
     {
         field_40_rotation = field_7C_pPed->field_130;
     }
-    if (field_10 == 15)
+    if (field_10_char_state == Char_B4_state::Jumping_15)
     {
         field_38_velocity = gRunOrJumpSpeed_6FD7D0; // line 1be
     }
-    if (field_6A > 0 || field_10 == 15 || field_4C != k_dword_6FD9E4 || field_50 != k_dword_6FD9E4)
+    if (field_6A > 0 || field_10_char_state == Char_B4_state::Jumping_15 || field_4C != k_dword_6FD9E4 || field_50 != k_dword_6FD9E4)
     {
         field_8_ped_state_1 = 0;
         field_C_ped_state_2 = 0;
         Char_B4::state_0_54DDF0();
         field_8_ped_state_1 = 7;
         field_C_ped_state_2 = 14;
-        if (field_10 == 15)
+        if (field_10_char_state == Char_B4_state::Jumping_15)
         {
             return;
         }
@@ -2671,8 +2935,9 @@ void Char_B4::state_7_551CB0()
     {
         s32 unk2_zpos;
         if (field_58_flags_bf.b0 == false &&
-            (dword_6FD7FC == k_dword_6FD9E8 || dword_6FD7FC == k_dword_6FD9EC || dword_6FD7FC == k_dword_6FD9F0 || dword_6FD7FC == dword_6FD9F4 ||
-             dword_6FD7FC == k_dword_6FD9F8 || dword_6FD7FC == k_dword_6FD9FC || dword_6FD7FC == k_dword_6FDA00))
+            (dword_6FD7FC == k_dword_6FD9E8 || dword_6FD7FC == k_dword_6FD9EC || dword_6FD7FC == k_dword_6FD9F0 ||
+             dword_6FD7FC == dword_6FD9F4 || dword_6FD7FC == k_dword_6FD9F8 || dword_6FD7FC == k_dword_6FD9FC ||
+             dword_6FD7FC == k_dword_6FDA00))
         {
             unk2_zpos = dword_6FD7FC.ToInt() - 1;
         }
@@ -2688,7 +2953,7 @@ void Char_B4::state_7_551CB0()
             Char_B4::DrownPed_5459E0();
             return;
         }
-        if (block_type == AIR && field_58_flags_bf.b0 == false && field_10 != 15)
+        if (block_type == AIR && field_58_flags_bf.b0 == false && field_10_char_state != Char_B4_state::Jumping_15)
         {
             field_7C_pPed->ChangeNextPedState1_45C500(ped_state_1::immobilized_8);
             field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::falling_19);
@@ -2701,61 +2966,60 @@ void Char_B4::state_7_551CB0()
     {
         case 8:
         case 9:
-            field_6C = 9;
+            field_6C_animation_state = 9;
             break;
-        case 14:
+        case ped_state_2::ped2_staying_14:
             if (field_7C_pPed->GetBit11_433CA0() == true) // line 344
             {
                 if (field_7C_pPed->field_21C_bf.b9)
                 {
-                    if (field_6C != 4)
+                    if (field_6C_animation_state != 4)
                     {
-                        field_6C = 4;
-                        field_68 = 0;
+                        field_6C_animation_state = 4;
+                        field_68_animation_frame = 0;
                     }
                 }
                 else
                 {
-                    if (field_6C == 4)
+                    if (field_6C_animation_state == 4)
                     {
-                        if (field_68 == 0)
+                        if (field_68_animation_frame == 0)
                         {
-                            field_6C = 2;
+                            field_6C_animation_state = 2;
                         }
                     }
                     else
                     {
-                        field_6C = 2;
+                        field_6C_animation_state = 2;
                     }
                 }
             }
             else
             {
-                if (field_6C == 4)
+                if (field_6C_animation_state == 4)
                 {
-                    if (field_68 == 0)
+                    if (field_68_animation_frame == 0)
                     {
-                        field_6C = 2;
+                        field_6C_animation_state = 2;
                     }
                 }
                 else
                 {
                     if ((field_7C_pPed->IsField238_45EDE0(5) || field_7C_pPed->IsField238_45EDE0(2)) && !field_4A)
                     {
-                        s16 v15 = 600;
-                        if (stru_6F6784.get_int_4F7AE0(&v15) < 4u && field_10 != 35)
+                        if (stru_6F6784.get_int_4F7AE0(600) < 4u && field_10_char_state != Char_B4_state::Smoking_35)
                         {
-                            field_10 = 35;
-                            field_68 = 0;
-                            field_70 = 0;
+                            field_10_char_state = Char_B4_state::Smoking_35;
+                            field_68_animation_frame = 0;
+                            field_70_frame_timer = 0;
                         }
                     }
-                    field_6C = 2;
+                    field_6C_animation_state = 2;
                 }
             }
             break;
         default:
-            field_6C = 2;
+            field_6C_animation_state = 2;
             break;
     }
 }
@@ -2766,10 +3030,138 @@ void Char_B4::state_8_5520A0()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x552E90)
+MATCH_FUNC(0x552E90)
 void Char_B4::state_9_552E90()
 {
-    NOT_IMPLEMENTED;
+    s32 rng;
+
+    field_7C_pPed->ClearBit11_403A40();
+    if (field_16 == 1)
+    {
+        switch (field_10_char_state)
+        {
+            case 33:
+                if (field_6C_animation_state != 15)
+                {
+                    field_6C_animation_state = 15;
+                    field_68_animation_frame = 0;
+                }
+                break;
+            case 34:
+                if (field_6C_animation_state != 16)
+                {
+                    field_40_rotation = field_40_rotation + word_6FD936;
+                    field_6C_animation_state = 16;
+                    field_68_animation_frame = 0;
+                }
+                break;
+            default:
+                if (field_6C_animation_state != 21)
+                {
+                    rng = stru_6F6784.get_int_4F7AE0(3);
+
+                    switch (rng)
+                    {
+                        case 0:
+                            field_6C_animation_state = 14;
+                            break;
+                        case 1:
+                            field_6C_animation_state = 19;
+                            break;
+                        case 2:
+                            field_6C_animation_state = 20;
+                            break;
+                    }
+                }
+                break;
+        }
+
+        field_16 = 0;
+        if (field_7C_pPed->field_164_ped_group)
+        {
+            if (field_7C_pPed->field_164_ped_group->field_0)
+            {
+                field_7C_pPed->field_164_ped_group->RemovePed_4C9970(field_7C_pPed);
+                field_7C_pPed->field_164_ped_group = 0;
+            }
+        }
+
+        field_34 = 0;
+        gPurpleDoom_2_67920C->CheckAndHandleCollisionInStrips_477BD0(field_80_sprite_ptr);
+        Char_B4::ManageZCoordAndSlopes_548590();
+        field_80_sprite_ptr->set_xyz_lazy_420600(field_4C + field_80_sprite_ptr->field_14_xy.x,
+                                                 field_50 + field_80_sprite_ptr->field_14_xy.y,
+                                                 field_80_sprite_ptr->field_1C_zpos);
+    }
+    else
+    {
+        switch (field_6C_animation_state)
+        {
+            case 15:
+                if (field_80_sprite_ptr->field_1C_zpos.ToUInt8() != 0 && field_80_sprite_ptr->field_14_xy.x.ToUInt8() > 1 &&
+                    field_80_sprite_ptr->field_14_xy.y.ToUInt8() > 1 && field_80_sprite_ptr->field_14_xy.x.ToUInt8() < 254 &&
+                    field_80_sprite_ptr->field_14_xy.y.ToUInt8() < 254)
+                {
+                    field_38_velocity = -k_CollisionRepulsionSpeed_6FD7BC;
+                    Char_B4::state_0_54DDF0();
+                }
+                else
+                {
+                    field_6C_animation_state = 14;
+                }
+                break;
+            case 16:
+                if (field_80_sprite_ptr->field_1C_zpos.ToUInt8() != 0 && field_80_sprite_ptr->field_14_xy.x.ToUInt8() > 1 &&
+                    field_80_sprite_ptr->field_14_xy.y.ToUInt8() > 1 && field_80_sprite_ptr->field_14_xy.x.ToUInt8() < 254 &&
+                    field_80_sprite_ptr->field_14_xy.y.ToUInt8() < 254)
+                {
+                    field_38_velocity = -k_CollisionRepulsionSpeed_6FD7BC;
+                    Char_B4::state_0_54DDF0();
+                }
+                else
+                {
+                    field_6C_animation_state = 14;
+                }
+                break;
+            case 13:
+            case 14:
+            case 19:
+            case 20:
+                if (field_4C != k_dword_6FD9E4 || field_50 != k_dword_6FD9E4)
+                {
+                    field_4C = k_dword_6FD9E4;
+                    field_50 = k_dword_6FD9E4;
+                    gPurpleDoom_2_67920C->CheckAndHandleCollisionInStrips_477BD0(field_80_sprite_ptr);
+
+                    field_80_sprite_ptr->set_xyz_lazy_420600(field_4C + field_80_sprite_ptr->field_14_xy.x,
+                                                             field_50 + field_80_sprite_ptr->field_14_xy.y,
+                                                             field_80_sprite_ptr->field_1C_zpos);
+                }
+
+                field_80_sprite_ptr->field_28_num = 6;
+                break;
+            default:
+                if (field_6C_animation_state != 21)
+                {
+                    rng = stru_6F6784.get_int_4F7AE0(3);
+                    switch (rng)
+                    {
+                        case 0:
+                            field_6C_animation_state = 14;
+                            break;
+                        case 1:
+                            field_6C_animation_state = 19;
+                            break;
+                        case 2:
+                            field_6C_animation_state = 20;
+                            break;
+                    }
+                }
+                field_68_animation_frame = 0;
+                field_80_sprite_ptr->set_num_40F7B0(6);
+                break;
+        }
+    }
 }
 
 STUB_FUNC(0x5532C0)
@@ -2779,22 +3171,101 @@ bool Char_B4::sub_5532C0()
     return false;
 }
 
-STUB_FUNC(0x553330)
+MATCH_FUNC(0x553330)
 char_type Char_B4::IsThreatToSearchingPed_553330()
 {
-    NOT_IMPLEMENTED;
     return field_7C_pPed->IsThreatToSearchingPed_4661F0();
 }
 
-STUB_FUNC(0x553340)
+// 9.6f 0x497480
+WIP_FUNC(0x553340)
 bool Char_B4::sub_553340(Sprite* pSprite)
 {
-    NOT_IMPLEMENTED;
-    return false;
+    WIP_IMPLEMENTED;
+
+    Ped* pPed; // eax
+
+    if (pSprite)
+    {
+        switch (pSprite->get_type_416B40())
+        {
+            case sprite_types_enum::car:
+                break;
+
+            case sprite_types_enum::ped:
+                break;
+
+            default:
+            {
+                Object_2C* pObj = pSprite->As2C_40FEC0();
+                if (pObj)
+                {
+                    u8 idx = field_7C_pPed->get_varrok_idx_420B50();
+                    if (pObj->is_not_type6_to_12_and_idx_matches_4973E0(idx))
+                    {
+                        return 0;
+                    }
+
+                    if (pObj->is_region_bucket_3_4210B0())
+                    {
+                        return 0;
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    switch (this->field_C_ped_state_2)
+    {
+        case 6:
+        case 7:
+        case 9:
+        case 10:
+        case 17:
+        case 19:
+        case 24:
+        case 25:
+        case 26:
+        case 27:
+            return 0;
+
+        case 8:
+            if (pSprite == 0)
+            {
+                return 1;
+            }
+            return 0;
+
+        case 22:
+            break;
+
+        default:
+            pPed = this->field_7C_pPed;
+            if (pPed->GetPedState_403990() == ped_state_1::dead_9 &&
+                ((pPed->GetBit24_475B50()) == 0 || !pSprite || !pSprite->IsObjectModelEqual_59E930(198)))
+            {
+                return 0;
+            }
+
+            if (this->field_10_char_state == 15 && pSprite)
+            {
+                switch (pSprite->get_type_416B40())
+                {
+                    //case 0:
+                    //case 1:
+                    case 2:
+                    case 4: // 0xdb je is wrong its jne
+                        return 0;
+                }
+            }
+            break;
+    }
+    return 1;
 }
 
 MATCH_FUNC(0x5535B0)
-char_type Char_B4::sub_5535B0(Object_2C* p2c)
+bool Char_B4::sub_5535B0(Object_2C* p2c)
 {
     Ped* pPed = field_7C_pPed;
     if (pPed->field_15C_player)
@@ -2807,42 +3278,94 @@ char_type Char_B4::sub_5535B0(Object_2C* p2c)
     }
 }
 
-STUB_FUNC(0x553640)
+WIP_FUNC(0x529050)
+EXPORT void __stdcall sub_529050(u8 a1, s8* a2, s8* a3)
+{
+    WIP_IMPLEMENTED;
+    *a2 = (a1 >> 4) - 7;
+    *a3 = (a1 & 0xF) - 7;
+}
+
+MATCH_FUNC(0x553640)
 bool Char_B4::OnObjectTouched_553640(Object_2C* p2c)
 {
-    NOT_IMPLEMENTED;
+    s8 v6;
+    s8 v7;
+
+    if (p2c->check_is_shop_421060())
+    {
+        return field_7C_pPed->HandlePickupCollision_45DE80(p2c);
+    }
+
+    switch (p2c->field_18_model)
+    {
+        case 266:
+            return field_7C_pPed->HandlePickupCollision_45DE80(p2c);
+
+        case 257:
+        case 258:
+            if (field_8_ped_state_1 != ped_state_1::dead_9 && field_8_ped_state_1 != ped_state_1::immobilized_8)
+            {
+                field_7C_pPed->sub_45CF20(p2c);
+            }
+            break;
+
+        case 161:
+            gCar_214_705F20->sub_5C8780(p2c->field_27, this->field_80_sprite_ptr);
+            break;
+
+        case 164:
+        case 177:
+        case 179:
+        case 181:
+            return sub_5535B0(p2c);
+
+        case 167:
+            gDoor_4D4_67BD2C->sub_49D370(field_7C_pPed, p2c->field_26_varrok_idx);
+            break;
+
+        case 141:
+            field_7C_pPed->Kill_46F9D0();
+            break;
+
+        case 139:
+            sub_529050(p2c->field_26_varrok_idx, &v6, &v7); // TODO: Ang8 or something ???
+            this->field_4C = k_dword_6FDA9C * v6;
+            this->field_50 = k_dword_6FDA9C * v7;
+            break;
+
+        default:
+            break;
+    }
     return 0;
 }
 
-// https://decomp.me/scratch/UYcej
-STUB_FUNC(0x5537F0)
+MATCH_FUNC(0x5537F0)
 char_type Char_B4::HandlePedObjectHit_5537F0(Object_2C* p2c)
 {
-    NOT_IMPLEMENTED;
-
-    const s32 l_18 = p2c->field_18_model;
-    if (l_18 == 128 || l_18 == 138 || l_18 == 10 && !byte_6FDB59)
+    const u8 idx = p2c->get_field_26_420FF0();
+    const s32 pedId = gVarrok_7F8_703398->GetPedId_420F10(idx);
+    if (p2c->field_18_model == 128 || p2c->field_18_model == 138 || p2c->field_18_model == 10 && !byte_6FDB59)
     {
-        gObject_5C_6F8F84->CreateExplosion_52A3D0(field_80_sprite_ptr->GetXPos(),
-                                                  field_80_sprite_ptr->GetYPos(),
-                                                  field_80_sprite_ptr->GetZPos(),
+        gObject_5C_6F8F84->CreateExplosion_52A3D0(field_80_sprite_ptr->field_14_xy.x,
+                                                  field_80_sprite_ptr->field_14_xy.y,
+                                                  field_80_sprite_ptr->field_1C_zpos,
                                                   word_6FDB34,
                                                   18,
-                                                  gVarrok_7F8_703398->field_0[p2c->field_26_varrok_idx].field_0_ped_id);
+                                                  pedId);
         if (p2c->field_18_model == 10)
         {
             byte_6FDB59 = 1;
         }
     }
 
-    Ped* pPed = field_7C_pPed;
-    if (p2c->field_26_varrok_idx == pPed->field_267_varrok_idx)
+    if (p2c->get_field_26_420FF0() != field_7C_pPed->get_varrok_idx_420B50())
     {
-        return 0;
+        return field_7C_pPed->HandlePedHitByObject_45D000(p2c);
     }
     else
     {
-        return pPed->HandlePedHitByObject_45D000(p2c);
+        return 0;
     }
 }
 

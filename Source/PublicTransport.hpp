@@ -64,7 +64,7 @@ class TrainStation_34
     gmp_map_zone* field_C_stop_point;
     gmp_map_zone* field_10_pZone;
     s32 field_14;
-    s32 field_18;
+    Train_58* field_18; // train stopped at the station?
     s32 field_1C;
     TrainStation_34* field_20_next_station;
     u8 field_24_train_wagons[10];
@@ -91,7 +91,7 @@ class PublicTransport_181C
     EXPORT Train_58* AllocateTrain_578790();
     EXPORT TrainStation_34* AllocateTrainStation_5787E0();
     EXPORT void SpawnTrainsFromStations_578860();
-    EXPORT void sub_5793E0();
+    EXPORT void InitStationsLinkedList_5793E0();
     EXPORT void InitTrainStations_579440();
     EXPORT gmp_map_zone* SetupTrainAndBusStops_5794B0();
     EXPORT TrainStation_34* GetBusStopOnScreen_5799B0();

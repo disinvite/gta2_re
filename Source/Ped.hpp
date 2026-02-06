@@ -71,7 +71,7 @@ class Ped
     EXPORT Fix16 GetPedVelocity_45C920();
     EXPORT Ang16 GetRotation();
     EXPORT Fix16 get_fieldC_45C9B0();
-    EXPORT s16* ComputeAimAngle_45C9D0(s16* a2);
+    EXPORT Ang16 ComputeAimAngle_45C9D0();
     EXPORT void HandleClosePedInteraction_45CAA0();
     EXPORT void TakeDamage(s16 damage);
     EXPORT void sub_45CF20(Object_2C* a2);
@@ -85,14 +85,14 @@ class Ped
     EXPORT char_type sub_45EDC0();
     EXPORT bool IsField238_45EDE0(s32 a2);
     EXPORT char_type sub_45EE00(s32 a2);
-    EXPORT gmp_map_zone* sub_45EE70();
+    EXPORT void EnterPublicTransport_45EE70();
     EXPORT void Mugger_AI_45F360();
     EXPORT void CarThief_AI_45FF60();
     EXPORT void sub_460820();
     EXPORT void sub_461290();
-    EXPORT char_type sub_461530();
+    EXPORT void sub_461530();
     EXPORT void sub_461630();
-    EXPORT char_type RoadBlockTank_AI_4619F0();
+    EXPORT void RoadBlockTank_AI_4619F0();
     EXPORT void UpdateFacingAngle_461A60();
     EXPORT void Occupation_AI_461F20();
     EXPORT void sub_462280();
@@ -107,7 +107,7 @@ class Ped
     EXPORT void ProcessObjective_4632E0();
     EXPORT void sub_463300(u8 a1);
     EXPORT s32 sub_4633E0(char_type a2);
-    EXPORT char_type SetObjective(s32 a2, s16 a3);
+    EXPORT void SetObjective(s32 objective, s16 objective_timer);
     EXPORT void sub_463830(s32 a2, s16 a3);
     EXPORT void ProcessOnFootObjective_463AA0();
     EXPORT void ProcessInCarObjective_463FB0();
@@ -123,7 +123,7 @@ class Ped
     EXPORT Ped* FindBestTargetPed_466BF0(s32 a2);
     EXPORT Ped* sub_466F40(u8 a2);
     EXPORT Ped* FindNearestPed_466F60(u8 a2);
-    EXPORT s32 FindNearbyPed_466FB0();
+    EXPORT Ped* FindNearbyPed_466FB0();
     EXPORT Ped* sub_467070();
     EXPORT char_type sub_467090();
     EXPORT Sprite* sub_467280();
@@ -220,8 +220,8 @@ class Ped
     EXPORT void Kill_46F9D0();
     EXPORT void AddThreateningPedToList_46FC70();
     EXPORT void sub_46FC90(s32 a2, s32 a3);
-    EXPORT char_type ProcessWeaponHitResponse_46FE20(Object_2C* a2);
-    EXPORT void NotifyWeaponHit_46FF00(s32 a2, s32 a3, s32 a4);
+    EXPORT void ProcessWeaponHitResponse_46FE20(Object_2C* a2);
+    EXPORT void NotifyWeaponHit_46FF00(Fix16 xpos, Fix16 ypos, s32 model);
     EXPORT void sub_46FFF0(s32 a2);
     EXPORT void AimRoofGun_470050();
     EXPORT void add_wanted_points_470160(s16 wanted_amount);
@@ -236,6 +236,11 @@ class Ped
     EXPORT void nullsub_10();
     EXPORT void nullsub_11();
     EXPORT void nullsub_12();
+
+    inline u8 get_varrok_idx_420B50()
+    {
+        return field_267_varrok_idx;
+    }
 
     inline void ClearGroupAndGroupIdx_403A30()
     {
@@ -502,6 +507,26 @@ class Ped
         return field_21C_bf.b11;
     }
 
+    u8 GetBit24_475B50()
+    {
+        return field_21C_bf.b24;
+    }
+
+    inline s32 get_objective_403A80()
+    {
+        return field_258_objective;
+    }
+
+    inline Car_BC* get_target_to_enter_403B10()
+    {
+        return field_154_target_to_enter;
+    }
+
+    inline void ClearBit11_403A40()
+    {
+        field_21C_bf.b11 = false;
+    }
+
     Marz_3 field_0_patrol_points[100];
     Ang16 field_12C;
     Ang16 field_12E;
@@ -619,7 +644,7 @@ class Ped
     char_type field_262;
     char_type field_263;
     u8 field_264;
-    char_type field_265;
+    u8 field_265;
     char_type field_266;
     u8 field_267_varrok_idx;
     char_type field_268;
@@ -645,12 +670,14 @@ EXTERN_GLOBAL(s32, gPedId_61A89C);
 
 EXTERN_GLOBAL(u8, gNumberMuggersSpawned_6787CA);
 
-EXTERN_GLOBAL(u8, byte_6787CB);
+EXTERN_GLOBAL(u8, gNumberCarThiefsSpawned_6787CB);
 
-EXTERN_GLOBAL(u8, byte_6787CC);
+EXTERN_GLOBAL(u8, gNumberElvisLeadersSpawned_6787CC);
 
-EXTERN_GLOBAL(u8, byte_6787CD);
+EXTERN_GLOBAL(u8, gNumberWalkingCopsSpawned_6787CD);
 
 EXTERN_GLOBAL(u8, byte_6787EF);
 
 EXTERN_GLOBAL(Fix16, dword_678620);
+EXTERN_GLOBAL(Fix16, dword_678670);
+EXTERN_GLOBAL(Fix16, dword_678448);

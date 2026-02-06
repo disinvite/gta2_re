@@ -16,7 +16,7 @@ DEFINE_GLOBAL_INIT(Ang16, word_667A7C, Ang16(360), 0x667A7C);
 DEFINE_GLOBAL_INIT(Ang16, word_66916C, Ang16(1080), 0x66916C);
 
 MATCH_FUNC(0x44E540)
-Fix16 Fix16::Max_44E540(Fix16& pLhs, Fix16& pRhs)
+Fix16 __stdcall Fix16::Max_44E540(Fix16& pLhs, Fix16& pRhs)
 {
     Fix16 result;
     if (pLhs.mValue > pRhs.mValue)
@@ -244,5 +244,5 @@ void Init_trigonometry_tables()
         gCos_table_669260[entry] = Fix16( cos(((f64)arg / 1440.0) * 2 * 3.141592654) );
     }
     arc_tan_table_init_4052D0();
-    printf("Sine, cosine and tangent tables initialized!");
+    printf("Sine, cosine and tangent tables initialized!\n");
 }

@@ -585,7 +585,7 @@
         "v105_address": "0x4143a0"
     },
     {
-        "name": "sound_obj::sub_4145E0",
+        "name": "sound_obj::GetCar_4145E0",
         "v96f_address": null,
         "v105_address": "0x4145e0"
     },
@@ -1560,7 +1560,7 @@
         "v105_address": "0x43aa60"
     },
     {
-        "name": "Car_BC::sub_43AAF0",
+        "name": "Car_BC::CanCarCollideWithSprite_43AAF0",
         "v96f_address": null,
         "v105_address": "0x43aaf0"
     },
@@ -1650,7 +1650,7 @@
         "v105_address": "0x43b770"
     },
     {
-        "name": "Car_BC::sub_43B7B0",
+        "name": "Car_BC::AssignDriverBlameForExplosion_43B7B0",
         "v96f_address": null,
         "v105_address": "0x43b7b0"
     },
@@ -1945,12 +1945,12 @@
         "v105_address": "0x440860"
     },
     {
-        "name": "Car_BC::sub_440AC0",
+        "name": "Car_BC::PutWaterCannonOnRoof_440AC0",
         "v96f_address": null,
         "v105_address": "0x440ac0"
     },
     {
-        "name": "Car_BC::sub_440B10",
+        "name": "Car_BC::PutTankCannonOnRoof_440B10",
         "v96f_address": null,
         "v105_address": "0x440b10"
     },
@@ -2150,7 +2150,7 @@
         "v105_address": "0x442520"
     },
     {
-        "name": "Car_BC::sub_4425D0",
+        "name": "Car_BC::ManageTVAntenna_4425D0",
         "v96f_address": null,
         "v105_address": "0x4425d0"
     },
@@ -2330,12 +2330,12 @@
         "v105_address": "0x444090"
     },
     {
-        "name": "Car_BC::sub_4441B0",
+        "name": "Car_BC::SetSirens_4441B0",
         "v96f_address": "0x424700",
         "v105_address": "0x4441b0"
     },
     {
-        "name": "Car_BC::sub_444490",
+        "name": "Car_BC::PoolAllocate",
         "v96f_address": null,
         "v105_address": "0x444490"
     },
@@ -3140,7 +3140,7 @@
         "v105_address": "0x45ee00"
     },
     {
-        "name": "Ped::sub_45EE70",
+        "name": "Ped::EnterPublicTransport_45EE70",
         "v96f_address": null,
         "v105_address": "0x45ee70"
     },
@@ -3785,7 +3785,7 @@
         "v105_address": "0x46e380"
     },
     {
-        "name": "PedManager::sub_46EB60",
+        "name": "PedManager::SpawnDummies_46EB60",
         "v96f_address": "0x440CC0",
         "v105_address": "0x46eb60"
     },
@@ -3960,7 +3960,7 @@
         "v105_address": "0x470d60"
     },
     {
-        "name": "PedManager::sub_470E30",
+        "name": "PedManager::SpawnTrainLeaver_470E30",
         "v96f_address": null,
         "v105_address": "0x470e30"
     },
@@ -5985,7 +5985,7 @@
         "v105_address": "0x4b98e0"
     },
     {
-        "name": "Game_0x40::sub_4B9950",
+        "name": "Game_0x40::IsSpriteOnScreen_4B9950",
         "v96f_address": null,
         "v105_address": "0x4b9950"
     },
@@ -7390,7 +7390,7 @@
         "v105_address": "0x4e0120"
     },
     {
-        "name": "Map_0x370::sub_4E0130",
+        "name": "Map_0x370::CanMoveOntoSlopeTile_4E0130",
         "v96f_address": "0x4656D0",
         "v105_address": "0x4e0130"
     },
@@ -11585,7 +11585,7 @@
         "v105_address": "0x5454b0"
     },
     {
-        "name": "sub_5454D0",
+        "name": "DoJump_5454D0",
         "v96f_address": null,
         "v105_address": "0x5454d0"
     },
@@ -11660,7 +11660,7 @@
         "v105_address": "0x546360"
     },
     {
-        "name": "sub_548590",
+        "name": "Char_B4::ManageZCoordAndSlopes_548590",
         "v96f_address": null,
         "v105_address": "0x548590"
     },
@@ -11935,7 +11935,7 @@
         "v105_address": "0x554ab0"
     },
     {
-        "name": "Orca_2FD4::sub_5552B0",
+        "name": "Orca_2FD4::FindNearbyTileMatchingSlopeType_5552B0",
         "v96f_address": "0x49D7A0",
         "v105_address": "0x5552b0"
     },
@@ -12605,17 +12605,17 @@
         "v105_address": "0x564610"
     },
     {
-        "name": "Player::sub_564680",
+        "name": "Player::PushCarInfo_564680",
         "v96f_address": null,
         "v105_address": "0x564680"
     },
     {
-        "name": "Player::sub_564710",
+        "name": "Player::SetKFCarWeapon_564710",
         "v96f_address": null,
         "v105_address": "0x564710"
     },
     {
-        "name": "Player::sub_564790",
+        "name": "Player::SetKFWeapon_564790",
         "v96f_address": null,
         "v105_address": "0x564790"
     },
@@ -12660,7 +12660,7 @@
         "v105_address": "0x564b60"
     },
     {
-        "name": "Player::sub_564B80",
+        "name": "Player::CleanupEmptyAmmoWeapons_564B80",
         "v96f_address": null,
         "v105_address": "0x564b80"
     },
@@ -12875,7 +12875,7 @@
         "v105_address": "0x569a10"
     },
     {
-        "name": "Player::sub_569C20",
+        "name": "Player::SetScoreTextColour_569C20",
         "v96f_address": "0x4a4d80",
         "v105_address": "0x569c20"
     },
@@ -12895,7 +12895,7 @@
         "v105_address": "0x569f00"
     },
     {
-        "name": "Player::sub_569F40",
+        "name": "Player::DisableInputs_569F40",
         "v96f_address": null,
         "v105_address": "0x569f40"
     },
@@ -13460,7 +13460,7 @@
         "v105_address": "0x578860"
     },
     {
-        "name": "PublicTransport_181C::sub_5793E0",
+        "name": "PublicTransport_181C::InitStationsLinkedList_5793E0",
         "v96f_address": null,
         "v105_address": "0x5793e0"
     },
@@ -14730,7 +14730,7 @@
         "v105_address": "0x59eae0"
     },
     {
-        "name": "Sprite::sub_59EB30",
+        "name": "Sprite::ShowId_59EB30",
         "v96f_address": null,
         "v105_address": "0x59eb30"
     },
@@ -14845,7 +14845,7 @@
         "v105_address": "0x5a21f0"
     },
     {
-        "name": "sub_5A22B0",
+        "name": "MinDistanceToAnySpriteBBoxCorner_5A22B0",
         "v96f_address": null,
         "v105_address": "0x5a22b0"
     },
@@ -15130,7 +15130,7 @@
         "v105_address": "0x5a7010"
     },
     {
-        "name": "sub_5A7080",
+        "name": "CleanupSpriteList_5A7080",
         "v96f_address": null,
         "v105_address": "0x5a7080"
     },
@@ -15655,7 +15655,7 @@
         "v105_address": "0x5b95f0"
     },
     {
-        "name": "sharp_pare_0x15D8::sub_5B9660",
+        "name": "sharp_pare_0x15D8::SetPal_5B9660",
         "v96f_address": null,
         "v105_address": "0x5b9660"
     },
@@ -16845,7 +16845,7 @@
         "v105_address": "0x5dcd90"
     },
     {
-        "name": "Weapon_30::clear_5DCDE0",
+        "name": "Weapon_30::PoolDeallocate",
         "v96f_address": null,
         "v105_address": "0x5dcde0"
     },

@@ -13,7 +13,7 @@ bool Orca_2FD4::sub_554080(s32 a2)
 {
     if (field_25 > 1u && field_25 < 254u && field_26 > 1u && field_26 < 254u)
     {
-        bool result = gMap_0x370_6F6268->sub_4E0130((u8)field_25, (u8)field_26, (u8)field_27, a2, &byte_6FDEEC, 1) == 0;
+        bool result = gMap_0x370_6F6268->CanMoveOntoSlopeTile_4E0130((u8)field_25, (u8)field_26, (u8)field_27, a2, &byte_6FDEEC, 1) == 0;
         return result;
     }
     return false;
@@ -133,7 +133,7 @@ char_type Orca_2FD4::sub_554AB0(s32 a2, s32 a3, u8 a4, u8 a5, u8 a6, u8 a7, u8 a
 }
 
 STUB_FUNC(0x5552b0)
-char_type Orca_2FD4::sub_5552B0(char_type a2, u8* xpos, u8* ypos, u8* zpos, char_type a6)
+char_type Orca_2FD4::FindNearbyTileMatchingSlopeType_5552B0(char_type a2, u8* xpos, u8* ypos, u8* zpos, char_type a6)
 {
     NOT_IMPLEMENTED;
     return 0;

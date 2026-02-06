@@ -44,6 +44,7 @@ DEFINE_GLOBAL_INIT(Ang16, word_6FE488, Ang16(12), 0x6FE488);
 DEFINE_GLOBAL_INIT(Ang16, word_6FE450, Ang16(24), 0x6FE450);
 DEFINE_GLOBAL_INIT(Ang16, word_6FE700, Ang16(48), 0x6FE700);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FE614, Fix16(1), 0x6FE614);
+DEFINE_GLOBAL_INIT(Fix16, k_instant_gang_radius_6FE634, Fix16(8), 0x6FE634);
 
 struct UnknownDebugClass
 {
@@ -125,39 +126,107 @@ void Player::sub_5645B0(Car_BC* pNewCar)
     }
 }
 
-STUB_FUNC(0x564610)
+WIP_FUNC(0x564610)
 char_type Player::PromoteCarInHistory_564610(Car_BC* pCar, char_type bDontModify)
 {
-    NOT_IMPLEMENTED;
-    return 'a';
-}
+    WIP_IMPLEMENTED;
 
-STUB_FUNC(0x564680)
-u32* Player::sub_564680(Car_BC* a2)
-{
-    NOT_IMPLEMENTED;
+    Car_BC** ppCarIter; // eax
+    char_type count; // cl
+    Car_BC** pCarValue; // edx
+    s32 subCount; // esi
+
+    ppCarIter = &this->field_54_unk[1];
+    if (!bStartNetworkGame_7081F0)
+    {
+
+        if (pCar != this->field_54_unk[2]) // check 2
+        {
+            return 1;
+        }
+        count = 1;
+        while (*ppCarIter != pCar) // check 1 and 0
+        {
+            --ppCarIter;
+            if (--count < 0)
+            {
+                return 0;
+            }
+        }
+        pCarValue = ppCarIter + 1;
+        if (count < 2)
+        {
+            subCount = 2 - count;
+            do
+            {
+                if (!bDontModify)
+                {
+                    *ppCarIter++ = *pCarValue++;
+                }
+                --subCount;
+            } while (subCount);
+        }
+        if (!bDontModify)
+        {
+            *ppCarIter = pCar;
+        }
+        return 1;
+    }
+
     return 0;
 }
 
-MATCH_FUNC(0x564710)
-void Player::sub_564710(Car_BC* pCar, s32 weapon_kind)
+WIP_FUNC(0x564680)
+void Player::PushCarInfo_564680(Car_BC* pCar)
 {
-    this->field_18 = this->field_788_curr_weapon_idx;
+    WIP_IMPLEMENTED;
+
+    Car_BC** pIter; // eax
+    u8 idx; // dl
+    Car_BC** pCurrent; // ecx
+
+    pIter = this->field_54_unk;
+    if (!bStartNetworkGame_7081F0)
+    {
+        idx = 0;
+        while (*pIter != pCar)
+        {
+            ++pIter;
+            if (++idx >= 2u)
+            {
+                pCurrent = &this->field_54_unk[idx];
+                if (*pCurrent == *pIter)
+                {
+                    *pCurrent = 0;
+                }
+                return;
+            }
+        }
+        *pIter = pIter[1];
+        memcpy(pIter, pIter + 1, 4 * (2 - idx));
+        pIter[2 - idx] = 0;
+    }
+}
+
+MATCH_FUNC(0x564710)
+void Player::SetKFCarWeapon_564710(Car_BC* pCar, s32 weapon_kind)
+{
+    this->field_18_pre_kf_weapon_kind = this->field_788_curr_weapon_idx;
 
     Weapon_30* pWeapon = gWeapon_8_707018->find_5E3D20(pCar, weapon_kind);
     if (pWeapon)
     {
-        this->field_1A_ammo = pWeapon->field_0_ammo;
+        this->field_1A_pre_kf_ammo = pWeapon->field_0_ammo;
     }
     else
     {
-        this->field_1A_ammo = 0;
+        this->field_1A_pre_kf_ammo = 0;
         pWeapon = gWeapon_8_707018->allocate_5E3CE0(weapon_kind, pCar, 0);
     }
 
-    this->field_1C_weapon_kind = weapon_kind;
-    this->field_20_car = pCar;
-    this->field_24 = pCar->field_6C_maybe_id;
+    this->field_1C_kf_weapon_kind = weapon_kind;
+    this->field_20_kf_car = pCar;
+    this->field_24_kf_car_id = pCar->field_6C_maybe_id;
 
     pWeapon->field_0_ammo = -1;
 
@@ -167,26 +236,65 @@ void Player::sub_564710(Car_BC* pCar, s32 weapon_kind)
         if (pDriver->field_15C_player == this)
         {
             this->field_718_weapons[weapon_kind] = pWeapon;
-            this->field_788_curr_weapon_idx = this->field_1C_weapon_kind;
+            this->field_788_curr_weapon_idx = this->field_1C_kf_weapon_kind;
         }
     }
 }
 
 MATCH_FUNC(0x564790)
-void Player::sub_564790(s32 idx)
+void Player::SetKFWeapon_564790(s32 idx)
 {
-    this->field_18 = this->field_788_curr_weapon_idx;
-    this->field_1C_weapon_kind = idx;
-    this->field_1A_ammo = this->field_718_weapons[idx]->field_0_ammo;
+    this->field_18_pre_kf_weapon_kind = this->field_788_curr_weapon_idx;
+    this->field_1C_kf_weapon_kind = idx;
+    this->field_1A_pre_kf_ammo = this->field_718_weapons[idx]->field_0_ammo;
     this->field_718_weapons[idx]->field_0_ammo = -1;
-    this->field_788_curr_weapon_idx = this->field_1C_weapon_kind;
+    this->field_788_curr_weapon_idx = this->field_1C_kf_weapon_kind;
     EnableKFMode_56A010();
 }
 
-STUB_FUNC(0x5647D0)
+MATCH_FUNC(0x5647D0)
 void Player::ClearKFWeapon_5647D0()
 {
-    NOT_IMPLEMENTED;
+    if (this->field_18_pre_kf_weapon_kind != -2)
+    {
+        if (gWeapon_8_707018->is_car_weapon_433820(field_1C_kf_weapon_kind))
+        {
+            if (field_20_kf_car->field_6C_maybe_id == this->field_24_kf_car_id)
+            {
+                Weapon_30* pWeapon = gWeapon_8_707018->find_5E3D20(field_20_kf_car, this->field_1C_kf_weapon_kind);
+                pWeapon->SetAmmo_4A4FF0(this->field_1A_pre_kf_ammo);
+                if (!this->field_1A_pre_kf_ammo)
+                {
+                    gWeapon_30_Pool_707014->sub_4A4F20(pWeapon);
+                    Ped* pDriver = this->field_20_kf_car->field_54_driver;
+                    if (pDriver)
+                    {
+                        if (pDriver->field_15C_player == this)
+                        {
+                            this->field_718_weapons[this->field_1C_kf_weapon_kind] = 0;
+                            this->field_788_curr_weapon_idx = this->field_18_pre_kf_weapon_kind;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (gCheatUnlimitedElectroGun_67D4F7 && field_1C_kf_weapon_kind == weapon_type::shocker ||
+                gCheatUnlimitedFlameThrower_67D6CC && field_1C_kf_weapon_kind == weapon_type::flamethrower)
+            {
+                this->field_18_pre_kf_weapon_kind = -2;
+                return;
+            }
+            else
+            {
+                DisableKFMode_56A020();
+                this->field_718_weapons[this->field_1C_kf_weapon_kind]->SetAmmo_4A4FF0(this->field_1A_pre_kf_ammo);
+                this->field_788_curr_weapon_idx = this->field_18_pre_kf_weapon_kind;
+            }
+        }
+        this->field_18_pre_kf_weapon_kind = -2;
+    }
 }
 
 MATCH_FUNC(0x5648F0)
@@ -353,10 +461,33 @@ void Player::SelectNextOrPrevWeapon_5649D0(char_type bForwards, char_type bBackw
     }
 }
 
-STUB_FUNC(0x564AD0)
-void Player::sub_564AD0(Car_BC* a2)
+MATCH_FUNC(0x564AD0)
+void Player::sub_564AD0(Car_BC* pCar)
 {
-    NOT_IMPLEMENTED;
+    s16 last_weapon_kind = -1;
+    for (s32 weapon_kind = 15; weapon_kind < 28; weapon_kind++)
+    {
+        Weapon_30* pWeapon = gWeapon_8_707018->find_5E3D20(pCar, weapon_kind);
+        field_718_weapons[weapon_kind] = pWeapon;
+        if (pWeapon)
+        {
+            last_weapon_kind = weapon_kind;
+        }
+    }
+
+    if (!this->field_31_kf_weapon_mode)
+    {
+        this->field_14 = this->field_788_curr_weapon_idx;
+        if (this->field_718_weapons[field_16])
+        {
+            this->field_788_curr_weapon_idx = field_16;
+        }
+        else if (last_weapon_kind != -1)
+        {
+            this->field_788_curr_weapon_idx = last_weapon_kind;
+        }
+        SelectNextOrPrevWeapon_5649D0(0, 0);
+    }
 }
 
 MATCH_FUNC(0x564B60)
@@ -368,17 +499,26 @@ void Player::sub_564B60()
     }
 }
 
-STUB_FUNC(0x564B80)
-s32 Player::sub_564B80()
+MATCH_FUNC(0x564B80)
+void Player::CleanupEmptyAmmoWeapons_564B80()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    for (s32 i = 15; i < 28; i++)
+    {
+        if (field_718_weapons[i])
+        {
+            if (!field_718_weapons[i]->field_0_ammo)
+            {
+                gWeapon_30_Pool_707014->sub_4A4F20(field_718_weapons[i]);
+            }
+        }
+        field_718_weapons[i] = 0;
+    }
 }
 
 MATCH_FUNC(0x564C00)
 void Player::sub_564C00()
 {
-    sub_564B80();
+    CleanupEmptyAmmoWeapons_564B80();
 
     if (field_788_curr_weapon_idx >= weapon_type::car_bomb)
     {
@@ -386,10 +526,10 @@ void Player::sub_564C00()
         field_788_curr_weapon_idx = field_14;
     }
 
-    if (field_18 >= 15)
+    if (field_18_pre_kf_weapon_kind >= weapon_type::car_bomb)
     {
-        field_16 = field_18;
-        field_18 = field_14;
+        field_16 = field_18_pre_kf_weapon_kind;
+        field_18_pre_kf_weapon_kind = field_14;
     }
 
     SelectNextOrPrevWeapon_5649D0(0, 0);
@@ -428,12 +568,12 @@ void Player::sub_564CC0()
 {
     for (s32 i = 0; i < GTA2_COUNTOF_S(field_6F4_power_up_timers); i++)
     {
-        if (i == Invisibility_11 && gCheatInvisibility_67D539)
+        if (i == power_up_indices::Invisibility_11 && gCheatInvisibility_67D539)
         {
             continue;
         }
 
-        if (i == DoubleDamage_7 && gCheatUnlimitedDoubleDamage_67D57C)
+        if (i == power_up_indices::DoubleDamage_7 && gCheatUnlimitedDoubleDamage_67D57C)
         {
             continue;
         }
@@ -445,16 +585,16 @@ void Player::sub_564CC0()
 MATCH_FUNC(0x564CF0)
 void Player::sub_564CF0()
 {
-    u16 v2 = field_6F4_power_up_timers[JailCard_4];
-    if (field_6F4_power_up_timers[Invulnerability_6])
+    u16 v2 = field_6F4_power_up_timers[power_up_indices::JailCard_4];
+    if (field_6F4_power_up_timers[power_up_indices::Invulnerability_6])
     {
         field_2C4_player_ped->sub_45C050();
     }
-    if (field_6F4_power_up_timers[Electrofingers_9])
+    if (field_6F4_power_up_timers[power_up_indices::Electrofingers_9])
     {
         field_2C4_player_ped->field_21C &= ~ped_bit_status_enum::k_ped_0x04000000;
     }
-    if (field_6F4_power_up_timers[Invisibility_11])
+    if (field_6F4_power_up_timers[power_up_indices::Invisibility_11])
     {
         if (!gCheatInvisibility_67D539)
         {
@@ -462,59 +602,170 @@ void Player::sub_564CF0()
         }
     }
     sub_564CC0();
-    field_6F4_power_up_timers[JailCard_4] = v2;
+    field_6F4_power_up_timers[power_up_indices::JailCard_4] = v2;
 }
 
-STUB_FUNC(0x564D60)
-char_type Player::CollectPowerUp_564D60(s32 a2)
+WIP_FUNC(0x564D60)
+char_type Player::CollectPowerUp_564D60(s32 power_up_idx)
 {
-    NOT_IMPLEMENTED;
-    return 'a';
+    WIP_IMPLEMENTED;
+
+    switch (power_up_idx)
+    {
+        case power_up_indices::Unk_0:
+            if (field_6BC_multpliers.field_0 == 99)
+            {
+                return 0;
+            }
+            field_6BC_multpliers.ChangeStatByAmount_4921B0(1);
+            break;
+
+        case power_up_indices::Unk_1:
+            if (this->field_684_lives.field_0 == 99)
+            {
+                return 0;
+            }
+            ChangeLifeCountByAmount_5699F0(1);
+            break;
+
+        case power_up_indices::Unk_2:
+            if (field_2C4_player_ped->field_216_health >= 100)
+            {
+                return 0;
+            }
+            field_2C4_player_ped->field_216_health = 100;
+            break;
+
+        case power_up_indices::Armor_3:
+            if (this->field_6F4_power_up_timers[3] == 10)
+            {
+                return 0;
+            }
+            this->field_6F4_power_up_timers[3] = 10;
+            break;
+
+        case power_up_indices::Unk_5:
+            if (field_2C4_player_ped->field_20A_wanted_points == 0)
+            {
+                return 0;
+            }
+            field_2C4_player_ped->field_20A_wanted_points = 0;
+            break;
+
+        case power_up_indices::Invulnerability_6:
+            if (this->field_6F4_power_up_timers[6] == 1200)
+            {
+                return 0;
+            }
+            this->field_6F4_power_up_timers[6] = 1200;
+            field_2C4_player_ped->SetInvulnerable();
+            break;
+
+        case power_up_indices::DoubleDamage_7:
+            if (this->field_6F4_power_up_timers[7] == 1800)
+            {
+                return 0;
+            }
+            this->field_6F4_power_up_timers[7] = 1800;
+            break;
+
+        case power_up_indices::FastReload_8:
+            if (this->field_6F4_power_up_timers[8] == 1800)
+            {
+                return 0;
+            }
+            this->field_6F4_power_up_timers[8] = 1800;
+            break;
+
+        case power_up_indices::Electrofingers_9:
+            if (this->field_6F4_power_up_timers[9] == 2100)
+            {
+                return 0;
+            }
+            this->field_6F4_power_up_timers[9] = 2100;
+            this->field_2C4_player_ped->field_21C |= 0x4000000u;
+            break;
+
+        case power_up_indices::Invisibility_11:
+            if (this->field_6F4_power_up_timers[11] == 1800)
+            {
+                return 0;
+            }
+            this->field_6F4_power_up_timers[11] = 1800;
+            field_2C4_player_ped->SetInvisible();
+            break;
+
+        case power_up_indices::Unk_10:
+            if (!field_34_gang_curr_location)
+            {
+                return 0;
+            }
+            if (field_34_gang_curr_location->GetRespectForPlayer_4BEEF0(this->field_2E_idx) == 100)
+            {
+                return 0;
+            }
+            field_34_gang_curr_location->IncrementRespect_4BEE50(this->field_2E_idx, 20);
+            break;
+
+        case power_up_indices::InstantGang_12:
+            if (!field_2C4_player_ped->field_168_game_object)
+            {
+                return 0;
+            }
+            field_2C4_player_ped->RecruitNearbyPeds_46E080(4, k_instant_gang_radius_6FE634);
+            break;
+        default:
+            if (this->field_6F4_power_up_timers[power_up_idx] == 1)
+            {
+                return 0;
+            }
+            this->field_6F4_power_up_timers[power_up_idx] = 1;
+            break;
+    }
+    return 1;
 }
 
 MATCH_FUNC(0x565070)
 void Player::tick_down_powerups_565070()
 {
-    // invulnerability
-    if (field_6F4_power_up_timers[Invulnerability_6])
+    if (field_6F4_power_up_timers[power_up_indices::Invulnerability_6])
     {
-        field_6F4_power_up_timers[Invulnerability_6]--;
-        if (!field_6F4_power_up_timers[Invulnerability_6])
+        field_6F4_power_up_timers[power_up_indices::Invulnerability_6]--;
+        if (!field_6F4_power_up_timers[power_up_indices::Invulnerability_6])
         {
             field_2C4_player_ped->sub_45C050();
         }
     }
 
-    // double damage
-    if (field_6F4_power_up_timers[DoubleDamage_7])
+    if (field_6F4_power_up_timers[power_up_indices::DoubleDamage_7])
     {
         if (!gCheatUnlimitedDoubleDamage_67D57C)
         {
-            field_6F4_power_up_timers[DoubleDamage_7]--;
+            field_6F4_power_up_timers[power_up_indices::DoubleDamage_7]--;
         }
     }
 
-    if (field_6F4_power_up_timers[FastReload_8])
+    if (field_6F4_power_up_timers[power_up_indices::FastReload_8])
     {
-        field_6F4_power_up_timers[FastReload_8]--;
+        field_6F4_power_up_timers[power_up_indices::FastReload_8]--;
     }
 
-    if (field_6F4_power_up_timers[Electrofingers_9])
+    if (field_6F4_power_up_timers[power_up_indices::Electrofingers_9])
     {
-        field_6F4_power_up_timers[Electrofingers_9]--;
-        if (!field_6F4_power_up_timers[Electrofingers_9])
+        field_6F4_power_up_timers[power_up_indices::Electrofingers_9]--;
+        if (!field_6F4_power_up_timers[power_up_indices::Electrofingers_9])
         {
             field_2C4_player_ped->field_21C &= ~ped_bit_status_enum::k_ped_0x04000000;
         }
     }
 
     // invisiblity
-    if (field_6F4_power_up_timers[Invisibility_11])
+    if (field_6F4_power_up_timers[power_up_indices::Invisibility_11])
     {
         if (!gCheatInvisibility_67D539)
         {
-            field_6F4_power_up_timers[Invisibility_11]--;
-            if (!field_6F4_power_up_timers[Invisibility_11])
+            field_6F4_power_up_timers[power_up_indices::Invisibility_11]--;
+            if (!field_6F4_power_up_timers[power_up_indices::Invisibility_11])
             {
                 field_2C4_player_ped->SetVisible();
             }
@@ -522,11 +773,43 @@ void Player::tick_down_powerups_565070()
     }
 }
 
-STUB_FUNC(0x5651F0)
-s32 Player::RestorePowerUpsFromSave_5651F0(save_stats_0x90* a2)
+WIP_FUNC(0x5651F0)
+void Player::RestorePowerUpsFromSave_5651F0(save_stats_0x90* pSaveStats)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    //WIP_IMPLEMENTED;
+
+    s32 idx; // esi
+    u16* pPowerUpTimerIter; // edi
+    u16* pCheatIter; // ebx
+    s32 k17; // [esp+14h] [ebp+4h]
+
+    idx = 0;
+    pPowerUpTimerIter = this->field_6F4_power_up_timers;
+    pCheatIter = pSaveStats->field_1A_power_ups;
+    k17 = 17;
+    while (k17 > 0)
+    {
+        if (*pCheatIter > 0)
+        {
+            *pPowerUpTimerIter = *pCheatIter;
+            switch (idx)
+            {
+                case power_up_indices::Invulnerability_6:
+                    field_2C4_player_ped->SetInvulnerable();
+                    break;
+                case power_up_indices::Electrofingers_9:
+                    this->field_2C4_player_ped->field_21C |= 0x4000000u;
+                    break;
+                case power_up_indices::Invisibility_11:
+                    field_2C4_player_ped->SetInvisible();
+                    break;
+            }
+        }
+        ++idx;
+        ++pCheatIter;
+        ++pPowerUpTimerIter;
+        --k17;
+    }
 }
 
 MATCH_FUNC(0x565310)
@@ -628,10 +911,12 @@ void Player::IncrementGangRespectFromDebugKeys_565770(u8 count)
     }
 }
 
-STUB_FUNC(0x565860)
+WIP_FUNC(0x565860)
 void Player::IncreaseWantedLevelFromDebugKeys_565860()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    // TODO: This function just calls another - split them
     Ped* pPed = this->field_2C4_player_ped;
     switch (pPed->get_wanted_star_count_46EF00())
     {
@@ -1122,7 +1407,7 @@ void Player::HandleControls_5668D0(Ped* pPed)
                 {
                     pPed->sub_463830(0, 9999);
 
-                    if (pCar->is_train_model())
+                    if (pCar->IsTrainModel_403BA0())
                     {
                         pPed->SetObjective(objectives_enum::enter_train_37, 9999);
                     }
@@ -1216,7 +1501,7 @@ void Player::HandleControls_5668D0(Ped* pPed)
     {
         if (pPed->field_248_enter_car_as_passenger != 1)
         {
-            if (pPedCar->is_train_model())
+            if (pPedCar->IsTrainModel_403BA0())
             {
                 Player::DoPedControlInputs_566C80(pPed);
             }
@@ -1257,7 +1542,8 @@ void Player::DoCarControlInputs_566C30(Car_BC* pCar)
                                  bAttackPressed);
 }
 
-MATCH_FUNC(0x566C80)
+// https://decomp.me/scratch/mQMMn TODO: try to match without Ang16 operator=()
+WIP_FUNC(0x566C80)
 void Player::DoPedControlInputs_566C80(Ped* pPed)
 {
     Char_B4* pB4 = NULL;
@@ -1352,9 +1638,9 @@ void Player::DoPedControlInputs_566C80(Ped* pPed)
         pB4 = pPed->field_168_game_object;
         if (pB4)
         {
-            if (pB4->field_10 != 15 && pPed->field_21C_bf.b27 == 0)
+            if (pB4->field_10_char_state != Char_B4_state::Jumping_15 && pPed->field_21C_bf.b27 == 0)
             {
-                pB4->sub_5454D0(); // jump?
+                pB4->DoJump_5454D0(); // jump?
             }
         }
     }
@@ -1633,12 +1919,12 @@ void Player::Busted_5679E0()
             {
                 gHud_2B00_706620->field_111C.ClearTimeToShow_5D1850();
                 Player::ClearKFWeapon_5647D0();
-                u16 power_up_timer = field_6F4_power_up_timers[JailCard_4];
+                u16 power_up_timer = field_6F4_power_up_timers[power_up_indices::JailCard_4];
                 if (power_up_timer != 0)
                 {
                     if (!gCheatUnknown_67D4F6)
                     {
-                        field_6F4_power_up_timers[JailCard_4] = power_up_timer - 1;
+                        field_6F4_power_up_timers[power_up_indices::JailCard_4] = power_up_timer - 1;
                     }
                 }
                 else
@@ -1962,7 +2248,7 @@ void Player::Service_5687F0()
     this->field_89_bWasEnterExitPressed = bWasEnterExitPressed;
     this->field_81_bNowSpecial_1_Pressed = bNowSpecial_1_Pressed;
     this->field_84_bWasSpecial_1_Pressed = bWasSpecial_1_Pressed;
-    Player::sub_569C20();
+    Player::SetScoreTextColour_569C20();
 }
 
 MATCH_FUNC(0x569410)
@@ -2267,16 +2553,17 @@ void Player::sub_569A10()
 }
 
 MATCH_FUNC(0x569C20)
-void Player::sub_569C20()
+void Player::SetScoreTextColour_569C20()
 {
     if (bStartNetworkGame_7081F0 == false && gfrosty_pasteur_6F8060 != NULL)
     {
-        if (field_60 == 0)
+        if (field_60_bFinshScoreReached == 0)
         {
             u32 score = field_2D4_scores.GetScore_592370();
             if (score >= gfrosty_pasteur_6F8060->field_310_finish_score)
             {
-                field_60 = 1;
+                field_60_bFinshScoreReached = 1;
+                // Red when map "beaten"
                 field_2D4_scores.sub_592360()->sub_4921F0(palette_types_enum::user_remaps, 6);
             }
         }
@@ -2285,7 +2572,7 @@ void Player::sub_569C20()
             u32 score = field_2D4_scores.GetScore_592370();
             if (score < gfrosty_pasteur_6F8060->field_310_finish_score)
             {
-                field_60 = 0;
+                field_60_bFinshScoreReached = 0;
                 field_2D4_scores.sub_592360()->sub_4921F0(palette_types_enum::sprites, 0);
             }
         }
@@ -2300,7 +2587,7 @@ void Player::sub_569CB0()
         FatalError_4A38C0(Gta2Error::NoRestartZone, "C:\\Splitting\\Gta2\\Source\\player.cpp",
                           2905); // No Restart Zone
     }
-    field_60 = 0;
+    field_60_bFinshScoreReached = 0;
     field_29 = 0;
     field_28 = 0;
     field_640_busted = 0;
@@ -2310,7 +2597,7 @@ void Player::sub_569CB0()
     field_684_lives.sub_492150();
     field_6BC_multpliers.sub_492150();
     field_64 = 0;
-    field_18 = -2;
+    field_18_pre_kf_weapon_kind = -2;
     if (gfrosty_pasteur_6F8060->field_C1E2C)
     {
         Player::UpdateGameFromSave_56A310(&gGameSave_6F78C8.field_54_player_and_world_stats);
@@ -2365,7 +2652,7 @@ void Player::sub_569E70()
     {
         if (field_68 == 2)
         {
-            Player::sub_569F40();
+            Player::DisableInputs_569F40();
         }
         Player::sub_5695A0();
     }
@@ -2378,7 +2665,7 @@ void Player::sub_569E70()
         Car_BC* pCar = gCar_6C_677930->GetNearestCarFromCoord_444F80(xpos, ypos, zpos, 0);
         if (pCar)
         {
-            Player::sub_569F40();
+            Player::DisableInputs_569F40();
             Player::sub_569600(pCar);
         }
     }
@@ -2409,7 +2696,7 @@ char* Player::GetDeathText_569F00()
 }
 
 MATCH_FUNC(0x569F40)
-void Player::sub_569F40()
+void Player::DisableInputs_569F40()
 {
     // TODO: Almost certainly an inline, and perhaps a switch case too
     Ped* pPed;
@@ -2438,7 +2725,7 @@ void Player::sub_569F40()
         {
             if (pPed->field_248_enter_car_as_passenger != 1)
             {
-                if (pCar->is_train_model())
+                if (pCar->IsTrainModel_403BA0())
                 {
                     this->field_8 = word_6FE754;
                     this->field_C = dword_6FE610;
@@ -2459,7 +2746,7 @@ MATCH_FUNC(0x569FF0)
 void Player::DisableAllControls_569FF0()
 {
     field_2F_disable_all_controls = 1;
-    sub_569F40();
+    DisableInputs_569F40();
 }
 
 MATCH_FUNC(0x56A000)
@@ -2492,11 +2779,29 @@ void Player::EnableEnterVehicles_56A040()
     field_30_disable_enter_vehicles = 0;
 }
 
-STUB_FUNC(0x56A0F0)
-s32 Player::RestoreCarsFromSave_56A0F0()
+WIP_FUNC(0x56A0F0)
+void Player::RestoreCarsFromSave_56A0F0()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+
+    for (s32 i = 0; i < 3; i++)
+    {
+        if (gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_0_x[i].field_0 > dword_6FE610 &&
+            gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_C_y[i].field_0 > dword_6FE610)
+        {
+            Car_BC* pNewCar =
+                gCar_6C_677930->SpawnCarAt_446230(gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_0_x[i].field_0,
+                                                  gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_C_y[i].field_0,
+                                                  gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_18_z[i].field_0,
+                                                  gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_24_ang[i], // rot
+                                                  gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_3C[i], // car_info_idx/model
+                                                  dword_6FE614);
+            sub_5645B0(pNewCar);
+            pNewCar->field_8_damaged_areas = gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_30[i];
+            pNewCar->field_74_damage = gGameSave_6F78C8.field_E4_car_and_script_data.field_0.field_2A[i];
+        }
+    }
+    memset(&gGameSave_6F78C8.field_E4_car_and_script_data.field_0, 0, 68u);
 }
 
 MATCH_FUNC(0x56A1A0)
@@ -2691,25 +2996,30 @@ void Player::ApplyCheats_56A490()
     {
         field_6BC_multpliers.ChangeStatByAmount_4921B0(9);
     }
+
     if (gCheatOnlyMuggerPeds_67D5A4)
     {
         gPedManager_6787BC->field_7_make_all_muggers = true;
     }
+
     if (gCheatUnknown_67D4F6)
     {
-        Player::CollectPowerUp_564D60(4);
+        Player::CollectPowerUp_564D60(power_up_indices::JailCard_4);
     }
+
     if (gCheatInvisibility_67D539)
     {
-        Player::CollectPowerUp_564D60(11);
+        Player::CollectPowerUp_564D60(power_up_indices::Invisibility_11);
     }
+
     if (gCheatUnlimitedDoubleDamage_67D57C)
     {
-        Player::CollectPowerUp_564D60(7);
+        Player::CollectPowerUp_564D60(power_up_indices::DoubleDamage_7);
     }
+
     if (byte_67D56B)
     {
-        Player::CollectPowerUp_564D60(4);
+        Player::CollectPowerUp_564D60(power_up_indices::JailCard_4);
         Player::sub_564960(1, 50u);
         for (Gang_144* pIter2 = gGangPool_CA8_67E274->sub_4BECA0(); pIter2; pIter2 = gGangPool_CA8_67E274->sub_4BECE0())
         {

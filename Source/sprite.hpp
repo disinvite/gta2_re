@@ -29,6 +29,21 @@ class Sprite_4C
     {
     }
 
+    // Both of these functions are a bit insane but its what the collision system uses to
+    // avoid checking collisions multiple times, I assume field_2C must be a union then, also
+    // fo sho gonna cause issues if compiled for 64bit :)
+    // Probably when its taken from the linked list its never used as a pointer anymore
+    // until its put back ??
+    void SetCollisionId_446920(u32 id)
+    {
+        this->mpNext = (Sprite_4C*)id;
+    }
+
+    bool CollisionIdIs_446930(u32 a2)
+    {
+        return (u32)mpNext == a2;
+    }
+
     // 9.6f 0x41E390
     // https://decomp.me/scratch/YTMyx
     bool IsZeroWidth_41E390() const
@@ -90,9 +105,9 @@ class Sprite
     EXPORT void sub_59E300();
     EXPORT void sub_59E320(char_type a2);
     EXPORT bool sub_59E390(s32 a2, s32 a3, s32 a4);
-    EXPORT s32 sub_59E4C0(s32 a2, s32 a3);
+    EXPORT s32 sub_59E4C0(Fix16 a2, s32 a3);
     EXPORT char_type CollisionCheck_59E590(Sprite* a2);
-    EXPORT char_type sub_59E680(s32 a2, s16* a3);
+    EXPORT char_type sub_59E680(Fix16 a2, Sprite* a3);
     EXPORT void ResetZCollisionAndDebugBoxes_59E7B0();
     EXPORT Sprite* sub_59E7D0(s32 a2);
     EXPORT char_type IsThreatToSearchingPed_59E830();
@@ -104,14 +119,14 @@ class Sprite
     EXPORT void SetRemap(s16 remap);
     EXPORT s16 sub_59EAA0();
     EXPORT char_type has_shadows_59EAE0();
-    EXPORT void sub_59EB30(f32& a2, f32& a3);
+    EXPORT void ShowId_59EB30(f32& a2, f32& a3);
     EXPORT void ShowHorn_59EE40(f32& a2, f32& a3);
     EXPORT void Draw_59EFF0();
     EXPORT void AllocInternal_59F950(Fix16 width, Fix16 height, Fix16 a4);
     EXPORT void Update_4C_59F990();
     EXPORT void sub_59FA40();
     EXPORT void FreeSprite4CChildren_59FAD0();
-    EXPORT bool sub_59FB10(s32* a2);
+    EXPORT bool sub_59FB10(Fix16_Rect* a2);
     EXPORT char_type FindOverlappingBoundingBoxCorners_5A0150(s32 a2, u8* a3, u8* a4);
     EXPORT char_type CollisionCheck_5A0320(Fix16* pXY1, Fix16* pXY2, u8* pCollisionIdx1, u8* pCollisionIdx2);
     EXPORT bool RotatedRectCollisionSAT_5A0380(Sprite* a2);
@@ -127,7 +142,7 @@ class Sprite
     EXPORT char_type CheckCornerZCollisions_5A1CA0(u32* a2);
     EXPORT char_type IsTouchingSlopeBlock_5A1EB0();
     EXPORT char_type sub_5A21F0();
-    EXPORT u32* sub_5A22B0(u32* a2, Sprite* a3);
+    EXPORT Fix16 MinDistanceToAnySpriteBBoxCorner_5A22B0(Sprite* a3);
     EXPORT char_type sub_5A2440();
     EXPORT char_type sub_5A2500();
     EXPORT s16* sub_5A26E0(s16* a2);
@@ -145,6 +160,11 @@ class Sprite
     EXPORT ~Sprite(); // 0x5a3540
 
     EXPORT Sprite();
+
+    inline bool TypeIs_446940(s32 a2)
+    {
+        return field_30_sprite_type_enum == a2;
+    }
 
     void GetXYZ_4117B0(Fix16* a2, Fix16* a3, Fix16* a4)
     {
@@ -275,6 +295,17 @@ class Sprite
     };
     infallible_turing* field_10_sound;
 
+    void SetType_4206F0(s32 sprite_type)
+    {
+        field_30_sprite_type_enum = sprite_type;
+        sub_59E960(); // Update field_28
+    }
+
+    void Set_Car_420710(Car_BC* pCar)
+    {
+        this->field_8_car_bc_ptr = pCar;
+    }
+
     void set_id_lazy_4206C0(u16 new_id)
     {
         if (field_22_sprite_id != new_id)
@@ -340,6 +371,11 @@ class Sprite
     inline Fix16 GetZPos()
     {
         return field_1C_zpos;
+    }
+
+    inline void set_num_40F7B0(s32 new_num)
+    {
+        field_28_num = new_num;
     }
 
     Fix16_Point_POD field_14_xy;

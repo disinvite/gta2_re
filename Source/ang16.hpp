@@ -45,11 +45,14 @@ class Ang16
         return *this;
     }
 
+    // TODO: this shouldn't exist, try to match Player::DoPedControlInputs_566C80 without it
+    /*
     Ang16 operator=(const Ang16& other)
     {
         rValue = other.rValue;
         return *this;
     }
+    */
 
     bool operator==(const Ang16& other)
     {
@@ -180,6 +183,9 @@ class Ang16
         }
     }
 
+    EXPORT static bool __stdcall IsAngleAhead_405C60(Ang16* a1, Ang16* a2);
+
+    EXPORT void SnapToAng4_405640();
     EXPORT Ang16* sub_409300(Ang16* a2, s32 a3);
     EXPORT Ang16* sub_409340(Ang16* pRet, Ang16* toSub);
     EXPORT Ang16* sub_482740(Ang16* a1, s32* a2);
@@ -195,6 +201,13 @@ class Ang16
         return gSin_table_667A80[angle.rValue];
     }
 
+    // TODO: Create a scratch and check this matches
+    inline static void __stdcall sub_41FC20(Ang16& angle, Fix16& unk, Fix16& ret1, Fix16& ret2)
+    {
+        ret1 = unk * Ang16::sine_40F500(angle);
+        ret2 = unk * Ang16::cosine_40F520(angle);
+    }
+
     EXPORT static s32 __stdcall Ang16::GetAngleFace_4F78F0(Ang16& a1);
 
     // inlined from 0x40f580 on v9.6f
@@ -203,6 +216,12 @@ class Ang16
     {
         s32 value = v.rValue * 71;
         return Fix16(value, 0);
+    }
+
+    // Reverse of above func
+    inline static Ang16 __stdcall Fix16_To_Ang16_40F540(const Fix16& a2)
+    {
+        return Ang16(a2.GetRaw_40F4B0() / 71, 0);
     }
 
     // 9.6f 0x41E110

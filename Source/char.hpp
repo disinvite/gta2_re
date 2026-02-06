@@ -17,6 +17,12 @@ EXTERN_GLOBAL(Fix16, dword_6FD7F8);
 EXTERN_GLOBAL(Fix16, dword_6FD800);
 EXTERN_GLOBAL(Fix16, dword_6FD7FC);
 
+EXTERN_GLOBAL(Ang16, word_6FD940);
+EXTERN_GLOBAL(Ang16, word_6FD8F8);
+
+EXPORT void __stdcall sub_529050(u8 a1, s8* a2, s8* a3);
+EXPORT Ang16 __stdcall ComputeShortestAngleDelta_4056C0(Ang16& a2, Ang16& a3);
+
 class Char_B4
 {
   public:
@@ -27,7 +33,7 @@ class Char_B4
     s8 field_7;
     s32 field_8_ped_state_1;
     s32 field_C_ped_state_2;
-    s32 field_10;
+    s32 field_10_char_state;
     Ang16 field_14;
     s8 field_16;
     s8 field_17;
@@ -71,12 +77,12 @@ class Char_B4
     s8 field_5F;
     s32 field_60;
     s32 field_64;
-    u8 field_68;
+    u8 field_68_animation_frame;
     s8 field_69;
     u8 field_6A;
     s8 field_6b;
-    s32 field_6C;
-    s8 field_70;
+    s32 field_6C_animation_state;
+    s8 field_70_frame_timer;
     s8 field_71;
     s8 field_72;
     s8 field_73;
@@ -167,6 +173,22 @@ class Char_B4
         field_C_ped_state_2 = new_state;
     }
 
+    inline void sub_4923D0()
+    {
+        field_40_rotation.SnapToAng4_405640();
+        field_40_rotation += word_6FD940;
+        field_10_char_state = 9;
+        field_46 = 10;
+    }
+
+    inline void sub_4923A0()
+    {
+        field_40_rotation.SnapToAng4_405640();
+        field_40_rotation += word_6FD8F8;
+        field_10_char_state = 8;
+        field_46 = 10;
+    }
+
     Char_B4();
     ~Char_B4();
 
@@ -177,8 +199,10 @@ class Char_B4
     EXPORT void sub_545430();
     EXPORT bool sub_5451C0();
 
+    EXPORT void SetRemap_46DD50(u8 remap);
+
     EXPORT void sub_5454B0();
-    EXPORT void sub_5454D0();
+    EXPORT void DoJump_5454D0();
     EXPORT void sub_545530(Fix16 xpos, Fix16 ypos, Fix16 zpos);
     EXPORT s32 IsOnWater_545570();
     EXPORT void sub_5455F0();
@@ -189,19 +213,19 @@ class Char_B4
     EXPORT void sub_5459C0();
     EXPORT void DrownPed_5459E0();
     EXPORT void UpdateAnimState_546360();
-    EXPORT void sub_548590();
+    EXPORT void ManageZCoordAndSlopes_548590();
     EXPORT void sub_548670(char_type a2);
     EXPORT void sub_548840(Object_2C* a2);
-    EXPORT void sub_548BD0(s32 a2);
+    EXPORT void sub_548BD0(Char_B4* a2);
     EXPORT void sub_54A530(Car_BC* a2, Car_BC* a3, s32 a4);
     EXPORT char_type sub_54B8F0();
-    EXPORT s32 sub_54C090();
+    EXPORT void sub_54C090();
     EXPORT char_type sub_54C1A0(s32 a2);
     EXPORT char_type sub_54C3E0();
     EXPORT char_type sub_54C500(char_type a2, char_type a3);
     EXPORT void sub_54C580();
-    EXPORT s16 sub_54C6C0(s32 a2);
-    EXPORT s16 sub_54C900(s32 a2);
+    EXPORT void sub_54C6C0();
+    EXPORT void sub_54C900();
     EXPORT s16 sub_54CAE0();
     EXPORT void sub_54CC40();
     EXPORT void sub_54DD70();
@@ -227,7 +251,7 @@ class Char_B4
     EXPORT bool sub_5532C0();
     EXPORT char_type IsThreatToSearchingPed_553330();
     EXPORT bool sub_553340(Sprite* pSprite);
-    EXPORT char_type sub_5535B0(Object_2C* p2c);
+    EXPORT bool sub_5535B0(Object_2C* p2c);
     EXPORT bool OnObjectTouched_553640(Object_2C* p2c);
     EXPORT char_type HandlePedObjectHit_5537F0(Object_2C* p2c);
     EXPORT void sub_5538A0(Car_BC* pCar, s32 a3, s32 a4, s32 a5);

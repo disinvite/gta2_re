@@ -262,26 +262,37 @@ bool Sprite::sub_59E390(s32 a2, s32 a3, s32 a4)
 }
 
 STUB_FUNC(0x59e4c0)
-s32 Sprite::sub_59E4C0(s32 a2, s32 a3)
+s32 Sprite::sub_59E4C0(Fix16 a2, s32 a3)
 {
     NOT_IMPLEMENTED;
     return 0;
 }
 
 // https://decomp.me/scratch/GIpfM
-STUB_FUNC(0x59E590)
+MATCH_FUNC(0x59E590)
 char_type Sprite::CollisionCheck_59E590(Sprite* pOther)
 {
-    Sprite_4C* pOurSprite = pOther->field_C_sprite_4c_ptr;
-    Sprite_4C* pOtherSprite = field_C_sprite_4c_ptr;
-    return pOtherSprite->field_30_boundingBox.AABB_Intersects_41E2F0(&pOurSprite->field_30_boundingBox) &&
-        (pOtherSprite->IsZeroWidth_41E390() || field_0.jIsAxisAligned_41E3C0()) &&
-        (pOurSprite->IsZeroWidth_41E390() || pOther->field_0.jIsAxisAligned_41E3C0()) ||
-        (pOther->RotatedRectCollisionSAT_5A0380(this) || RotatedRectCollisionSAT_5A0380(pOther));
+    // TODO: inlining issue inside of AABB_Intersects_41E2F0
+    if (field_C_sprite_4c_ptr->field_30_boundingBox.AABB_Intersects_41E2F0(&pOther->field_C_sprite_4c_ptr->field_30_boundingBox))
+    {
+        if ((field_C_sprite_4c_ptr->IsZeroWidth_41E390() || field_0.jIsAxisAligned_41E3C0()) &&
+            (pOther->field_C_sprite_4c_ptr->IsZeroWidth_41E390() || pOther->field_0.jIsAxisAligned_41E3C0()))
+        {
+
+            return 1;
+        }
+
+        if (RotatedRectCollisionSAT_5A0380(pOther) || pOther->RotatedRectCollisionSAT_5A0380(this))
+        {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 STUB_FUNC(0x59E680)
-char_type Sprite::sub_59E680(s32 a2, s16* a3)
+char_type Sprite::sub_59E680(Fix16 a2, Sprite* a3)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -348,7 +359,7 @@ char_type Sprite::sub_59E850(Sprite* pSprite)
         case 5:
             return field_8_object_2C_ptr->sub_525370(pSprite);
         case 2:
-            return field_8_car_bc_ptr->sub_43AAF0(pSprite);
+            return field_8_car_bc_ptr->CanCarCollideWithSprite_43AAF0(pSprite);
         case 3:
             return field_8_char_b4_ptr->sub_553340(pSprite);
         default:
@@ -494,7 +505,7 @@ char_type Sprite::has_shadows_59EAE0()
 }
 
 STUB_FUNC(0x59eb30)
-void Sprite::sub_59EB30(f32& a2, f32& a3)
+void Sprite::ShowId_59EB30(f32& a2, f32& a3)
 {
     NOT_IMPLEMENTED;
 }
@@ -701,7 +712,7 @@ void Sprite::Draw_59EFF0()
         }
     }
 
-    Sprite::sub_59EB30(gTileVerts_7036D0[1].x, gTileVerts_7036D0[1].y);
+    Sprite::ShowId_59EB30(gTileVerts_7036D0[1].x, gTileVerts_7036D0[1].y);
     Sprite::ShowHorn_59EE40(gTileVerts_7036D0[3].x, gTileVerts_7036D0[3].y);
 }
 
@@ -778,7 +789,7 @@ void Sprite::FreeSprite4CChildren_59FAD0()
 }
 
 STUB_FUNC(0x59FB10)
-bool Sprite::sub_59FB10(s32* a2)
+bool Sprite::sub_59FB10(Fix16_Rect* a2)
 {
     NOT_IMPLEMENTED;
     return false;
@@ -955,7 +966,7 @@ char_type Sprite::ComputeZLayer_5A1BD0()
 {
     if (this->field_39_z_col == -1)
     {
-        if (this->field_30_sprite_type_enum == sprite_types_enum::car && field_8_car_bc_ptr->is_train_model())
+        if (this->field_30_sprite_type_enum == sprite_types_enum::car && field_8_car_bc_ptr->IsTrainModel_403BA0())
         {
             this->field_39_z_col = (this->field_1C_zpos - dword_7035C4).ToInt();
         }
@@ -1036,11 +1047,38 @@ char_type Sprite::sub_5A21F0()
     return gMap_0x370_6F6268->CheckZCollisionAtCoord_4E5300(field_14_xy.x, field_14_xy.y, field_1C_zpos - z_4c / 2, zToUse);
 }
 
-STUB_FUNC(0x5A22B0)
-u32* Sprite::sub_5A22B0(u32* a2, Sprite* a3)
+WIP_FUNC(0x5A22B0)
+Fix16 Sprite::MinDistanceToAnySpriteBBoxCorner_5A22B0(Sprite* pOther)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+
+    Fix16 yd = pOther->field_14_xy.y - field_14_xy.y;
+    Fix16 xd = pOther->field_14_xy.x - field_14_xy.x;
+    Fix16 yd_abs = Fix16::Abs(yd);
+    Fix16 xd_abs = Fix16::Abs(xd);
+    Fix16 xy_pos_max = Fix16::Max_44E540(yd_abs, xd_abs);
+
+    s32 box_idx = 0;
+    s32 k4Counter = 4;
+    do
+    {
+        Sprite_4C* p4C = pOther->field_C_sprite_4c_ptr;
+
+        Fix16 yd2 = p4C->field_C_renderingRect[box_idx].y - field_14_xy.y;
+        Fix16 xd2 = p4C->field_C_renderingRect[box_idx].x - field_14_xy.x;
+        Fix16 yd_abs2 = Fix16::Abs(yd2);
+        Fix16 xd_abs2 = Fix16::Abs(xd2);
+        Fix16 v14 = Fix16::Max_44E540(yd_abs2, xd_abs2);
+        if (v14 < xy_pos_max)
+        {
+            xy_pos_max = v14;
+        }
+
+        ++box_idx;
+        --k4Counter;
+    } while (k4Counter);
+
+    return xy_pos_max;
 }
 
 WIP_FUNC(0x5A2440)
@@ -1131,7 +1169,7 @@ void Sprite::ResolveCollisionWithCarPedOrObject_5A2A30()
                 u8 z = field_1C_zpos.ToInt();
 
                 // car shoving / overlap resolution ?
-                if (gOrca_2FD4_6FDEF0->sub_5552B0(1, &x, &y, &z, 1))
+                if (gOrca_2FD4_6FDEF0->FindNearbyTileMatchingSlopeType_5552B0(1, &x, &y, &z, 1))
                 {
                     gPurpleDoom_1_679208->AddToSpriteRectBuckets_477B60(pCurrent);
                     pIterCar->sub_444E40(x, y, z);

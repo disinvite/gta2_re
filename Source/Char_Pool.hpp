@@ -5,6 +5,8 @@
 #include "Ped.hpp"
 #include "Pool.hpp"
 
+class Camera_0xBC;
+
 class Char_B4_Pool
 {
   public:
@@ -60,7 +62,7 @@ class Char_8_Pool
 class PedManager
 {
   public:
-    EXPORT void sub_46EB60(u32* a2);
+    EXPORT void SpawnDummies_46EB60(Camera_0xBC *pCam);
     EXPORT void PedsService_4703F0();
     EXPORT PedManager();
     EXPORT ~PedManager();
@@ -69,7 +71,7 @@ class PedManager
     EXPORT Ped* SpawnGangDriver_470BA0(Car_BC* pCar, Gang_144* pGang);
     EXPORT Ped* sub_470CC0(Car_BC* pCar);
     EXPORT Ped* sub_470D60();
-    EXPORT Ped* sub_470E30();
+    EXPORT Ped* SpawnTrainLeaver_470E30();
     EXPORT Ped* sub_470F30();
     EXPORT Ped* sub_470F90(Ped* pSrc);
     EXPORT void DoIanTest_471060(s16 a1);
