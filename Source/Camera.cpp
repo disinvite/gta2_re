@@ -43,6 +43,10 @@ DEFINE_GLOBAL_INIT(Fix16, dword_6767B4, Fix16(0xE333, 0), 0x6767B4);
 DEFINE_GLOBAL_INIT(Fix16, dword_676898, Fix16(14), 0x676898);
 DEFINE_GLOBAL_INIT(Fix16, kZero_6F6C50, Fix16(0), 0x6F6C50);
 
+
+DEFINE_GLOBAL(Fix16, dword_702E04, 0x702E04);
+DEFINE_GLOBAL(Fix16, dword_702DE4, 0x702DE4);
+
 // TODO: move
 static inline Fix16 sub_41E130(Fix16 a1, Fix16 a2)
 {
@@ -54,7 +58,7 @@ static inline Fix16 sub_41E130(Fix16 a1, Fix16 a2)
 }
 
 MATCH_FUNC(0x4355D0)
-bool Camera_0xBC::sub_4355D0(Sprite* pSprite)
+bool Camera_0xBC::IsSpriteTheCameraSubject_4355D0(Sprite* pSprite)
 {
     if (pSprite->field_30_sprite_type_enum == sprite_types_enum::car && pSprite->field_8_car_bc_ptr != 0)
     {

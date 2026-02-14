@@ -11,53 +11,70 @@
 
 DEFINE_GLOBAL(CarPhyisicsPool*, gCarPhysicsPool_6FE3E0, 0x6FE3E0);
 DEFINE_GLOBAL(CarInfo_2C*, dword_6FE0E4, 0x6FE0E4);
-DEFINE_GLOBAL(Ang16, DAT_0066AC08, 0x66AC08);
-DEFINE_GLOBAL_INIT(Fix16, kFP16Zero_6FE20C, Fix16(0), 0x6FE20C);
-DEFINE_GLOBAL(Fix16, k_dword_6FE290, 0x6FE290);
-DEFINE_GLOBAL(Fix16, k_dword_6FE3A0, 0x6FE3A0);
-DEFINE_GLOBAL(Fix16, k_dword_6FDEFC, 0x6FDEFC);
-DEFINE_GLOBAL(Fix16, k_dword_6FDF88, 0x6FDF88);
-DEFINE_GLOBAL(Fix16, k_dword_6FE364, 0x6FE364);
-DEFINE_GLOBAL_INIT(Fix16, dword_6FE200, kFP16Zero_6FE20C, 0x6FE200);
 DEFINE_GLOBAL(ModelPhysics_48*, dword_6FE258, 0x6FE258);
-DEFINE_GLOBAL(Fix16, dword_6FE1B0, 0x6FE1B0);
+DEFINE_GLOBAL_INIT(Ang16, DAT_0066AC08, Ang16(0), 0x66AC08);
+DEFINE_GLOBAL_INIT(Fix16, kFP16Zero_6FE20C, Fix16(0), 0x6FE20C);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FE290, kFP16Zero_6FE20C, 0x6FE290);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE220, Fix16(5), 0x6FE220);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FDEFC, dword_6FE220, 0x6FDEFC);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FDF88, k_dword_6FDEFC, 0x6FDF88);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE200, kFP16Zero_6FE20C, 0x6FE200);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE214, Fix16(2), 0x6FE214);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FDFEC, Fix16(0x2000, 0), 0x6FDFEC);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE1B0, dword_6FE214 + k_dword_6FDFEC, 0x6FE1B0);
 DEFINE_GLOBAL(Fix16, dword_6FE348, 0x6FE348);
-DEFINE_GLOBAL(Fix16, dword_6FDFB0, 0x6FDFB0);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FDFB0, dword_6FE214, 0x6FDFB0);
 DEFINE_GLOBAL(Fix16, dword_6FE0D8, 0x6FE0D8);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FDFD4, Fix16(0x1000, 0), 0x6FDFD4);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FE364, dword_6FDFD4, 0x6FE364);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FE3A0, dword_6FDFD4, 0x6FE3A0);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FE2AC, dword_6FDFD4, 0x6FE2AC);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_6FE210, Fix16(1), 0x6FE210);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FE1C0, k_dword_6FE210, 0x6FE1C0);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FDFE4, Fix16(0x1333, 0), 0x6FDFE4);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FE0A8, dword_6FDFE4, 0x6FE0A8);
 
-DEFINE_GLOBAL(Fix16, k_dword_6FDF34, 0x6FDF34);
-DEFINE_GLOBAL(Fix16, dword_6FE2E0, 0x6FE2E0);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE1AC, Fix16(0x100, 0), 0x6FE1AC);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE2E0, dword_6FE1AC, 0x6FE2E0);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE234, Fix16(8), 0x6FE234);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FDF34, dword_6FE234 - dword_6FE2E0, 0x6FDF34);
 
 DEFINE_GLOBAL(Fix16_Point, g_cm1_6FDF10, 0x6FDF10);
 DEFINE_GLOBAL(Fix16, g_cp3_6FDF08, 0x6FDF08);
-DEFINE_GLOBAL(Ang16, g_theta_6FE344, 0x6FE344);
+DEFINE_GLOBAL_INIT(Ang16, g_theta_6FE344, Ang16(0), 0x6FE344);
 DEFINE_GLOBAL(Fix16_Point, g_cp1_6FDF00, 0x6FDF00);
 DEFINE_GLOBAL(Fix16, g_f70_6FDFE0, 0x6FDFE0);
 DEFINE_GLOBAL(Fix16, g_ZPos_6FE0AC, 0x6FE0AC);
 
 DEFINE_GLOBAL(Fix16_Point, g_trailer_cm1_6FE068, 0x6FE068);
 DEFINE_GLOBAL(Fix16, gTrailer_cp3_6FE1B4, 0x6FE1B4);
-DEFINE_GLOBAL(Ang16, gTrailer_theta_6FE018, 0x6FE018);
+DEFINE_GLOBAL_INIT(Ang16, gTrailer_theta_6FE018, Ang16(0), 0x6FE018);
 DEFINE_GLOBAL(Fix16_Point, gTrailer_cp1_6FE3A8, 0x6FE3A8);
 DEFINE_GLOBAL(Fix16, gTrailer_f70_6FE194, 0x6FE194);
 DEFINE_GLOBAL(Fix16, gTrailer_ZPos_6FE354, 0x6FE354);
 
-DEFINE_GLOBAL(Fix16, dword_6FDF3C, 0x6FDF3C);
-DEFINE_GLOBAL(Fix16, dword_6FDF7C, 0x6FDF7C);
-DEFINE_GLOBAL(Fix16, dword_6FE07C, 0x6FE07C);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE1D8, Fix16(0x28F, 0), 0x6FE1D8);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FDF3C, dword_6FE1D8, 0x6FDF3C);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FDF7C, Fix16(1), 0x6FDF7C);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE2EC, Fix16(40), 0x6FE2EC);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE21C, Fix16(4), 0x6FE21C);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE07C, k_dword_6FE210 / (dword_6FE2EC * dword_6FE21C), 0x6FE07C);
 
-DEFINE_GLOBAL(Fix16, FastCarMinVelocity_6FE1CC, 0x6FE1CC);
+DEFINE_GLOBAL_INIT(Fix16, FastCarMinVelocity_6FE1CC, Fix16(0x1EB, 0), 0x6FE1CC);
 DEFINE_GLOBAL(Fix16, dword_6FE198, 0x6FE198);
-DEFINE_GLOBAL(Fix16, k_dword_6FE1B8, 0x6FE1B8);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE218, Fix16(3), 0x6FE218);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6FE1B8, dword_6FE218, 0x6FE1B8);
 
 DEFINE_GLOBAL(Fix16_Point, stru_6FDF50, 0x6FDF50);
 DEFINE_GLOBAL(Fix16, dword_6FE0B0, 0x6FE0B0);
+
+DEFINE_GLOBAL_INIT(Fix16, dword_6FDFF0, Fix16(0x2666, 0), 0x6FDFF0);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FDFD8, Fix16(0xCCC, 0), 0x6FDFD8);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE1D4, Fix16(0x333, 0), 0x6FE1D4);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FDFF8, Fix16(0x3333, 0), 0x6FDFF8);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE228, dword_6FDFF0, 0x6FE228);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE374, dword_6FDFD8 + dword_6FE1D4, 0x6FE374);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE104, dword_6FDFF8, 0x6FE104);
 
 MATCH_FUNC(0x559E90)
 Fix16 CarPhysics_B0::ComputeZPosition_559E90()
@@ -724,15 +741,44 @@ s32 CarPhysics_B0::sub_55C820(u32* a2, s32 a3)
 }
 
 STUB_FUNC(0x55ca70)
-void CarPhysics_B0::sub_55CA70(s32 a2, s32 a3)
+void CarPhysics_B0::sub_55CA70(Fix16_Point a2, Ang16 a3)
 {
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x55cbb0)
-void CarPhysics_B0::sub_55CBB0(s32 a2, s32 a3)
+// https://decomp.me/scratch/0TpGe
+WIP_FUNC(0x55cbb0)
+void CarPhysics_B0::sub_55CBB0(Fix16 a2, Fix16 a3)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+    Car_BC* pCar;
+    if (gRozza_679188.field_24->field_30_sprite_type_enum == sprite_types_enum::car)
+    {
+        pCar = gRozza_679188.field_24->field_8_car_bc_ptr;
+    }
+    else
+    {
+        pCar = NULL;
+    }
+
+    CarPhysics_B0* pPhysics = pCar->field_58_physics;
+    CarPhysics_B0::restore_saved_physics_state_55A400();
+    CarPhysics_B0::sub_560F20(a2);
+
+    Fix16_Point point(pPhysics->field_38_cp1.x, pPhysics->field_38_cp1.y);
+
+    CarPhysics_B0::restore_saved_physics_state_55A400();
+    CarPhysics_B0::sub_560F20(a3);
+    if (pPhysics == this)
+    {
+        CarPhysics_B0::sub_55CA70(point, pPhysics->field_58_theta);
+    }
+    else
+    {
+        CarPhysics_B0::SetCurrentCarInfoAndModelPhysics_562EF0();
+        CarPhysics_B0::sub_55CA70(point, pPhysics->field_58_theta);
+        CarPhysics_B0::SetCurrentCarInfoAndModelPhysics_562EF0();
+    }
 }
 
 STUB_FUNC(0x55d200)
@@ -1132,11 +1178,25 @@ void CarPhysics_B0::ApplyBrakePhysics_5624F0()
     }
 }
 
-STUB_FUNC(0x562560)
-s32 CarPhysics_B0::UpdateSteeringAngle_562560()
+// https://decomp.me/scratch/f2UpJ
+WIP_FUNC(0x562560)
+void CarPhysics_B0::UpdateSteeringAngle_562560()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+    if (field_5C_pCar->field_7C_uni_num != 2)
+    {
+        field_78_pointing_ang_rad = CarPhysics_B0::GetTrailerAwareTurnRatio_55A100() * field_AD_turn_direction;
+    }
+    else
+    {
+        Fix16 v6 = dword_6FE228 - field_40_linvel_1.GetLength_2();
+        if (v6 < dword_6FE374)
+        {
+            v6 = dword_6FE374;
+        }
+        field_78_pointing_ang_rad =
+            CarPhysics_B0::GetTrailerAwareTurnRatio_55A100() * field_AD_turn_direction * (v6 / (dword_6FE228 * dword_6FE104));
+    }
 }
 
 MATCH_FUNC(0x5626a0)

@@ -4,6 +4,7 @@
 #include "Function.hpp"
 #include "Object_3C.hpp"
 #include "Phi_8CA8.hpp"
+#include "sprite.hpp"
 #include "ang16.hpp"
 #include "fix16.hpp"
 
@@ -55,16 +56,16 @@ class Object_2C
     EXPORT void sub_525D90();
     EXPORT void Update_525F30();
     EXPORT bool PoolUpdate();
-    EXPORT void sub_526790(s32 a2);
+    EXPORT void sub_526790(Sprite* pSprite);
     EXPORT s32 sub_526830(s32 a1);
-    EXPORT s16 sub_526B40(s32 a2);
+    EXPORT void sub_526B40(Sprite* pSprite);
     EXPORT bool sub_527070(Sprite* pSprite, Fix16 x, Fix16 y, Ang16 rot);
     EXPORT void sub_527630(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation);
     EXPORT void Light_527990();
     EXPORT void AssignToBucket_527AE0();
     EXPORT void RemoveFromCollisionBuckets_527D00();
     EXPORT void sub_527F10();
-    EXPORT Ang16 sub_528130(Fix16_Point* a2);
+    EXPORT void NewObj3C_528130(Fix16_Point* a2);
     EXPORT char_type sub_528240(s32 a2, s32 a3);
     EXPORT void sub_5283C0(s32 a2);
     EXPORT bool OnObjectTouched_5288B0(Sprite* a2);
@@ -106,6 +107,12 @@ class Object_2C
     {
         s32 v1 = field_8->field_34_behavior_type;
         return v1 == object_behavior_type::behavior_10;
+    }
+
+    bool sub_475A80()
+    {
+        s32 t = this->field_8->field_34_behavior_type;
+        return t == 2 || t == 4 || t == 8 || t == 9;
     }
 
     bool is_not_type6_to_12_421080()
@@ -162,6 +169,21 @@ class Object_2C
         field_4 = 0;
         field_18_model = 0;
     }
+    
+    inline Fix16 get_x_4340D0()
+    {
+        return field_4->field_14_xy.x;
+    }
+
+    inline Fix16 get_y_4340E0()
+    {
+        return field_4->field_14_xy.y;
+    }
+
+    inline Fix16 get_z_4340F0()
+    {
+        return field_4->field_1C_zpos;
+    }
 
     Object_2C* mpNext;
     Sprite* field_4;
@@ -201,7 +223,7 @@ class Object_5C
     EXPORT Object_5C();
     EXPORT ~Object_5C();
     EXPORT void sub_5297F0();
-    EXPORT s32 sub_5298E0(s32 a2);
+    EXPORT Object_2C* GetDirectionalObject_5298E0(s32 a2);
     EXPORT Object_2C* NewTouchPoint_529950(s32 object_type, Fix16 x, Fix16 y, Fix16 z, Ang16 rot, Fix16 w, Fix16 h, Fix16 a9);
     EXPORT Object_2C* NewPhysicsObj_5299B0(s32 object_type, Fix16 a3, Fix16 a4, Fix16 a5, Ang16 a6);
     EXPORT Object_2C* sub_5299F0(s32 a2, u32 a3, Fix16 a4, Fix16 a5, Fix16 a6);

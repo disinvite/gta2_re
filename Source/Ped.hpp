@@ -23,6 +23,7 @@ class Char_B4;
 class Marz_96;
 class Object_2C;
 class Car_BC;
+class TrainStation_34;
 
 class Ped
 {
@@ -65,7 +66,7 @@ class Ped
     EXPORT void SpawnDriverRunAway_45C650(Car_BC* pCar, Ped* pPed);
     EXPORT void SpawnPedInCar_45C730(Car_BC* pCar);
     EXPORT void EnterCarAsDriver(Car_BC* a2);
-    EXPORT void sub_45C7F0(Car_BC* pCar);
+    EXPORT void EnterCarAsPassenger_45C7F0(Car_BC* pCar);
     EXPORT char_type AllocCharB4_45C830(Fix16 xpos, Fix16 ypos, Fix16 zpos);
     EXPORT Ang16 get_field8_45C900();
     EXPORT Fix16 GetPedVelocity_45C920();
@@ -125,7 +126,7 @@ class Ped
     EXPORT Ped* FindNearestPed_466F60(u8 a2);
     EXPORT Ped* FindNearbyPed_466FB0();
     EXPORT Ped* sub_467070();
-    EXPORT char_type sub_467090();
+    EXPORT char_type FindUsableCarDoor_467090();
     EXPORT Sprite* sub_467280();
     EXPORT char_type sub_4672E0(Fix16 a2, s32 a3);
     EXPORT void FleeOnFootTillSafe_4678E0();
@@ -172,14 +173,14 @@ class Ped
     EXPORT void sub_46A9C0();
     EXPORT void sub_46AAE0();
     EXPORT void sub_46AB50();
-    EXPORT char_type sub_46AC20();
-    EXPORT s32 sub_46B170();
-    EXPORT s32 sub_46B2F0();
-    EXPORT void sub_46B670();
+    EXPORT char_type FollowTargetStateMachine_46AC20();
+    EXPORT s32 ChaseTargetStateMachine_46B170();
+    EXPORT s32 PullDriverOutOfCarStateMachine_46B2F0();
+    EXPORT void MeleeAttackStateMachine_46B670();
     EXPORT void sub_46BD30();
     EXPORT char_type sub_46BD50(Car_BC* pCar);
-    EXPORT void sub_46BDC0();
-    EXPORT void sub_46C250();
+    EXPORT void EnterCarStateMachine_46BDC0();
+    EXPORT void ExitCarStateMachine_46C250();
     EXPORT void sub_46C770();
     EXPORT void sub_46C7E0();
     EXPORT void sub_46C8A0();
@@ -196,10 +197,10 @@ class Ped
     EXPORT void sub_46D0D0();
     EXPORT void sub_46D240();
     EXPORT void sub_46D300();
-    EXPORT void sub_46D460(char_type a2);
-    EXPORT void sub_46DB60();
-    EXPORT void sub_46DB70();
-    EXPORT void sub_46DB80();
+    EXPORT void AttackTargetStateMachine_46D460(char_type a2);
+    EXPORT void AttackPed_46DB60();
+    EXPORT void AttackCar_46DB70();
+    EXPORT void AttackObject_46DB80();
     EXPORT Sprite* GetSprite_46DF50();
     EXPORT void SetupFollower_46DF70(Ped* arg0, s32 WeaponIdx);
     EXPORT bool sub_46E020(PedGroup* a2);
@@ -219,7 +220,7 @@ class Ped
     EXPORT void UpdateStatsForKiller_46F720();
     EXPORT void Kill_46F9D0();
     EXPORT void AddThreateningPedToList_46FC70();
-    EXPORT void sub_46FC90(s32 a2, s32 a3);
+    EXPORT void HandleShootingAtCar_46FC90(Car_BC* a2, s32 a3);
     EXPORT void ProcessWeaponHitResponse_46FE20(Object_2C* a2);
     EXPORT void NotifyWeaponHit_46FF00(Fix16 xpos, Fix16 ypos, s32 model);
     EXPORT void sub_46FFF0(s32 a2);
@@ -236,6 +237,7 @@ class Ped
     EXPORT void nullsub_10();
     EXPORT void nullsub_11();
     EXPORT void nullsub_12();
+    EXPORT void nullsub_14();
 
     inline u8 get_varrok_idx_420B50()
     {
@@ -527,6 +529,12 @@ class Ped
         field_21C_bf.b11 = false;
     }
 
+    inline bool IsPedGoingToEnterCar_492FD0()
+    {
+        return field_258_objective == objectives_enum::enter_car_as_driver_35 
+            || field_25C_car_state == 35;
+    }
+
     Marz_3 field_0_patrol_points[100];
     Ang16 field_12C;
     Ang16 field_12E;
@@ -535,7 +543,7 @@ class Ped
     Ang16 field_134_rotation;
     s16 field_136;
     s32 field_138;
-    s32 field_13C;
+    TrainStation_34* field_13C_pTrainStation;
     Car_BC* field_140;
     Ped* field_144;
     Ped* field_148_objective_target_ped;
@@ -664,7 +672,7 @@ class Ped
 };
 GTA2_ASSERT_SIZEOF_ALWAYS(Ped, 0x294)
 
-EXPORT void __stdcall CarDoorAlignmentSolver_545AF0(s32 a1, Car_BC* a2, s8 a3, Fix16& a4, Fix16& a5, Ang16& a6);
+EXPORT void __stdcall CarDoorAlignmentSolver_545AF0(s32 a1, Car_BC* a2, u8 a3, Fix16& a4, Fix16& a5, Ang16& a6);
 
 EXTERN_GLOBAL(s32, gPedId_61A89C);
 

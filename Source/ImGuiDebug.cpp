@@ -33,6 +33,7 @@
 #include "text_0x14.hpp"
 #include "sound_obj.hpp"
 #include "root_sound.hpp"
+#include "ExplodingScore_100.hpp"
 #include <stdarg.h>
 
 EXTERN_GLOBAL(Ambulance_110*, gAmbulance_110_6F70A8);
@@ -599,6 +600,36 @@ void CC ImGuiDebugDraw()
         NoRefs_sub_5B1170();
     }
 
+    if (ImGui::TreeNode("Exploding score"))
+    {
+        static ExplodingScore_50 test;
+        Sprite* pPlayerSprite = GetPlayerSprite();
+        if (ImGui::Button("Single number"))
+        {
+            if (pPlayerSprite)
+            {
+                static s32 number = 3;
+                test.field_28_x = pPlayerSprite->GetXPos();
+                test.field_2C_y = pPlayerSprite->GetYPos();
+                test.field_30_z = pPlayerSprite->GetZPos();
+                test.field_34 = 9; // 9-13
+                test.field_36 = 25;
+                test.field_38 = 2;
+                test.field_3C = 1;
+                test.field_40 = 1;
+                test.DrawSingleNumber_597100(number, 10);
+            }
+        }
+
+        if (ImGui::Button("Push score"))
+        {
+            if (pPlayerSprite && gExplodingScorePool)
+            {
+                gExplodingScorePool->PushScore_596890(pPlayerSprite->GetXPos(), pPlayerSprite->GetYPos(), pPlayerSprite->GetZPos(), 999999999);
+            }
+        }
+    }
+
     if (ImGui::TreeNode("Sound"))
     {
         if (ImGui::Button("CycleRadioStation_40F070 (next)"))
@@ -765,6 +796,27 @@ void CC ImGuiDebugDraw()
                     ImGui::Text("field_7C_uni_num %d", pCarIter->field_7C_uni_num);
                     ImGui::Text("field_74_damage %d", pCarIter->field_74_damage);
 
+                    if (ImGui::Button("TurnToWreck_4436A0"))
+                    {
+                        pCarIter->field_88 = 4;
+                        pCarIter->TurnToWreck_4436A0();
+                    }
+
+                    if (ImGui::Button("SpawnDamageFireEffect_43B870 1"))
+                    {
+                        // TODO: Diff stuff if zero point
+                        Fix16_Point p = pCarIter->field_50_car_sprite->get_x_y_443580();
+                        pCarIter->SpawnDamageFireEffect_43B870(1, &p);
+                    }
+
+                    if (ImGui::Button("SpawnDamageFireEffect_43B870 2"))
+                    {
+                        Fix16_Point p;// = pCarIter->field_50_car_sprite->get_x_y_443580();
+                        p.x = 0;
+                        p.y = 0;
+                        pCarIter->SpawnDamageFireEffect_43B870(3, &p);
+                    }
+                    
                     if (ImGui::Button("AssignRandomRemap_43A7D0"))
                     {
                         pCarIter->AssignRandomRemap_43A7D0();
@@ -1042,7 +1094,7 @@ void CC ImGuiDebugDraw()
                     pNewCar->SpawnDriverPed();
 
                     pNewCar->field_7C_uni_num = 5;
-                    pNewCar->field_76 = 0;
+                    pNewCar->field_76_last_seen_timer = 0;
                     if (pNewCar->field_98 != 4)
                     {
                         pNewCar->field_98 = 2;
@@ -1091,13 +1143,13 @@ void CC ImGuiDebugDraw()
                 static s32 unknown_arg = 19;
                 ImGui::InputInt("Explosion argument", &unknown_arg, 1, 1);
 
-                if (ImGui::Button("ExplodeCar_43D690"))
+                if (ImGui::Button("EmitExplosion_43D690"))
                 {
-                    pNewCar->ExplodeCar_43D690(unknown_arg, x_explosion_offset, y_explosion_offset);
+                    pNewCar->EmitExplosion_43D690(unknown_arg, x_explosion_offset, y_explosion_offset);
                 }
-                if (ImGui::Button("ExplodeCar_Unknown_43D840"))
+                if (ImGui::Button("HandleCarExplosion_43D840"))
                 {
-                    pNewCar->ExplodeCar_Unknown_43D840(unknown_arg);
+                    pNewCar->HandleCarExplosion_43D840(unknown_arg);
                 }
 
                 ImGui::Value("Car F_88", pNewCar->field_88);
@@ -1343,6 +1395,9 @@ void CC ImGuiDebugDraw()
                     
                     if (pPlayerPed)
                     {
+
+                        ImGui::InputInt("258_objective", &pPlayerPed->field_258_objective, 1, 1);
+
                         ImGui::InputInt("F 238", &pPlayerPed->field_238, 1, 1);
                         ImGui::InputInt("Ped State 1", &pPlayerPed->field_278_ped_state_1, 1, 1);
                         ImGui::InputInt("Ped State 2", &pPlayerPed->field_27C_ped_state_2, 1, 1);
