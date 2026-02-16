@@ -191,12 +191,12 @@
     },
     {
         "name": "Trailer::SetupCarPhysicsAndSpriteBinding_408190",
-        "v96f_address": null,
+        "v96f_address": "0x40f450",
         "v105_address": "0x408190"
     },
     {
         "name": "Trailer::DeAllocateCarPhysics_4081B0",
-        "v96f_address": null,
+        "v96f_address": "0x40f470",
         "v105_address": "0x4081b0"
     },
     {
@@ -213,6 +213,16 @@
         "name": "sub_408370",
         "v96f_address": null,
         "v105_address": "0x408370"
+    },
+    {
+        "name": "Fix16::operator+(Fix16)",
+        "v96f_address": "0x40e530",
+        "v105_address": "0x408660"
+    },
+    {
+        "name": "Fix16::operator*(Fix16)",
+        "v96f_address": "0x401b60",
+        "v105_address": "0x408680"
     },
     {
         "name": "Fix16::Add",
@@ -331,7 +341,7 @@
     },
     {
         "name": "infallible_turing::release",
-        "v96f_address": null,
+        "v96f_address": "0x40fe60",
         "v105_address": "0x40ef20"
     },
     {
@@ -376,7 +386,7 @@
     },
     {
         "name": "root_sound::DeclareRadioStation_40F030",
-        "v96f_address": null,
+        "v96f_address": "0x410580",
         "v105_address": "0x40f030"
     },
     {
@@ -456,22 +466,22 @@
     },
     {
         "name": "sound_obj::ProcessType2",
-        "v96f_address": null,
+        "v96f_address": "0x411a50",
         "v105_address": "0x412490"
     },
     {
         "name": "sound_obj::ProcessType1",
-        "v96f_address": null,
+        "v96f_address": "0x4162c0",
         "v105_address": "0x412740"
     },
     {
         "name": "sound_obj::ProcessType8",
-        "v96f_address": null,
+        "v96f_address": "0x411d20",
         "v105_address": "0x412820"
     },
     {
         "name": "sound_obj::ProcessType9",
-        "v96f_address": null,
+        "v96f_address": "0x412010",
         "v105_address": "0x412a60"
     },
     {
@@ -481,7 +491,7 @@
     },
     {
         "name": "sound_obj::sub_412C90",
-        "v96f_address": null,
+        "v96f_address": "0x415ef0",
         "v105_address": "0x412c90"
     },
     {
@@ -536,7 +546,7 @@
     },
     {
         "name": "sound_obj::ProcessType6",
-        "v96f_address": null,
+        "v96f_address": "0x415f90",
         "v105_address": "0x413760"
     },
     {
@@ -781,7 +791,7 @@
     },
     {
         "name": "sound_obj::ProcessType11",
-        "v96f_address": null,
+        "v96f_address": "0x414e50",
         "v105_address": "0x418b60"
     },
     {
@@ -801,7 +811,7 @@
     },
     {
         "name": "sound_obj::ProcessType10",
-        "v96f_address": null,
+        "v96f_address": "0x411330",
         "v105_address": "0x418ca0"
     },
     {
@@ -901,12 +911,12 @@
     },
     {
         "name": "sound_obj::AddSampleToRequestedQueue",
-        "v96f_address": null,
+        "v96f_address": "0x4171a0",
         "v105_address": "0x41a850"
     },
     {
         "name": "sound_obj::AddDetailsToRequestedOrderList",
-        "v96f_address": null,
+        "v96f_address": "0x4167c0",
         "v105_address": "0x41a910"
     },
     {
@@ -1061,7 +1071,7 @@
     },
     {
         "name": "sound_obj::ProcessType7",
-        "v96f_address": null,
+        "v96f_address": "0x41cca0",
         "v105_address": "0x42a500"
     },
     {
@@ -1261,7 +1271,7 @@
     },
     {
         "name": "Camera_0xBC::sub_435B90",
-        "v96f_address": null,
+        "v96f_address": "0x41e7a0",
         "v105_address": "0x435b90"
     },
     {
@@ -1281,7 +1291,7 @@
     },
     {
         "name": "Camera_0xBC::sub_435FF0",
-        "v96f_address": null,
+        "v96f_address": "0x41f2f0",
         "v105_address": "0x435ff0"
     },
     {
@@ -1296,7 +1306,7 @@
     },
     {
         "name": "Camera_0xBC::sub_436140",
-        "v96f_address": null,
+        "v96f_address": "0x41eb00",
         "v105_address": "0x436140"
     },
     {
@@ -1311,7 +1321,7 @@
     },
     {
         "name": "Camera_0xBC::sub_4364A0",
-        "v96f_address": null,
+        "v96f_address": "0x41ee30",
         "v105_address": "0x4364a0"
     },
     {
@@ -1326,7 +1336,7 @@
     },
     {
         "name": "Camera_0xBC::sub_436830",
-        "v96f_address": null,
+        "v96f_address": "0x41f0a0",
         "v105_address": "0x436830"
     },
     {
@@ -1345,9 +1355,9 @@
         "v105_address": "0x4369e0"
     },
     {
-        "name": "Fix16::FromInt",
+        "name": "Fix16::Fix16(s32)",
         "v96f_address": "0x401af0",
-        "v105_address": "0x45c4e0"
+        "v105_address": "0x4369f0"
     },
     {
         "name": "Fix16::Subtract",
@@ -1861,7 +1871,7 @@
     },
     {
         "name": "Car_BC::ManageDrowning_43E560",
-        "v96f_address": null,
+        "v96f_address": "0x427450",
         "v105_address": "0x43e560"
     },
     {
@@ -2996,7 +3006,7 @@
     },
     {
         "name": "Fix16::FromInt",
-        "v96f_address": "0x401af0",
+        "v96f_address": "0x40ce30",
         "v105_address": "0x45c4e0"
     },
     {
@@ -3121,7 +3131,7 @@
     },
     {
         "name": "Ped::Deallocate_45EB60",
-        "v96f_address": null,
+        "v96f_address": "0x43e650",
         "v105_address": "0x45eb60"
     },
     {
@@ -3186,7 +3196,7 @@
     },
     {
         "name": "Ped::UpdateFacingAngle_461A60",
-        "v96f_address": null,
+        "v96f_address": "0x436460",
         "v105_address": "0x461a60"
     },
     {
@@ -3291,12 +3301,12 @@
     },
     {
         "name": "Ped::Threat_Reaction_AI_465270",
-        "v96f_address": null,
+        "v96f_address": "0x43f340",
         "v105_address": "0x465270"
     },
     {
         "name": "Ped::sub_465B20",
-        "v96f_address": null,
+        "v96f_address": "0x437010",
         "v105_address": "0x465b20"
     },
     {
@@ -3986,7 +3996,7 @@
     },
     {
         "name": "PedManager::PedById",
-        "v96f_address": null,
+        "v96f_address": "0x43ae10",
         "v105_address": "0x4710c0"
     },
     {
@@ -4196,7 +4206,7 @@
     },
     {
         "name": "PurpleDoom::AddToRegionBuckets_477B20",
-        "v96f_address": null,
+        "v96f_address": "0x447c00",
         "v105_address": "0x477b20"
     },
     {
@@ -4291,7 +4301,7 @@
     },
     {
         "name": "PurpleDoom::AddToRowBuckets_4784D0",
-        "v96f_address": null,
+        "v96f_address": "0x447a60",
         "v105_address": "0x4784d0"
     },
     {
@@ -4636,7 +4646,7 @@
     },
     {
         "name": "zealous_borg::sub_484F20",
-        "v96f_address": null,
+        "v96f_address": "0x44a1e0",
         "v105_address": "0x484f20"
     },
     {
@@ -4696,12 +4706,12 @@
     },
     {
         "name": "Crusher_30::ctor",
-        "v96f_address": null,
+        "v96f_address": "0x44a3f0",
         "v105_address": "0x4882d0"
     },
     {
         "name": "Crusher_30::dtor",
-        "v96f_address": null,
+        "v96f_address": "0x44a400",
         "v105_address": "0x4882e0"
     },
     {
@@ -5021,7 +5031,7 @@
     },
     {
         "name": "Door_38::sub_49C840",
-        "v96f_address": null,
+        "v96f_address": "0x44c700",
         "v105_address": "0x49c840"
     },
     {
@@ -5261,8 +5271,8 @@
     },
     {
         "name": "File::Global_Read",
-        "v96f_address": "0x403000",
-        "v105_address": "0x4a7210"
+        "v96f_address": "0x402fb0",
+        "v105_address": "0x4a71c0"
     },
     {
         "name": "File::Global_Read",
@@ -5395,8 +5405,8 @@
         "v105_address": "0x4ae2d0"
     },
     {
-        "name": "Fix16::sub_4AE970",
-        "v96f_address": null,
+        "name": "Fix16::Fix16(u16)",
+        "v96f_address": "0x41f990",
         "v105_address": "0x4ae970"
     },
     {
@@ -5491,7 +5501,7 @@
     },
     {
         "name": "Frontend::HandleCheatCode",
-        "v96f_address": null,
+        "v96f_address": "0x4590f0",
         "v105_address": "0x4b3dd0"
     },
     {
@@ -5860,11 +5870,6 @@
         "v105_address": "0x4b8680"
     },
     {
-        "name": "DrawText",
-        "v96f_address": null,
-        "v105_address": "0x5d8a10"
-    },
-    {
         "name": "Game_0x40::sub_4B8BB0",
         "v96f_address": "0x45a460",
         "v105_address": "0x4b8bb0"
@@ -6096,7 +6101,7 @@
     },
     {
         "name": "Marz_96::dtor",
-        "v96f_address": null,
+        "v96f_address": "0x45ae10",
         "v105_address": "0x4bdf90"
     },
     {
@@ -6411,7 +6416,7 @@
     },
     {
         "name": "lucid_hamilton::sub_4C5980",
-        "v96f_address": null,
+        "v96f_address": "0x45e520",
         "v105_address": "0x4c5980"
     },
     {
@@ -6511,12 +6516,12 @@
     },
     {
         "name": "lucid_hamilton::GetUserPlayerIdx_4C5BE0",
-        "v96f_address": null,
+        "v96f_address": "0x45e720",
         "v105_address": "0x4c5be0"
     },
     {
         "name": "lucid_hamilton::GetMaxPlayers_4C5BF0",
-        "v96f_address": null,
+        "v96f_address": "0x45e730",
         "v105_address": "0x4c5bf0"
     },
     {
@@ -6651,7 +6656,7 @@
     },
     {
         "name": "PedGroup::RemovePed_4C9970",
-        "v96f_address": null,
+        "v96f_address": "0x404d40",
         "v105_address": "0x4c9970"
     },
     {
@@ -6706,7 +6711,7 @@
     },
     {
         "name": "PedGroup::sub_4CAA20",
-        "v96f_address": null,
+        "v96f_address": "0x404840",
         "v105_address": "0x4caa20"
     },
     {
@@ -6941,7 +6946,7 @@
     },
     {
         "name": "keybrd_0x204::ctor",
-        "v96f_address": null,
+        "v96f_address": "0x460fd0",
         "v105_address": "0x4d5d70"
     },
     {
@@ -7356,7 +7361,7 @@
     },
     {
         "name": "Map_0x370::sub_4DFE60",
-        "v96f_address": null,
+        "v96f_address": "0x465410",
         "v105_address": "0x4dfe60"
     },
     {
@@ -7451,7 +7456,7 @@
     },
     {
         "name": "Map_0x370::CheckGreenArrowDirection_4E4B40",
-        "v96f_address": null,
+        "v96f_address": "0x462f50",
         "v105_address": "0x4e4b40"
     },
     {
@@ -7461,7 +7466,7 @@
     },
     {
         "name": "Map_0x370::FindHighestBlockForCoord_4E4C30",
-        "v96f_address": null,
+        "v96f_address": "0x466990",
         "v105_address": "0x4e4c30"
     },
     {
@@ -7551,7 +7556,7 @@
     },
     {
         "name": "gmp_block_info::sub_4E5FC0",
-        "v96f_address": null,
+        "v96f_address": "0x4633a0",
         "v105_address": "0x4e5fc0"
     },
     {
@@ -7561,7 +7566,7 @@
     },
     {
         "name": "Fix16_Rect::MakeRect",
-        "v96f_address": null,
+        "v96f_address": "0x463710",
         "v105_address": "0x4e6280"
     },
     {
@@ -7681,7 +7686,7 @@
     },
     {
         "name": "Map_0x370::sub_4E8CF0",
-        "v96f_address": null,
+        "v96f_address": "0x4642a0",
         "v105_address": "0x4e8cf0"
     },
     {
@@ -7696,7 +7701,7 @@
     },
     {
         "name": "Map_0x370::sub_4E9160",
-        "v96f_address": null,
+        "v96f_address": "0x464550",
         "v105_address": "0x4e9160"
     },
     {
@@ -8096,7 +8101,7 @@
     },
     {
         "name": "Ambulance_20::sub_4FB330",
-        "v96f_address": null,
+        "v96f_address": "0x473ce0",
         "v105_address": "0x4fb330"
     },
     {
@@ -8106,7 +8111,7 @@
     },
     {
         "name": "Memory::Aligned_malloc",
-        "v96f_address": null,
+        "v96f_address": "0x4059f0",
         "v105_address": "0x4fe510"
     },
     {
@@ -11386,12 +11391,12 @@
     },
     {
         "name": "Wolfy_30::ctor",
-        "v96f_address": null,
+        "v96f_address": "0x48a2c0",
         "v105_address": "0x5408f0"
     },
     {
         "name": "Wolfy_30::dtor",
-        "v96f_address": null,
+        "v96f_address": "0x48a380",
         "v105_address": "0x540a10"
     },
     {
@@ -11551,7 +11556,7 @@
     },
     {
         "name": "Marz_96::ctor",
-        "v96f_address": null,
+        "v96f_address": "0x491d80",
         "v105_address": "0x544bf0"
     },
     {
@@ -11581,7 +11586,7 @@
     },
     {
         "name": "sub_5454B0",
-        "v96f_address": null,
+        "v96f_address": "0x491de0",
         "v105_address": "0x5454b0"
     },
     {
@@ -12646,7 +12651,7 @@
     },
     {
         "name": "Player::SelectNextOrPrevWeapon_5649D0",
-        "v96f_address": null,
+        "v96f_address": "0x4a5460",
         "v105_address": "0x5649d0"
     },
     {
@@ -12691,7 +12696,7 @@
     },
     {
         "name": "Player::sub_565070",
-        "v96f_address": null,
+        "v96f_address": "0x4a59a0",
         "v105_address": "0x565070"
     },
     {
@@ -12756,7 +12761,7 @@
     },
     {
         "name": "Player::HandleControls_5668D0",
-        "v96f_address": null,
+        "v96f_address": "0x4a76d0",
         "v105_address": "0x5668d0"
     },
     {
@@ -12771,7 +12776,7 @@
     },
     {
         "name": "Player::sub_566EE0",
-        "v96f_address": null,
+        "v96f_address": "0x4a5e90",
         "v105_address": "0x566ee0"
     },
     {
@@ -12806,7 +12811,7 @@
     },
     {
         "name": "Player::sub_568670",
-        "v96f_address": null,
+        "v96f_address": "0x4a4cb0",
         "v105_address": "0x568670"
     },
     {
@@ -12966,32 +12971,32 @@
     },
     {
         "name": "high_score_table_0xF0::ctor",
-        "v96f_address": null,
+        "v96f_address": "0x4a8f70",
         "v105_address": "0x56b500"
     },
     {
         "name": "high_score_table_0xF0::dtor",
-        "v96f_address": null,
+        "v96f_address": "0x4a85f0",
         "v105_address": "0x56b510"
     },
     {
         "name": "high_score_table_0xF0::Init",
-        "v96f_address": null,
+        "v96f_address": "0x4a8600",
         "v105_address": "0x56b520"
     },
     {
         "name": "high_score_table_0xF0::sub_56B550",
-        "v96f_address": null,
+        "v96f_address": "0x4a8630",
         "v105_address": "0x56b550"
     },
     {
         "name": "player_stats_0xA4::ctor",
-        "v96f_address": null,
+        "v96f_address": "0x4a8f80",
         "v105_address": "0x56b610"
     },
     {
         "name": "player_stats_0xA4::dtor",
-        "v96f_address": null,
+        "v96f_address": "0x4a86f0",
         "v105_address": "0x56b620"
     },
     {
@@ -13021,17 +13026,17 @@
     },
     {
         "name": "jolly_poitras_0x2BC0::GetPlySlotDatName",
-        "v96f_address": null,
+        "v96f_address": "0x4a8820",
         "v105_address": "0x56b8a0"
     },
     {
         "name": "jolly_poitras_0x2BC0::PlySlotDatExists",
-        "v96f_address": null,
+        "v96f_address": "0x4a88c0",
         "v105_address": "0x56b940"
     },
     {
         "name": "jolly_poitras_0x2BC0::sub_56B990",
-        "v96f_address": "0x4A8CB0",
+        "v96f_address": "0x4a8910",
         "v105_address": "0x56b990"
     },
     {
@@ -13056,27 +13061,27 @@
     },
     {
         "name": "jolly_poitras_0x2BC0::HiScoreHscExists",
-        "v96f_address": null,
+        "v96f_address": "0x4a9050",
         "v105_address": "0x56bca0"
     },
     {
         "name": "jolly_poitras_0x2BC0::GetHiScoreHscFileName",
-        "v96f_address": null,
+        "v96f_address": "0x4a8b60",
         "v105_address": "0x56bcf0"
     },
     {
         "name": "jolly_poitras_0x2BC0::sub_56BD20",
-        "v96f_address": null,
+        "v96f_address": "0x4a8b80",
         "v105_address": "0x56bd20"
     },
     {
         "name": "jolly_poitras_0x2BC0::sub_56BE50",
-        "v96f_address": null,
+        "v96f_address": "0x4a8cb0",
         "v105_address": "0x56be50"
     },
     {
         "name": "jolly_poitras_0x2BC0::sub_56BF20",
-        "v96f_address": null,
+        "v96f_address": "0x4a8d80",
         "v105_address": "0x56bf20"
     },
     {
@@ -13091,7 +13096,7 @@
     },
     {
         "name": "jolly_poitras_0x2BC0::sub_56C1D0",
-        "v96f_address": null,
+        "v96f_address": "0x4a8ed0",
         "v105_address": "0x56c1d0"
     },
     {
@@ -13671,7 +13676,7 @@
     },
     {
         "name": "Car_14::sub_582480",
-        "v96f_address": null,
+        "v96f_address": "0x4b34e0",
         "v105_address": "0x582480"
     },
     {
@@ -13911,7 +13916,7 @@
     },
     {
         "name": "RouteFinder::sub_588CA0",
-        "v96f_address": null,
+        "v96f_address": "0x40c6d0",
         "v105_address": "0x588ca0"
     },
     {
@@ -13951,7 +13956,7 @@
     },
     {
         "name": "RouteFinder::sub_5892F0",
-        "v96f_address": null,
+        "v96f_address": "0x40c9d0",
         "v105_address": "0x5892f0"
     },
     {
@@ -14111,7 +14116,7 @@
     },
     {
         "name": "cSampleManager::GetPlayBackRateIdx",
-        "v96f_address": null,
+        "v96f_address": "0x4b6020",
         "v105_address": "0x58dbf0"
     },
     {
@@ -14261,22 +14266,22 @@
     },
     {
         "name": "cSampleManager::StreamStatus",
-        "v96f_address": null,
+        "v96f_address": "0x4b66a0",
         "v105_address": "0x58e2c0"
     },
     {
         "name": "cSampleManager::StreamSetVolume",
-        "v96f_address": null,
+        "v96f_address": "0x4b66d0",
         "v105_address": "0x58e2f0"
     },
     {
         "name": "cSampleManager::OpenStream",
-        "v96f_address": null,
+        "v96f_address": "0x4b6700",
         "v105_address": "0x58e320"
     },
     {
         "name": "cSampleManager::CloseStream",
-        "v96f_address": null,
+        "v96f_address": "0x4b67b0",
         "v105_address": "0x58e460"
     },
     {
@@ -14291,7 +14296,7 @@
     },
     {
         "name": "cSampleManager::PlayVocal",
-        "v96f_address": null,
+        "v96f_address": "0x4b70c0",
         "v105_address": "0x58e510"
     },
     {
@@ -14301,7 +14306,7 @@
     },
     {
         "name": "cSampleManager::SetVocalVolume",
-        "v96f_address": null,
+        "v96f_address": "0x4b6890",
         "v105_address": "0x58e6d0"
     },
     {
@@ -14331,12 +14336,12 @@
     },
     {
         "name": "cSampleManager::SetSampleVol",
-        "v96f_address": null,
+        "v96f_address": "0x4b6990",
         "v105_address": "0x58e7d0"
     },
     {
         "name": "cSampleManager::PlayAtIdx",
-        "v96f_address": null,
+        "v96f_address": "0x4b69b0",
         "v105_address": "0x58e7f0"
     },
     {
@@ -14371,7 +14376,7 @@
     },
     {
         "name": "eager_benz::sub_591C70",
-        "v96f_address": null,
+        "v96f_address": "0x4b7770",
         "v105_address": "0x591c70"
     },
     {
@@ -14386,12 +14391,12 @@
     },
     {
         "name": "eager_benz::sub_592360",
-        "v96f_address": null,
+        "v96f_address": "0x4b74d0",
         "v105_address": "0x592360"
     },
     {
         "name": "eager_benz::GetScore_592370",
-        "v96f_address": null,
+        "v96f_address": "0x41dc30",
         "v105_address": "0x592370"
     },
     {
@@ -14711,7 +14716,7 @@
     },
     {
         "name": "Sprite::UpdateCollisionBoundsIfNeeded_59E9C0",
-        "v96f_address": null,
+        "v96f_address": "0x4bcb40",
         "v105_address": "0x59e9c0"
     },
     {
@@ -14911,7 +14916,7 @@
     },
     {
         "name": "sub_5A4D90",
-        "v96f_address": null,
+        "v96f_address": "0x4bc580",
         "v105_address": "0x5a4d90"
     },
     {
@@ -15131,7 +15136,7 @@
     },
     {
         "name": "CleanupSpriteList_5A7080",
-        "v96f_address": null,
+        "v96f_address": "0x4bf070",
         "v105_address": "0x5a7080"
     },
     {
@@ -15186,7 +15191,7 @@
     },
     {
         "name": "gtx_0x106C::convert_sprite_pal",
-        "v96f_address": null,
+        "v96f_address": "0x4bf2a0",
         "v105_address": "0x5aa460"
     },
     {
@@ -15201,7 +15206,7 @@
     },
     {
         "name": "gtx_0x106C::convert_pal_type",
-        "v96f_address": null,
+        "v96f_address": "0x4bf430",
         "v105_address": "0x5aa5f0"
     },
     {
@@ -15211,7 +15216,7 @@
     },
     {
         "name": "gtx_0x106C::get_phys_pal",
-        "v96f_address": null,
+        "v96f_address": "0x4bf530",
         "v105_address": "0x5aa6f0"
     },
     {
@@ -15271,12 +15276,12 @@
     },
     {
         "name": "gtx_0x106C::create_tile_num_array",
-        "v96f_address": null,
+        "v96f_address": "0x4bf7f0",
         "v105_address": "0x5aa950"
     },
     {
         "name": "gtx_0x106C::sub_5AA9A0",
-        "v96f_address": null,
+        "v96f_address": "0x4c0410",
         "v105_address": "0x5aa9a0"
     },
     {
@@ -15296,12 +15301,12 @@
     },
     {
         "name": "gtx_0x106C::sub_5AAC70",
-        "v96f_address": null,
+        "v96f_address": "0x4bf980",
         "v105_address": "0x5aac70"
     },
     {
         "name": "gtx_0x106C::load_car_info",
-        "v96f_address": null,
+        "v96f_address": "0x4c0580",
         "v105_address": "0x5aad50"
     },
     {
@@ -15311,37 +15316,37 @@
     },
     {
         "name": "gtx_0x106C::load_delta_store",
-        "v96f_address": null,
+        "v96f_address": "0x4bfab0",
         "v105_address": "0x5aadd0"
     },
     {
         "name": "gtx_0x106C::load_tiles",
-        "v96f_address": null,
+        "v96f_address": "0x4bfad0",
         "v105_address": "0x5aadf0"
     },
     {
         "name": "gtx_0x106C::skip_ovly",
-        "v96f_address": null,
+        "v96f_address": "0x4bfb00",
         "v105_address": "0x5aae20"
     },
     {
         "name": "gtx_0x106C::skip_psxt",
-        "v96f_address": null,
+        "v96f_address": "0x4bfb10",
         "v105_address": "0x5aae30"
     },
     {
         "name": "gtx_0x106C::load_sprite_graphics",
-        "v96f_address": null,
+        "v96f_address": "0x4bfb20",
         "v105_address": "0x5aae40"
     },
     {
         "name": "gtx_0x106C::load_physical_palettes",
-        "v96f_address": null,
+        "v96f_address": "0x4bfb50",
         "v105_address": "0x5aae70"
     },
     {
         "name": "gtx_0x106C::load_palette_index",
-        "v96f_address": null,
+        "v96f_address": "0x4bfb80",
         "v105_address": "0x5aaea0"
     },
     {
@@ -15351,7 +15356,7 @@
     },
     {
         "name": "gtx_0x106C::load_sprite_index",
-        "v96f_address": null,
+        "v96f_address": "0x4bfc60",
         "v105_address": "0x5aaf80"
     },
     {
@@ -15361,27 +15366,27 @@
     },
     {
         "name": "gtx_0x106C::load_font_base",
-        "v96f_address": null,
+        "v96f_address": "0x4bfdd0",
         "v105_address": "0x5ab0f0"
     },
     {
-        "name": "gtx_0x106C::ConvertToVirtualOffsets",
-        "v96f_address": null,
-        "v105_address": "0x5ab1c0"
+        "name": "gtx_0x106C::ConvertToVirtualOffsets_5AB1A0",
+        "v96f_address": "0x4bf790",
+        "v105_address": "0x5ab1a0"
     },
     {
         "name": "gtx_0x106C::ConvertToVirtualOffsets",
-        "v96f_address": null,
+        "v96f_address": "0x4bf7b0",
         "v105_address": "0x5ab1c0"
     },
     {
         "name": "gtx_0x106C::load_sprite_base",
-        "v96f_address": null,
+        "v96f_address": "0x4bfe70",
         "v105_address": "0x5ab210"
     },
     {
         "name": "gtx_0x106C::load_palete_base",
-        "v96f_address": null,
+        "v96f_address": "0x4bff20",
         "v105_address": "0x5ab2c0"
     },
     {
@@ -15391,17 +15396,17 @@
     },
     {
         "name": "gtx_0x106C::load_car_recycling_info",
-        "v96f_address": null,
+        "v96f_address": "0x4c0010",
         "v105_address": "0x5ab3c0"
     },
     {
         "name": "gtx_0x106C::read_spec",
-        "v96f_address": null,
+        "v96f_address": "0x4c0040",
         "v105_address": "0x5ab3f0"
     },
     {
         "name": "gtx_0x106C::load_spec",
-        "v96f_address": null,
+        "v96f_address": "0x4c00a0",
         "v105_address": "0x5ab450"
     },
     {
@@ -15656,7 +15661,7 @@
     },
     {
         "name": "sharp_pare_0x15D8::SetPal_5B9660",
-        "v96f_address": null,
+        "v96f_address": "0x4c2c30",
         "v105_address": "0x5b9660"
     },
     {
@@ -15751,7 +15756,7 @@
     },
     {
         "name": "distracted_einstein_0xC::sub_5BEBF0",
-        "v96f_address": null,
+        "v96f_address": "0x4c3680",
         "v105_address": "0x5bebf0"
     },
     {
@@ -15936,7 +15941,7 @@
     },
     {
         "name": "Kfc_30::sub_5CBC90",
-        "v96f_address": null,
+        "v96f_address": "0x4c5510",
         "v105_address": "0x5cbc90"
     },
     {
@@ -18466,7 +18471,7 @@
     },
     {
         "name": "??_L@YGXPAXIHP6E",
-        "v96f_address": null,
+        "v96f_address": "0x4d6925",
         "v105_address": "0x5edf51"
     },
     {
@@ -18588,6 +18593,11 @@
         "name": "_wcslen",
         "v96f_address": "0x4d6cd1",
         "v105_address": "0x5ee79a"
+    },
+    {
+        "name": "__findfirst",
+        "v96f_address": "0x4d75cc",
+        "v105_address": "0x5ee7b7"
     },
     {
         "name": "__fi",
@@ -20061,7 +20071,7 @@
     },
     {
         "name": "___crtCompare",
-        "v96f_address": null,
+        "v96f_address": "0x4e30ba",
         "v105_address": "0x5fa72b"
     },
     {
