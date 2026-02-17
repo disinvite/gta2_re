@@ -66,6 +66,18 @@ void get_car_name(Car_BC* pCar, char* out)
 
 namespace ImGui
 {
+bool SliderU32(const char* label, u32* v, u32 v_min, u32 v_max)
+{
+    // Cast to int for ImGui::SliderInt
+    int value = static_cast<int>(*v);
+    bool result = ImGui::SliderInt(label, &value, static_cast<int>(v_min), static_cast<int>(v_max));
+    if (result)
+    {
+        *v = static_cast<u32>(value); // Convert back to u32
+    }
+    return result;
+}
+
 bool SliderS16(const char* label, s16* v, s16 v_min, s16 v_max)
 {
     // Cast to int for ImGui::SliderInt
@@ -968,7 +980,7 @@ void CC ImGuiDebugDraw()
 
                     ImGui::SliderInt("gXCoord_6F63AC", &gXCoord_6F63AC.mValue, 0, 2000);
                     ImGui::SliderInt("gYCoord_6F63B8", &gYCoord_6F63B8.mValue, 0, 2000);
-                    ImGui::SliderInt("gZCoord_6F63E0", &gZCoord_6F63E0, 0, 2000);
+                    ImGui::SliderU32("gZCoord_6F63E0", &gZCoord_6F63E0, 0, 2000);
                 }
 
                 if (ImGui::Button("Orca_2FD4::FindNearbyTileMatchingSlopeType_5552B0"))
