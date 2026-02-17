@@ -745,24 +745,29 @@ void Garox_107C_sub::DrawGangRespectBars_5CFA70()
     u8 PlayerIdx = gGame_0x40_67E008->field_38_orf1->field_2E_idx;
     bool bPlusSignDark = random_num > 7u;
 
-    s32 ypos = 11;
+    Gang_144* pGang = gGangPool_CA8_67E274->sub_4BECA0();
+    if (pGang == NULL) {
+        return;
+    }
 
-    for (Gang_144* pGang = gGangPool_CA8_67E274->sub_4BECA0(); pGang; pGang = gGangPool_CA8_67E274->sub_4BECE0(), ypos += 27)
+    s32 ypos = 12;
+
+    for (pGang; pGang; pGang = gGangPool_CA8_67E274->sub_4BECE0())
     {
         s8 respect = pGang->GetRespectForPlayer_4BEEF0(PlayerIdx);
 
         s32 arrow_colour = pGang->field_138_arrow_colour - 1;
-        sub_5D7670(6, arrow_colour + 64, 16, ypos + 1, word_706610, 2, 0, 0, 0);
+        sub_5D7670(6, arrow_colour + 64, 16, (u32)ypos, word_706610, 2, 0, 0, 0);
 
-        sub_5D7670(6, arrow_colour + 78, 64, ypos + 1, word_706610, 2, 0, 0, 0);
+        sub_5D7670(6, arrow_colour + 78, (u32)64, (u32)ypos, word_706610, 2, 0, 0, 0);
 
-        sub_5D7670(6, arrow_colour + 71, 64, ypos + 1, word_706610, 2, 0, 0, 0);
+        sub_5D7670(6, arrow_colour + 71, (u32)64, ypos, word_706610, 2, 0, 0, 0);
 
         // Draw positive respect
         s32 curr_bar_respect = 20;
         for (s32 i = 69; i <= 84 && respect >= curr_bar_respect; i += 5)
         {
-            sub_5D7670(6, arrow_colour + 71, i, ypos + 1, word_706610, 2, 0, 0, 0);
+            sub_5D7670(6, arrow_colour + 71, (u32)i, ypos, word_706610, 2, 0, 0, 0);
             curr_bar_respect += 20;
         }
 
@@ -770,29 +775,30 @@ void Garox_107C_sub::DrawGangRespectBars_5CFA70()
         curr_bar_respect = -20;
         for (s32 j = 59; j >= 44 && respect <= curr_bar_respect; j -= 5)
         {
-            sub_5D7670(6, arrow_colour + 71, j, ypos + 1, word_706610, 2, 0, 0, 0);
+            sub_5D7670(6, arrow_colour + 71, (u32)j, ypos, word_706610, 2, 0, 0, 0);
             curr_bar_respect -= 20;
         }
 
         if (respect < -19)
         {
-            if (respect <= -100 && !bPlusSignDark)
+            if (respect > -100 || !bPlusSignDark)
             {
-                sub_5D7670(6, 2 * arrow_colour + 50, 34, ypos + 1, word_706610, 2, 0, 0, 0);
+                sub_5D7670(6, 2 * arrow_colour + 50, 34, ypos, word_706610, 2, 0, 0, 0);
             }
         }
         else
         {
-            if (respect >= 100 && !bPlusSignDark)
+            if (respect < 100 || !bPlusSignDark)
             {
-                sub_5D7670(6, 2 * arrow_colour + 51, 93, ypos + 1, word_706610, 2, 0, 0, 0);
+                sub_5D7670(6, 2 * arrow_colour + 51, 93, ypos, word_706610, 2, 0, 0, 0);
             }
-        }
 
-        // green mission respect
-        if (respect >= -19)
-        {
-            sub_5D7670(6, 46, 64, ypos + 8, word_706610, 2, 0, 0, 0);
+            // green mission respect
+            // DECOMP: (respect > -20) instead of (respect >= -19) to force a redundant check.
+            if (respect > -20)
+            {
+                sub_5D7670(6, 46, (u32)64, ypos + 8, word_706610, 2, 0, 0, 0);
+            }
         }
 
         // yellow mission respect
@@ -812,8 +818,10 @@ void Garox_107C_sub::DrawGangRespectBars_5CFA70()
         {
             s32 v32 = (respect >= 0) + 5;
             swprintf(tmpBuff_67BD9C, L"%d", respect);
-            DrawText_5D7720(tmpBuff_67BD9C, 64, ypos - 7, word_706600, 8, v32, 0, 0);
+            DrawText_5D7720(tmpBuff_67BD9C, (u32)64, ypos - 7, word_706600, 8, v32, 0, 0);
         }
+
+        ypos += 27;
     }
 }
 
