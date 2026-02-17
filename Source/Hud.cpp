@@ -96,7 +96,7 @@ void Garox_1_v2::sub_5D56D0()
 {
     if (this->field_0_timer)
     {
-        DrawText_5D7720(this->field_2_str, (u32)((640 - this->field_CC) / 2), (u32)16, word_7064D8, 8, 5, 0, 0);
+        DrawText_5D7720(this->field_2_str, ((640 - this->field_CC) / 2), 16, word_7064D8, 8, 5, 0, 0);
     }
 }
 
@@ -288,17 +288,17 @@ void Garox_12EC_sub::DrawQuitMessage_5D1430()
         s32 v4 = sub_5D8940(pQuitText, word_7064D8);
         s32 v6 = ((3 * (160 - v4)) / 2);
 
-        DrawText_5D7720(pQuitText, (u32)((640 - v2) / 2), v6 - v4, word_7064D8, 2, 0, 0, 0);
+        DrawText_5D7720(pQuitText, ((640 - v2) / 2), (u32)(v6 - v4), word_7064D8, 2, 0, 0, 0);
 
         wchar_t* pQuitText2 = gText_0x14_704DFC->Find_5B5F90("quit2");
         s32 v9 = Frontend::sub_5D8990(pQuitText2, word_7064D8);
 
-        DrawText_5D7720(pQuitText2, (u32)((640 - v9) / 2), (u32)v6, word_7064D8, 2, 0, 0, 0);
+        DrawText_5D7720(pQuitText2, ((640 - v9) / 2), v6, word_7064D8, 2, 0, 0, 0);
 
         wchar_t* pQuitText3 = gText_0x14_704DFC->Find_5B5F90("quit3");
         s32 v14 = Frontend::sub_5D8990(pQuitText3, word_7064D8);
 
-        DrawText_5D7720(pQuitText3, (u32)((640 - v14) / 2), v6 + v4, word_7064D8, 2, 0, 0, 0);
+        DrawText_5D7720(pQuitText3, ((640 - v14) / 2), (u32)(v6 + v4), word_7064D8, 2, 0, 0, 0);
     }
 }
 
@@ -600,7 +600,7 @@ MATCH_FUNC(0x5d0260)
 void Garox_1108_sub::DrawHealth_5D0260()
 {
     s32 half_hearts;
-    s32 xpos = 551;
+    u32 xpos = 551;
     s32 health = gGame_0x40_67E008->field_38_orf1->GetPlayerPed_41D020()->get_health_433B70();
 
     if (health == 100)
@@ -615,7 +615,7 @@ void Garox_1108_sub::DrawHealth_5D0260()
     // Draw complete hearts
     for (s32 complete_hearts = half_hearts / 2; complete_hearts > 0; complete_hearts--, xpos += 20)
     {
-        sub_5D7670(6, 113, xpos, (u32)34, word_706610, 2, 0, 0, 0);
+        sub_5D7670(6, 113, xpos, 34, word_706610, 2, 0, 0, 0);
     }
 
     // Draw half heart
@@ -625,14 +625,14 @@ void Garox_1108_sub::DrawHealth_5D0260()
         {
             xpos -= 2;
         }
-        sub_5D7670(6, 114, xpos, (u32)34, word_706610, 2, 0, 0, 0);
+        sub_5D7670(6, 114, xpos, 34, word_706610, 2, 0, 0, 0);
     }
 
     // Draw debug stuff
     if (bDo_show_instruments_67D64C)
     {
         swprintf(tmpBuff_67BD9C, L"%d%%", health);
-        DrawText_5D7720(tmpBuff_67BD9C, (u32)551, (u32)34, word_706600, 2, 0, 0, 0);
+        DrawText_5D7720(tmpBuff_67BD9C, 551, 34, word_706600, 2, 0, 0, 0);
     }
 }
 
