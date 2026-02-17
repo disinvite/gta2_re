@@ -209,8 +209,8 @@ class Garox_C4
     EXPORT bool operator_equals_5D1E10(Garox_C4* pOther);
     wchar_t field_0_str_buf[82];
     s32 field_A4_display_time;
-    s16 field_A8_x;
-    s16 field_AA_y;
+    u16 field_A8_x;
+    u16 field_AA_y;
     s16 field_AC_fontType;
     s16 field_AE; // could be pad
     s32 field_B0_drawKind;
