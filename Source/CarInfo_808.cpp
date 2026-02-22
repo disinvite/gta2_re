@@ -553,35 +553,20 @@ EXPORT Fix16 __stdcall ComputeCarMassAndInertia_454410(Fix16 width, Fix16 height
 {
     WIP_IMPLEMENTED;
 
-    Fix16 v25(12, 0); // TODO: isn't a ctor call
-    Fix16 v20 = (width * width);
-    Fix16 v6 = (height * height);
-    Fix16 v7 = (v6 * dword_677D78);
-    Fix16 v8 = (v7 + v20);
-    v25 = (v8 / v25);
+    Fix16 v25 = ((((height * height) * dword_677D78) + (width * width)) / 12);
     width = (height * dword_677D78);
-    Fix16 pCopyTo = (mass * frontMassBias);
-    Fix16 v26 = (pCopyTo * v25);
-    Fix16 v9 = -height;
-    height = (v9 * dword_677D78);
-    Fix16 v10 = (dword_677F54 - frontMassBias);
-    frontMassBias = (mass * v10);
+    Fix16 massXfrontMassBias = (mass * frontMassBias);
+    Fix16 v26 = (massXfrontMassBias * v25);
+    height = (-height * dword_677D78);
+
+    frontMassBias = (mass * (dword_677F54 - frontMassBias));
+
     v25 = (frontMassBias * v25);
-    Fix16 v21 = (height * frontMassBias);
-    Fix16 v11 = (width * pCopyTo);
-    Fix16 v12 = (v11 + v21);
-    *outCgHeight = (v12 / mass);
-    Fix16 v22 = (*outCgHeight - width);
-    Fix16 v13 = (*outCgHeight - width);
-    Fix16 v14 = (pCopyTo * v13);
-    Fix16 v15 = (v14 * v22);
-    mass = (v26 + v15);
-    Fix16 v23 = (*outCgHeight - height);
-    Fix16 v16 = (*outCgHeight - height);
-    Fix16 v17 = (frontMassBias * v16);
-    Fix16 v18 = (v17 * v23);
-    height = (v25 + v18);
-    return (mass + height);
+
+    *outCgHeight = (((width * massXfrontMassBias) + (height * frontMassBias)) / mass);
+
+    return ((v26 + ((massXfrontMassBias * (*outCgHeight - width)) * (*outCgHeight - width))) +
+            (v25 + ((frontMassBias * (*outCgHeight - height)) * (*outCgHeight - height))));
 
     /*
     // Precompute squared dimensions
