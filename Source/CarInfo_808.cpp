@@ -553,46 +553,19 @@ EXPORT Fix16 __stdcall ComputeCarMassAndInertia_454410(Fix16 width, Fix16 height
 {
     WIP_IMPLEMENTED;
 
-    Fix16 v25 = ((((height * height) * dword_677D78) + (width * width)) / 12);
-    width = (height * dword_677D78);
-    Fix16 massXfrontMassBias = (mass * frontMassBias);
-    Fix16 v26 = (massXfrontMassBias * v25);
-    height = (-height * dword_677D78);
+    Fix16 inertiaBase = ((((height * height) * dword_677D78) + (width * width)) / 12);
+    Fix16 heightXConstant = (height * dword_677D78);
+    Fix16 frontMass = (mass * frontMassBias);
+    Fix16 frontI = (frontMass * inertiaBase);
+    Fix16 negHeightXConstant = (-height * dword_677D78);
 
-    frontMassBias = (mass * (dword_677F54 - frontMassBias));
+    Fix16 rearMass = (mass * (dword_677F54 - frontMassBias));
+    Fix16 rearI = (rearMass * inertiaBase);
 
-    v25 = (frontMassBias * v25);
+    *outCgHeight = (((heightXConstant * frontMass) + (negHeightXConstant * rearMass)) / mass);
 
-    *outCgHeight = (((width * massXfrontMassBias) + (height * frontMassBias)) / mass);
-
-    return ((v26 + ((massXfrontMassBias * (*outCgHeight - width)) * (*outCgHeight - width))) +
-            (v25 + ((frontMassBias * (*outCgHeight - height)) * (*outCgHeight - height))));
-
-    /*
-    // Precompute squared dimensions
-    Fix16 Ixx = (width * width + height * height * dword_677D78) / Fix16(12);
-
-    // Mass distribution
-    Fix16 frontMass = mass * frontMassBias;
-    Fix16 rearMass = mass * (dword_677F54 - frontMassBias);
-
-    // Moments
-    Fix16 frontI = frontMass * Ixx;
-    Fix16 rearI = rearMass * Ixx;
-
-    // CG height offset
-    Fix16 cgHeight = (height * rearMass + height * frontMass) / mass;
-
-    *outCgHeight = cgHeight;
-
-    // Compute deltas
-    Fix16 frontDelta = cgHeight - height;
-    Fix16 rearDelta = cgHeight - height;
-
-    // Combine inertia contributions
-    Fix16 inertia = frontI + (frontMass * frontDelta * frontDelta) + rearI + (rearMass * rearDelta * rearDelta);
-
-    return inertia;*/
+    return ((frontI + ((frontMass * (*outCgHeight - heightXConstant)) * (*outCgHeight - heightXConstant))) +
+            (rearI + ((rearMass * (*outCgHeight - negHeightXConstant)) * (*outCgHeight - negHeightXConstant))));
 }
 
 MATCH_FUNC(0x5618F0)
