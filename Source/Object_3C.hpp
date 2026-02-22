@@ -78,7 +78,7 @@ class Object_3C
     Object_3C* mpNext;
     Fix16 field_C;
     Fix16 field_10;
-    s32 field_14;
+    Fix16 field_14;
     Fix16 field_18;
     Fix16 field_1C;
     s32 field_20;

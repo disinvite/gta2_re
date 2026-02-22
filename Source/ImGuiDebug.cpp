@@ -1372,7 +1372,7 @@ void CC ImGuiDebugDraw()
                         ImGui::InputS16("Obj3C field_6", &obj_3c->field_6, 0, 1439);
                         ImGui::Value("Obj3C field_C", obj_3c->field_C.mValue);
                         ImGui::Value("Obj3C field_10", obj_3c->field_10.mValue);
-                        ImGui::Value("Obj3C field_14", obj_3c->field_14);
+                        ImGui::Value("Obj3C field_14", obj_3c->field_14.mValue);
                         ImGui::Value("Obj3C field_18", obj_3c->field_18.mValue);
                         ImGui::Value("Obj3C field_1C", obj_3c->field_1C.mValue);
 

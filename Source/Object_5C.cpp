@@ -39,7 +39,7 @@ DEFINE_GLOBAL(Fix16, k_dword_6F8C9C, 0x6F8C9C);
 DEFINE_GLOBAL(u8, byte_6F8C68, 0x6F8C68);
 DEFINE_GLOBAL(u8, byte_6F8C4C, 0x6F8C4C);
 DEFINE_GLOBAL(u8, byte_6F8F40, 0x6F8F40);
-DEFINE_GLOBAL(u32, dword_6F8E54, 0x6F8E54);
+DEFINE_GLOBAL(u32, gObj3C_id_6F8E54, 0x6F8E54);
 DEFINE_GLOBAL(u32, dword_6F8F18, 0x6F8F18);
 DEFINE_GLOBAL(u32, dword_6F8DC0, 0x6F8DC0);
 DEFINE_GLOBAL(u32, dword_6F8F0C, 0x6F8F0C);
@@ -1302,7 +1302,7 @@ void Object_2C::NewObj3C_528130(Fix16_Point* a2)
     Object_3C* pNewObj = gObject_3C_Pool_6F8F7C->Allocate();
 
     // TODO: Part of PoolAllocate()
-    dword_6F8E54++;
+    gObj3C_id_6F8E54++;
     pNewObj->field_C = 0;
     pNewObj->field_18 = 0;
     pNewObj->field_4 = kZeroAng_6F8F68;
@@ -2092,7 +2092,7 @@ Object_5C::Object_5C()
     byte_6F8F40 = 0;
     field_10_rotation_counter = 0;
     field_14_sprites_in_list = 0;
-    dword_6F8E54 = 0;
+    gObj3C_id_6F8E54 = 0;
     dword_6F8F18 = 0;
     dword_6F8DC0 = 0;
     dword_6F8F0C = 0;
@@ -2480,22 +2480,74 @@ char_type Object_5C::sub_52A210(char_type a2)
 }
 
 MATCH_FUNC(0x52a240)
-s32* Object_5C::sub_52A240(s32 a2, s32 maybe_x, s32 maybe_y, s32 maybe_z, s16 pCarBC, s16 maybe_ang, s32 a8, s32 a9, s32 a10)
+Object_2C* Object_5C::sub_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, s32 a9, s32 a10)
 {
-    return Object_5C::sub_52A2C0(a2, maybe_x, maybe_y, maybe_z, pCarBC, maybe_ang, a8, a9, a10, 0);
+    return Object_5C::New_52A2C0(object_type, maybe_x, maybe_y, maybe_z, unk_ang, maybe_ang, a8, a9, a10, 0);
 }
 
 MATCH_FUNC(0x52a280)
-s32* Object_5C::sub_52A280(s32 a2, s32 a3, s32 a4, s32 a5, s16 a6, s16 a7, s32 a8, s32 a9, s32 a10)
+Object_2C* Object_5C::sub_52A280(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 unk_ang, Ang16 rotation, Fix16 a8, s32 a9, s32 a10)
 {
-    return Object_5C::sub_52A2C0(a2, a3, a4, a5, a6, a7, a8, a9, a10, 1);
+    return Object_5C::New_52A2C0(object_type, xpos, ypos, zpos, unk_ang, rotation, a8, a9, a10, 1);
 }
 
-STUB_FUNC(0x52a2c0)
-s32* Object_5C::sub_52A2C0(s32 a2, s32 a3, s32 a4, s32 a5, s16 a6, s16 a7, s32 a8, s32 a9, s32 a10, char_type a11)
+MATCH_FUNC(0x52a2c0)
+Object_2C* Object_5C::New_52A2C0(s32 object_type,
+                                 Fix16 xpos,
+                                 Fix16 ypos,
+                                 Fix16 zpos,
+                                 Ang16 unk_ang,
+                                 Ang16 maybe_rotation,
+                                 Fix16 a8,
+                                 s32 a9,
+                                 s32 a10,
+                                 char_type a11)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    Object_2C* pNewObj = Object_5C::New_529C00(object_type, xpos, ypos, zpos, maybe_rotation, a11);
+
+    if (pNewObj)
+    {
+        pNewObj->AssignToBucket_527AE0();
+        Phi_74* pPhi74 = gPhi_8CA8_6FCF00->GetObjectDefinition_534360(object_type);
+        if (!pNewObj->field_10_obj_3c)
+        {
+            // OBS: this is an inline: 9.6f func: 0x483FE0
+            //Object_3C* p3C = gObject_3C_Pool_6F8F7C->sub_483FE0();
+
+            Object_3C* p3C = gObject_3C_Pool_6F8F7C->Allocate();
+            ++gObj3C_id_6F8E54;
+            p3C->field_C = 0;
+            Ang16 zero_ang16 = kZeroAng_6F8F68;
+            p3C->field_18 = 0;
+            p3C->field_4 = zero_ang16;
+            p3C->field_28 = 0;
+            p3C->field_38 = 0;
+            p3C->field_34 = 2;
+            p3C->field_24 = 0;
+            p3C->field_2F = 0;
+            p3C->field_30_bSkipAnim = 0;
+
+            pNewObj->field_10_obj_3c = p3C;
+            if (!p3C)
+            {
+                pNewObj->sub_5290A0();
+                return 0;
+            }
+        }
+        pNewObj->field_10_obj_3c->field_C = a8;
+        pNewObj->field_10_obj_3c->field_10 = a10;
+        pNewObj->field_10_obj_3c->field_14 = a8;
+        pNewObj->field_10_obj_3c->field_1C = dword_6F8DA8;
+        pNewObj->field_10_obj_3c->field_18 = a9;
+        pNewObj->field_10_obj_3c->field_4 = unk_ang;
+        pNewObj->field_10_obj_3c->field_28 = pPhi74->field_65;
+        Object_3C* field_10_obj_3c = pNewObj->field_10_obj_3c;
+        if (field_10_obj_3c->field_10 != kFpZero_6F8E10)
+        {
+            field_10_obj_3c->field_2A = 1;
+        }
+    }
+    return pNewObj;
 }
 
 MATCH_FUNC(0x52a3d0)
@@ -2543,7 +2595,7 @@ Object_2C* Object_5C::CreateExplosion_52A3D0(Fix16 x, Fix16 y, Fix16 z, Ang16 ro
         {
             Object_3C* pNew3C = gObject_3C_Pool_6F8F7C->Allocate();
             // TODO: PoolAllocate()
-            ++dword_6F8E54;
+            ++gObj3C_id_6F8E54;
             pNew3C->field_C = 0;
             pNew3C->field_4 = kZeroAng_6F8F68;
             pNew3C->field_18 = Fix16(0);
@@ -2619,7 +2671,7 @@ void Object_2C::EnsureObject3C_52A650()
 
         // TODO: some of this is probably part of PoolAllocate for Object_3C
 
-        ++dword_6F8E54;
+        ++gObj3C_id_6F8E54;
         p3C->field_C = 0;
 
         Ang16 v2 = kZeroAng_6F8F68;
