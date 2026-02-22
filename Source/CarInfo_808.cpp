@@ -549,12 +549,7 @@ CarInfo_2C::~CarInfo_2C()
 }
 
 WIP_FUNC(0x454410)
-EXPORT Fix16 __stdcall ComputeCarMassAndInertia_454410(
-    Fix16 width,
-    Fix16 height,
-    Fix16 mass,
-    Fix16 frontMassBias,
-    Fix16* outCgHeight)
+EXPORT Fix16 __stdcall ComputeCarMassAndInertia_454410(Fix16 width, Fix16 height, Fix16 mass, Fix16 frontMassBias, Fix16* outCgHeight)
 {
     WIP_IMPLEMENTED;
 
@@ -563,11 +558,11 @@ EXPORT Fix16 __stdcall ComputeCarMassAndInertia_454410(
 
     // Mass distribution
     Fix16 frontMass = mass * frontMassBias;
-    Fix16 rearMass  = mass * (dword_677F54 - frontMassBias);
+    Fix16 rearMass = mass * (dword_677F54 - frontMassBias);
 
     // Moments
     Fix16 frontI = frontMass * Ixx;
-    Fix16 rearI  = rearMass  * Ixx;
+    Fix16 rearI = rearMass * Ixx;
 
     // CG height offset
     Fix16 cgHeight = (height * rearMass + height * frontMass) / mass;
@@ -576,21 +571,17 @@ EXPORT Fix16 __stdcall ComputeCarMassAndInertia_454410(
 
     // Compute deltas
     Fix16 frontDelta = cgHeight - height;
-    Fix16 rearDelta  = cgHeight - height;
+    Fix16 rearDelta = cgHeight - height;
 
     // Combine inertia contributions
-    Fix16 inertia =
-        frontI + (frontMass * frontDelta * frontDelta) +
-        rearI  + (rearMass  * rearDelta  * rearDelta);
+    Fix16 inertia = frontI + (frontMass * frontDelta * frontDelta) + rearI + (rearMass * rearDelta * rearDelta);
 
     return inertia;
 }
 
-WIP_FUNC(0x5618F0)
+MATCH_FUNC(0x5618F0)
 EXPORT Fix16 __stdcall ComputeThrustWithTurbo_5618F0(Fix16 half_thrust, Fix16 thrust_div5, bool bTurbo)
 {
-    WIP_IMPLEMENTED;
-
     Fix16 v4;
     if (bTurbo)
     {
@@ -600,7 +591,8 @@ EXPORT Fix16 __stdcall ComputeThrustWithTurbo_5618F0(Fix16 half_thrust, Fix16 th
     {
         v4 = thrust_div5 * k_dword_6FDEFC;
     }
-    return half_thrust + (v4.ToInt());
+    v4 = v4 + half_thrust;
+    return v4;
 }
 
 WIP_FUNC(0x4542A0)
