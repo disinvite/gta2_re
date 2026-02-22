@@ -1,6 +1,9 @@
 #include "thirsty_lamarr.hpp"
+#include "Draw.hpp"
 #include "gtx_0x106C.hpp"
 #include "sharp_pare_0x15D8.hpp"
+
+DEFINE_GLOBAL_INIT(Ang16, word_67B210, Ang16(0), 0x67B210);
 
 MATCH_FUNC(0x4f7660)
 s32 __stdcall sub_4F7660(s32 &a1)
@@ -121,11 +124,80 @@ void thirsty_lamarr::sub_4921F0(s32 a2, s16 a3)
     }
 }
 
-STUB_FUNC(0x492260)
+// https://decomp.me/scratch/6E5vt
+WIP_FUNC(0x492260)
 s32 thirsty_lamarr::sub_492260(s32 a2, s32 a3)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+    u8 height;
+
+    s32 v4 = a3;
+    s16 curr_idx = field_2E_idx;
+    s32 v7 = a3 + (field_28_sprite_h_calc >> 1);
+    bool bUnk = true;
+    s32 v37 = v7;
+    u16 start_idx = curr_idx; // u32?
+
+    s16 v8 = 9 - curr_idx;
+    s16 v36 = 9 - curr_idx;
+    for (; curr_idx < 9; curr_idx++, v8--, v36--)
+    {
+        s32 v9 = field_13[curr_idx];
+        if (bUnk)
+        {
+            char v32 = field_9[curr_idx];
+            if (v32 == 0x30) // 56
+            {
+
+                if (curr_idx == 8 || field_13[curr_idx] != 0)
+                {
+                    if (curr_idx == 8)
+                    {
+                        height = field_28_sprite_h_calc;
+                    }
+                    else
+                    {
+                        height = field_13[curr_idx];
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                height = field_28_sprite_h_calc;
+            }
+
+            u16 unknown = field_28_sprite_h_calc * (58 - v32) - v9;
+            s32 xpos = a2 + (field_27_sprite_w >> 1) - field_27_sprite_w * v8;
+            sub_495470(gSharp_pare_0x15D8_705064->sub_5B95F0(curr_idx + field_34 - field_2E_idx, unknown, height),
+                       xpos,
+                       a3 + height / 2,
+                       field_27_sprite_w,
+                       height,
+                       word_67B210,
+                       0,
+                       0);
+            bUnk = false;
+        }
+        else
+        {
+            s16 v15 = 58 - field_9[curr_idx];
+            u16 v16 = field_28_sprite_h_calc * v15 - v9;
+            curr_idx = start_idx;
+            sub_495470(gSharp_pare_0x15D8_705064->sub_5B95F0(start_idx + field_34 - field_2E_idx, v16, field_28_sprite_h_calc),
+                       a2 + ((field_27_sprite_w >> 1) - (field_27_sprite_w * v8)),
+                       v37,
+                       field_27_sprite_w,
+                       field_28_sprite_h_calc,
+                       word_67B210,
+                       0,
+                       0);
+        }
+    }
+    return a2 - (field_27_sprite_w >> 1);
 }
 
 STUB_FUNC(0x492430)
