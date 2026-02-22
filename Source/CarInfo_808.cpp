@@ -613,40 +613,37 @@ void CarInfo_2C::CalculateCarInfo_4542A0(s32 idx)
 
     s8 front_wheel_offset = pCarInfo->front_wheel_offset;
     Fix16 new_front_wheel_offset;
-    if (front_wheel_offset >= 0)
+    if (front_wheel_offset < 0)
     {
-        new_front_wheel_offset = dword_6F6850.list[front_wheel_offset];
+        new_front_wheel_offset = -dword_6F6850.list[-front_wheel_offset];
     }
     else
     {
-        new_front_wheel_offset = -dword_6F6850.list[-front_wheel_offset];
+        new_front_wheel_offset = dword_6F6850.list[front_wheel_offset];
     }
     this->field_4_front_wheel_offset = new_front_wheel_offset;
     s8 rear_wheel_offset = pCarInfo->rear_wheel_offset;
     Fix16 new_rear_wheel_offset;
-    if (rear_wheel_offset >= 0)
-    {
-        new_rear_wheel_offset = dword_6F6850.list[rear_wheel_offset];
-    }
-    else
+    if (rear_wheel_offset < 0)
     {
         new_rear_wheel_offset = -dword_6F6850.list[-rear_wheel_offset];
     }
+    else
+    {
+        new_rear_wheel_offset = dword_6F6850.list[rear_wheel_offset];
+    }
     this->field_8_rear_wheel_offset = new_rear_wheel_offset;
     Fix16 outY;
-    Fix16 new_field_0 = ComputeCarMassAndInertia_454410(dword_6F6850.list[pCarInfo->w],
+    this->field_0_moment_of_inertia = ComputeCarMassAndInertia_454410(dword_6F6850.list[pCarInfo->w],
                                                         dword_6F6850.list[pCarInfo->h],
                                                         pModelPhysics->field_4_mass,
                                                         pModelPhysics->field_C_front_mass_bias,
                                                         &outY);
-    this->field_0_moment_of_inertia = new_field_0;
     this->field_C_center_of_mass_offset.x = 0;
     this->field_C_center_of_mass_offset.y = outY; // out val of func above
     this->field_14_half_thrust = pModelPhysics->field_24_thrust / 2;
-    Fix16 fith_thrust = pModelPhysics->field_24_thrust / 5;
-    field_14_half_thrust = this->field_14_half_thrust;
-    this->field_18_fith_thrust = fith_thrust;
-    this->field_1C_max_thrust_with_turbo = ComputeThrustWithTurbo_5618F0(field_14_half_thrust, fith_thrust, pModelPhysics->field_1_turbo);
+    this->field_18_fith_thrust = pModelPhysics->field_24_thrust / 5;
+    this->field_1C_max_thrust_with_turbo = ComputeThrustWithTurbo_5618F0(field_14_half_thrust, field_18_fith_thrust, pModelPhysics->field_1_turbo);
     this->field_20_front_drive_bias = dword_677F54 - pModelPhysics->field_8_front_drive_bias;
     this->field_24_skid_threshhold_1 = (pModelPhysics->field_30_sked_threshold * (dword_677F54 - dword_677D74));
     this->field_28_skid_threshhold_2 = (pModelPhysics->field_30_sked_threshold * (dword_677F54 + dword_677D74));
