@@ -62,7 +62,7 @@ DEFINE_GLOBAL_INIT(Fix16, dword_6FE07C, k_dword_6FE210 / (dword_6FE2EC * dword_6
 
 DEFINE_GLOBAL_INIT(Fix16, FastCarMinVelocity_6FE1CC, Fix16(0x1EB, 0), 0x6FE1CC);
 DEFINE_GLOBAL(Fix16, dword_6FE198, 0x6FE198);
-DEFINE_GLOBAL(Fix16, dword_6FE370, 0x6FE370);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE370, Fix16(0x800, 0), 0x6FE370);
 
 DEFINE_GLOBAL_INIT(Fix16, dword_6FE218, Fix16(3), 0x6FE218);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_6FE1B8, dword_6FE218, 0x6FE1B8);
@@ -2480,6 +2480,7 @@ void CarPhysics_B0::RotateVelocity_562C20(const Ang16& angle)
     field_0_vel_read_only.y = (cos * field_0_vel_read_only.y) + ((-x_old) * sin);
 }
 
+// https://decomp.me/scratch/0X4pK
 // 9.6f 0x4A1B20
 WIP_FUNC(0x562d00)
 void CarPhysics_B0::EnforceGearSensitiveMaxSpeed_562D00()
@@ -2499,12 +2500,10 @@ void CarPhysics_B0::EnforceGearSensitiveMaxSpeed_562D00()
             radius = dword_6FE258->field_40_gear2_speed;
         }
 
-        Fix16_Point& linVel = field_40_linvel_1;
-        if (linVel.GetLength_2() > radius)
+        if (field_40_linvel_1.GetLength_2() > radius)
         {
-            Ang16 ang = linVel.atan2_40F790();
-            polar.FromPolar_41E210(radius, ang);
-            linVel.ClampTowardsZero_49E480(polar);
+            polar.FromPolar_41E210(radius, field_40_linvel_1.atan2_40F790());
+            field_40_linvel_1.ClampTowardsZero_49E480(polar);
         }
     }
 }
