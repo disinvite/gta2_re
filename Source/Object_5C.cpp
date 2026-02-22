@@ -2480,13 +2480,13 @@ char_type Object_5C::sub_52A210(char_type a2)
 }
 
 MATCH_FUNC(0x52a240)
-Object_2C* Object_5C::sub_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, s32 a9, s32 a10)
+Object_2C* Object_5C::sub_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, Fix16 a9, Fix16 a10)
 {
     return Object_5C::New_52A2C0(object_type, maybe_x, maybe_y, maybe_z, unk_ang, maybe_ang, a8, a9, a10, 0);
 }
 
 MATCH_FUNC(0x52a280)
-Object_2C* Object_5C::sub_52A280(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 unk_ang, Ang16 rotation, Fix16 a8, s32 a9, s32 a10)
+Object_2C* Object_5C::sub_52A280(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 unk_ang, Ang16 rotation, Fix16 a8, Fix16 a9, Fix16 a10)
 {
     return Object_5C::New_52A2C0(object_type, xpos, ypos, zpos, unk_ang, rotation, a8, a9, a10, 1);
 }
@@ -2499,8 +2499,8 @@ Object_2C* Object_5C::New_52A2C0(s32 object_type,
                                  Ang16 unk_ang,
                                  Ang16 maybe_rotation,
                                  Fix16 a8,
-                                 s32 a9,
-                                 s32 a10,
+                                 Fix16 a9,
+                                 Fix16 a10,
                                  char_type a11)
 {
     Object_2C* pNewObj = Object_5C::New_529C00(object_type, xpos, ypos, zpos, maybe_rotation, a11);

@@ -243,8 +243,8 @@ class Object_5C
     EXPORT Object_2C* sub_529BC0(s32 a2, Fix16 a3, Fix16 a4, Fix16 a5, Ang16 a6);
     EXPORT Object_2C* New_529C00(s32 object_type, Fix16 a3, Fix16 a4, Fix16 a5, Ang16 a6, char_type a7);
     EXPORT char_type sub_52A210(char_type a2);
-    EXPORT Object_2C* sub_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, s32 a9, s32 a10);
-    EXPORT Object_2C* sub_52A280(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 unk_ang, Ang16 rotation, Fix16 a8, s32 a9, s32 a10);
+    EXPORT Object_2C* sub_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, Fix16 a9, Fix16 a10);
+    EXPORT Object_2C* sub_52A280(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 unk_ang, Ang16 rotation, Fix16 a8, Fix16 a9, Fix16 a10);
     EXPORT Object_2C* New_52A2C0(s32 object_type,
                                     Fix16 xpos,
                                     Fix16 ypos,
@@ -252,8 +252,8 @@ class Object_5C
                                     Ang16 unk_ang,
                                     Ang16 maybe_rotation,
                                     Fix16 a8,
-                                    int a9,
-                                    int a10,
+                                    Fix16 a9,
+                                    Fix16 a10,
                                     char_type a11);
     EXPORT Object_2C* CreateExplosion_52A3D0(Fix16 x, Fix16 y, Fix16 z, Ang16 rot, s32 a6, s32 pedId);
 
