@@ -580,7 +580,7 @@ EXPORT Fix16 __stdcall ComputeCarMassAndInertia_454410(Fix16 width, Fix16 height
 }
 
 MATCH_FUNC(0x5618F0)
-EXPORT Fix16 __stdcall ComputeThrustWithTurbo_5618F0(Fix16 half_thrust, Fix16 thrust_div5, bool bTurbo)
+EXPORT Fix16 __stdcall ComputeThrustWithTurbo_5618F0(Fix16 half_thrust, Fix16 thrust_div5, s8 bTurbo)
 {
     Fix16 v4;
     if (bTurbo)
@@ -595,20 +595,17 @@ EXPORT Fix16 __stdcall ComputeThrustWithTurbo_5618F0(Fix16 half_thrust, Fix16 th
     return v4;
 }
 
-WIP_FUNC(0x4542A0)
+MATCH_FUNC(0x4542A0)
 void CarInfo_2C::CalculateCarInfo_4542A0(s32 idx)
 {
-    WIP_IMPLEMENTED;
-
-    s32 idx_ = idx;
     car_info* pCarInfo = gGtx_0x106C_703DD4->get_car_info_5AA3B0(idx);
-    ModelPhysics_48* pModelPhysics = gCarInfo_808_678098->GetModelPhysicsFromIdx_4546B0(idx_);
+    ModelPhysics_48* pModelPhysics = gCarInfo_808_678098->GetModelPhysicsFromIdx_4546B0(idx);
     Fix16 gear2_speed = pModelPhysics->field_40_gear2_speed;
     Fix16 gear3_speed = pModelPhysics->field_44_gear3_speed;
     Fix16 max_speed;
     if (gear2_speed > gear3_speed || (max_speed = pModelPhysics->field_28_max_speed, gear3_speed > max_speed) || gear2_speed > max_speed)
     {
-        FatalError_4A38C0(0x3F6, "C:\\Splitting\\Gta2\\Source\\carinfo.cpp", 91, idx_);
+        FatalError_4A38C0(0x3F6, "C:\\Splitting\\Gta2\\Source\\carinfo.cpp", 91, (u8)idx);
     }
 
     s8 front_wheel_offset = pCarInfo->front_wheel_offset;
