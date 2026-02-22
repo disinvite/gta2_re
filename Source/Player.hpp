@@ -102,7 +102,7 @@ class Player
         field_50 = 0;
     }
 
-    inline void set_death_type_434950(s32 type)
+    inline void SetDeathType_434950(s32 type)
     {
         field_44_death_type = type;
     }

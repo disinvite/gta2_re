@@ -3117,7 +3117,7 @@ Player::Player(u8 player_idx)
     field_6BC_multpliers.sub_492110(1, 99, 116);
     Player::sub_564CC0();
     sub_4A5180();
-    set_death_type_434950(0);
+    SetDeathType_434950(0);
     field_83C_player_name[0] = 0;
     field_78A_show_quit_message = 0;
 }

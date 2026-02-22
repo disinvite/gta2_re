@@ -2480,7 +2480,7 @@ char_type Object_5C::sub_52A210(char_type a2)
 }
 
 MATCH_FUNC(0x52a240)
-Object_2C* Object_5C::sub_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, Fix16 a9, Fix16 a10)
+Object_2C* Object_5C::NewUnknown_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, Fix16 a9, Fix16 a10)
 {
     return Object_5C::New_52A2C0(object_type, maybe_x, maybe_y, maybe_z, unk_ang, maybe_ang, a8, a9, a10, 0);
 }

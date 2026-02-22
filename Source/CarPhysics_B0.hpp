@@ -201,6 +201,8 @@ class CarPhysics_B0
             field_74_ang_vel_rad == kFP16Zero_6FE20C;
     }
 
+    EXPORT Fix16 vec_len_552DE0(); // Char_B4.cpp func
+
     Fix16_Point field_0_vel_read_only;
     s32 field_8_total_damage_q;
     CarPhysics_B0* mpNext;

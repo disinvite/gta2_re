@@ -56,7 +56,7 @@ class Char_B4
     Ang16 field_42;
     s8 field_44;
     u8 field_45;
-    s16 field_46;
+    u16 field_46_timer;
     s8 field_48;
     s8 field_49;
     u16 field_4A;
@@ -178,7 +178,7 @@ class Char_B4
         field_40_rotation.SnapToAng4_405640();
         field_40_rotation += word_6FD940;
         field_10_char_state = 9;
-        field_46 = 10;
+        field_46_timer = 10;
     }
 
     inline void sub_4923A0()
@@ -186,7 +186,7 @@ class Char_B4
         field_40_rotation.SnapToAng4_405640();
         field_40_rotation += word_6FD8F8;
         field_10_char_state = 8;
-        field_46 = 10;
+        field_46_timer = 10;
     }
 
     Char_B4();
