@@ -3922,8 +3922,8 @@ void Ped::SetObjective(s32 objective, s16 objective_timer)
                 break;
 
             case 50:
-                ChangeNextPedState1_45C500(9);
-                ChangeNextPedState2_45C540(15);
+                ChangeNextPedState1_45C500(ped_state_1::dead_9);
+                ChangeNextPedState2_45C540(ped_state_2::Unknown_15);
                 sub_463300(99u);
                 break;
 
@@ -3991,31 +3991,31 @@ void Ped::SetObjective2_463830(s32 car_state, s16 a3)
         this->field_226 = 0;
         switch (car_state)
         {
-            case 0:
-            case 22:
+            case objectives_enum::no_obj_0:
+            case objectives_enum::kill_frenzy_22:
             case objectives_enum::objective_49:
                 tmp = 1;
                 Ped::sub_463300(tmp);
                 break;
-            case 1:
-            case 2:
-            case 3:
-                Ped::sub_463300(2u);
+            case objectives_enum::flee_on_foot_till_safe_1:
+            case objectives_enum::flee_char_on_foot_till_safe_2:
+            case objectives_enum::flee_char_on_foot_always_3:
+                Ped::sub_463300(2);
                 return;
-            case 7:
-            case 9:
-            case 11:
-            case 12:
-            case 18:
+            case objectives_enum::objective_7:
+            case objectives_enum::objective_9:
+            case objectives_enum::objective_11:
+            case objectives_enum::goto_area_on_foot_12:
+            case objectives_enum::objective_18:
             case objectives_enum::kill_char_on_foot_20:
-            case 23:
-            case 48:
-                Ped::sub_463300(3u);
+            case objectives_enum::punch_char_23:
+            case objectives_enum::objective_48:
+                Ped::sub_463300(3);
                 return;
-            case 14:
-                Ped::sub_463300(5u);
+            case objectives_enum::goto_area_in_car_14:
+                Ped::sub_463300(5);
                 return;
-            case 17:
+            case objectives_enum::objective_17:
                 x_int = this->field_1AC_cam.x.ToUInt8();
                 y_int = this->field_1AC_cam.y.ToUInt8();
                 z_int = this->field_1AC_cam.z.ToUInt8();
@@ -4023,30 +4023,30 @@ void Ped::SetObjective2_463830(s32 car_state, s16 a3)
                 this->field_1D0 = k_dword_67853C + Fix16(x_int);
                 this->field_1D4 = k_dword_67853C + Fix16(y_int);
                 this->field_1D8 = k_dword_678664 + Fix16(z_int);
-                Ped::sub_463300(3u);
+                Ped::sub_463300(3);
                 return;
-            case 26:
-            case 29:
-            case 30:
-            case 44:
-            case 45:
-            case 46:
+            case objectives_enum::wait_on_foot_26:
+            case objectives_enum::objective_29:
+            case objectives_enum::objective_30:
+            case objectives_enum::objective_44:
+            case objectives_enum::objective_45:
+            case objectives_enum::objective_46:
             case objectives_enum::objective_47:
-                Ped::sub_463300(4u);
+                Ped::sub_463300(4);
                 return;
             case objectives_enum::enter_car_as_driver_35:
-                Ped::sub_463300(6u);
+                Ped::sub_463300(6);
                 return;
             case objectives_enum::leave_car_36:
-                Ped::sub_463300(7u);
+                Ped::sub_463300(7);
                 return;
-            case 37:
-                Ped::ChangeNextPedState1_45C500(5);
-                Ped::ChangeNextPedState2_45C540(5);
+            case objectives_enum::enter_train_37:
+                Ped::ChangeNextPedState1_45C500(ped_state_1::unknown_5);
+                Ped::ChangeNextPedState2_45C540(ped_state_2::Unknown_5);
                 goto LABEL_21;
-            case 38:
-                Ped::ChangeNextPedState1_45C500(6);
-                Ped::ChangeNextPedState2_45C540(10);
+            case objectives_enum::leave_train_38:
+                Ped::ChangeNextPedState1_45C500(ped_state_1::unknown_6);
+                Ped::ChangeNextPedState2_45C540(ped_state_2::ped2_driving_10); // ??
                 goto LABEL_21;
             default:
             LABEL_21:
@@ -6639,8 +6639,8 @@ void Ped::EnterCarStateMachine_46BDC0()
                     if ((gDistanceToTarget_678750 <= dword_678794 || (field_168_game_object->field_58_flags & 1) != 1) &&
                         (gDistanceToTarget_678750 <= k_dword_678798 || field_168_game_object->field_69 == 1))
                     {
-                        ChangeNextPedState1_45C500(3);
-                        ChangeNextPedState2_45C540(4);
+                        ChangeNextPedState1_45C500(ped_state_1::entering_car_3);
+                        ChangeNextPedState2_45C540(ped_state_2::ped2_following_a_car_4);
                         goto LABEL_49;
                     }
                 }
