@@ -8556,7 +8556,7 @@ bool Ped::sub_4701D0()
 }
 
 MATCH_FUNC(0x470200)
-void Ped::sub_470200(Fix16 a2, Fix16 a3, Fix16 a4)
+void Ped::StartPedWalking_470200(Fix16 a2, Fix16 a3, Fix16 a4)
 {
     Ped::AllocCharB4_45C830(a2, a3, a4);
     Char_B4* pB4 = field_168_game_object;

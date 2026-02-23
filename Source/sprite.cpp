@@ -262,7 +262,7 @@ bool Sprite::ShrinkSprite_59E390(Fix16 a2, Fix16 a3, s32 a4)
 }
 
 STUB_FUNC(0x59e4c0)
-s32 Sprite::sub_59E4C0(Fix16 a2, s32 a3)
+s32 Sprite::ApplyScaleToDimensions_59E4C0(Fix16 a2, s32 a3)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -292,7 +292,7 @@ char_type Sprite::CollisionCheck_59E590(Sprite* pOther)
 }
 
 STUB_FUNC(0x59E680)
-char_type Sprite::sub_59E680(Fix16 a2, Sprite* a3)
+char_type Sprite::CheckDirectionalSliceCollision_59E680(Fix16 a2, Sprite* a3)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -758,7 +758,7 @@ void Sprite::Update_4C_59F990()
 }
 
 MATCH_FUNC(0x59fa40)
-void Sprite::sub_59FA40()
+void Sprite::UpdateDimensionsFromSpriteIndex_59FA40()
 {
     if (field_4_0x4C_len)
     {
@@ -789,7 +789,7 @@ void Sprite::FreeSprite4CChildren_59FAD0()
 }
 
 STUB_FUNC(0x59FB10)
-bool Sprite::sub_59FB10(Fix16_Rect* a2)
+bool Sprite::IntersectsRectSAT_59FB10(Fix16_Rect* a2)
 {
     NOT_IMPLEMENTED;
     return false;
@@ -869,26 +869,26 @@ char_type Sprite::CheckBBoxScanlineIntersection_5A0970(Fix16 scanXMin, Fix16 sca
 }
 
 STUB_FUNC(0x5A0A70)
-char_type Sprite::sub_5A0A70(Sprite_4C* a2, Sprite** a3, u8* a4)
+char_type Sprite::GetNearestHorizontalEdgeToCoordinate_5A0A70(Sprite_4C* a2, Sprite** a3, u8* a4)
 {
     NOT_IMPLEMENTED;
     return 0;
 }
 
 STUB_FUNC(0x4F77D0)
-EXPORT bool __stdcall sub_4F77D0(Fix16* a1, Fix16* a2, Fix16* a3, Fix16* a4, Fix16* a5)
+EXPORT bool __stdcall IntersectVerticalLineWithSegment_4F77D0(Fix16* a1, Fix16* a2, Fix16* a3, Fix16* a4, Fix16* a5)
 {
     return 0;
 }
 
 WIP_FUNC(0x5A0EF0)
-char_type Sprite::sub_5A0EF0(Fix16 a2, Fix16 a3, Fix16 a4)
+char_type Sprite::HitTestVerticalLine_5A0EF0(Fix16 a2, Fix16 a3, Fix16 a4)
 {
     WIP_IMPLEMENTED;
 
     Fix16_Point* pBBox = this->field_C_sprite_4c_ptr->field_C_renderingRect;
-    if (sub_4F77D0(&a2, &a3, &a4, &pBBox[0].x, &pBBox[1].y) || sub_4F77D0(&a2, &a3, &a4, &pBBox[1].x, &pBBox[2].y) ||
-        sub_4F77D0(&a2, &a3, &a4, &pBBox[2].x, &pBBox[3].y) || sub_4F77D0(&a2, &a3, &a4, &pBBox[3].x, &pBBox[0].y))
+    if (IntersectVerticalLineWithSegment_4F77D0(&a2, &a3, &a4, &pBBox[0].x, &pBBox[1].y) || IntersectVerticalLineWithSegment_4F77D0(&a2, &a3, &a4, &pBBox[1].x, &pBBox[2].y) ||
+        IntersectVerticalLineWithSegment_4F77D0(&a2, &a3, &a4, &pBBox[2].x, &pBBox[3].y) || IntersectVerticalLineWithSegment_4F77D0(&a2, &a3, &a4, &pBBox[3].x, &pBBox[0].y))
     {
         gRozza_679188.field_C_mapy_t2 = a2;
         gRozza_679188.field_0_type = 2;
@@ -901,14 +901,14 @@ char_type Sprite::sub_5A0EF0(Fix16 a2, Fix16 a3, Fix16 a4)
 }
 
 STUB_FUNC(0x5a1030)
-char_type Sprite::sub_5A1030(Sprite* a2, Sprite** a3, u8* a4)
+char_type Sprite::GetNearestVerticalEdgeToCoordinate_5A1030(Sprite* a2, Sprite** a3, u8* a4)
 {
     NOT_IMPLEMENTED;
     return 0;
 }
 
 STUB_FUNC(0x5a1490)
-bool Sprite::sub_5A1490(s32 a2, s32 a3)
+bool Sprite::PointInsideRotatedBounds_5A1490(s32 a2, s32 a3)
 {
     NOT_IMPLEMENTED;
     return 0;

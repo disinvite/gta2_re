@@ -638,7 +638,7 @@ void Object_2C::UpdateAninmation_5257D0()
         if (pSprite->field_22_sprite_id != target_id)
         {
             pSprite->field_22_sprite_id = target_id;
-            pSprite->sub_59FA40();
+            pSprite->UpdateDimensionsFromSpriteIndex_59FA40();
         }
 
         if (!field_C_pAny.o8->field_4_timer && !field_C_pAny.o8->field_7_anim_speed_counter)
@@ -1950,7 +1950,7 @@ void Object_2C::sub_5290C0(u8 id_base)
     if (pSprite->field_22_sprite_id != new_id)
     {
         pSprite->field_22_sprite_id = new_id;
-        pSprite->sub_59FA40();
+        pSprite->UpdateDimensionsFromSpriteIndex_59FA40();
     }
 }
 

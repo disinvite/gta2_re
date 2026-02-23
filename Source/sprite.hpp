@@ -105,9 +105,9 @@ class Sprite
     EXPORT void sub_59E300();
     EXPORT void sub_59E320(char_type a2);
     EXPORT bool ShrinkSprite_59E390(Fix16 a2, Fix16 a3, s32 a4);
-    EXPORT s32 sub_59E4C0(Fix16 a2, s32 a3);
+    EXPORT s32 ApplyScaleToDimensions_59E4C0(Fix16 a2, s32 a3);
     EXPORT char_type CollisionCheck_59E590(Sprite* a2);
-    EXPORT char_type sub_59E680(Fix16 a2, Sprite* a3);
+    EXPORT char_type CheckDirectionalSliceCollision_59E680(Fix16 a2, Sprite* a3);
     EXPORT void ResetZCollisionAndDebugBoxes_59E7B0();
     EXPORT Sprite* QuerySpriteCollision_59E7D0(s32 a2);
     EXPORT char_type IsThreatToSearchingPed_59E830();
@@ -124,17 +124,17 @@ class Sprite
     EXPORT void Draw_59EFF0();
     EXPORT void AllocInternal_59F950(Fix16 width, Fix16 height, Fix16 a4);
     EXPORT void Update_4C_59F990();
-    EXPORT void sub_59FA40();
+    EXPORT void UpdateDimensionsFromSpriteIndex_59FA40();
     EXPORT void FreeSprite4CChildren_59FAD0();
-    EXPORT bool sub_59FB10(Fix16_Rect* a2);
+    EXPORT bool IntersectsRectSAT_59FB10(Fix16_Rect* a2);
     EXPORT char_type FindOverlappingBoundingBoxCorners_5A0150(s32 a2, u8* a3, u8* a4);
     EXPORT char_type CollisionCheck_5A0320(Fix16* pXY1, Fix16* pXY2, u8* pCollisionIdx1, u8* pCollisionIdx2);
     EXPORT bool RotatedRectCollisionSAT_5A0380(Sprite* a2);
     EXPORT char_type CheckBBoxScanlineIntersection_5A0970(Fix16 scanXMin, Fix16 scanXMax, Fix16 scanY);
-    EXPORT char_type sub_5A0A70(Sprite_4C* a2, Sprite** a3, u8* a4);
-    EXPORT char_type sub_5A0EF0(Fix16 a2, Fix16 a3, Fix16 a4);
-    EXPORT char_type sub_5A1030(Sprite* a2, Sprite** a3, u8* a4);
-    EXPORT bool sub_5A1490(s32 a2, s32 a3);
+    EXPORT char_type GetNearestHorizontalEdgeToCoordinate_5A0A70(Sprite_4C* a2, Sprite** a3, u8* a4);
+    EXPORT char_type HitTestVerticalLine_5A0EF0(Fix16 a2, Fix16 a3, Fix16 a4);
+    EXPORT char_type GetNearestVerticalEdgeToCoordinate_5A1030(Sprite* a2, Sprite** a3, u8* a4);
+    EXPORT bool PointInsideRotatedBounds_5A1490(s32 a2, s32 a3);
     EXPORT char_type sub_5A19C0();
     EXPORT char sub_5A1A60();
     EXPORT void ResolveZOrder_5A1B30(Sprite* pOther);
@@ -311,7 +311,7 @@ class Sprite
         if (field_22_sprite_id != new_id)
         {
             field_22_sprite_id = new_id;
-            sub_59FA40();
+            UpdateDimensionsFromSpriteIndex_59FA40();
         }
     }
 

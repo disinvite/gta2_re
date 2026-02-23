@@ -4543,7 +4543,7 @@ void miss2_0x11C::sub_50F270() // WARP_FROM_CAR_TO_POINT
 
     if (pPed != NULL)
     {
-        pPed->sub_470200(pCmd->field_C_pos.field_0_x, pCmd->field_C_pos.field_4_y, pCmd->field_C_pos.field_8_z);
+        pPed->StartPedWalking_470200(pCmd->field_C_pos.field_0_x, pCmd->field_C_pos.field_4_y, pCmd->field_C_pos.field_8_z);
 
         Ang16 rotation = word_6F8044 * pCmd->field_A_rotation;
         rotation.Normalize();
