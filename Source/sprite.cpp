@@ -262,58 +262,48 @@ bool Sprite::ShrinkSprite_59E390(Fix16 xoff, Fix16 yoff, s32 bUnknown)
 
     Update_4C_59F990();
 
-    Fix16 old_w = field_4_0x4C_len->field_0_width;
-    Fix16 old_h = field_4_0x4C_len->field_4_height;
+    Fix16 w_val;
+    Fix16 h_val;
+    Fix16 f8_val;
+    field_4_0x4C_len->GetXYZ_4BA0F0(&w_val, &h_val, &f8_val);
 
-    field_4_0x4C_len->field_0_width -= xoff;
-    if (field_4_0x4C_len->field_0_width <= gFix16_7035C0)
-    {
-        field_4_0x4C_len->field_0_width = gFix16_7035C0;
-    }
-
-    field_4_0x4C_len->field_48_bBoxUpToDate = 0;
-
-    bool bWEq = field_4_0x4C_len->field_0_width == gFix16_7035C0;
-
-    field_4_0x4C_len->field_4_height -= yoff;
-    if (field_4_0x4C_len->field_4_height <= gFix16_7035C0)
-    {
-        field_4_0x4C_len->field_4_height = gFix16_7035C0;
-    }
-
-    Fix16 old_h_2 = field_4_0x4C_len->field_4_height;
-    field_4_0x4C_len->field_48_bBoxUpToDate = 0;
-
-    bool ret = old_h_2 == gFix16_7035C0 || bWEq;
+    bool bHOrWLimit = field_4_0x4C_len->ReduceHeightBy_4BA160(yoff) || field_4_0x4C_len->ReduceWidthBy_4BA120(xoff);
 
     if (bUnknown == 1)
     {
-        Fix16 old_h_3 = field_4_0x4C_len->field_4_height;
+        Fix16 w_val1;
+        Fix16 h_val1;
+        Fix16 f8_val1;
+        field_C_sprite_4c_ptr->GetXYZ_4BA0F0(&w_val1, &h_val1, &f8_val1);
+
+        Fix16 w_val2;
+        Fix16 h_val2;
+        Fix16 f8_val2;        
+        field_4_0x4C_len->GetXYZ_4BA0F0(&w_val2, &h_val2, &f8_val2);
 
         Fix16 new_w;
-        if (old_w == gFix16_7035C0)
+        if (w_val != gFix16_7035C0)
+        {
+            new_w = (w_val1 / w_val) * w_val2;
+        }
+        else
         {
             new_w = gFix16_7035C0;
         }
-        else
-        {
-            new_w = ((field_4_0x4C_len->field_0_width * field_C_sprite_4c_ptr->field_0_width) / old_w);
-        }
 
         Fix16 new_h;
-        if (old_h == gFix16_7035C0)
+        if (h_val != gFix16_7035C0)
         {
-            new_h = gFix16_7035C0;
+            new_h = ((h_val1 / h_val) * h_val2);
         }
         else
         {
-            new_h = ((old_h_3 * field_C_sprite_4c_ptr->field_4_height) / old_h);
-            ret = old_h_2 == gFix16_7035C0 || bWEq;
+            new_h = gFix16_7035C0;
         }
 
         field_C_sprite_4c_ptr->set_wh_4BA030(new_w, new_h);
     }
-    return ret;
+    return bHOrWLimit;
 }
 
 STUB_FUNC(0x59e4c0)

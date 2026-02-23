@@ -70,6 +70,35 @@ class Sprite_4C
         }
     }
 
+    void GetXYZ_4BA0F0(Fix16* pOut, Fix16* pOutH, Fix16* pOutF8)
+    {
+        *pOut = this->field_0_width;
+        *pOutH = this->field_4_height;
+        *pOutF8 = this->field_8;
+    }
+
+    bool ReduceWidthBy_4BA120(Fix16 a2)
+    {
+        field_0_width -= a2;
+        if (field_0_width <= gFix16_7035C0)
+        {
+            field_0_width = gFix16_7035C0;
+        }
+        field_48_bBoxUpToDate = 0;
+        return field_0_width == gFix16_7035C0;
+    }
+
+    bool ReduceHeightBy_4BA160(Fix16 a2)
+    {
+        field_4_height -= a2;
+        if (field_4_height <= gFix16_7035C0)
+        {
+            field_4_height = gFix16_7035C0;
+        }
+        field_48_bBoxUpToDate = 0;
+        return field_4_height == gFix16_7035C0;
+    }
+
     EXPORT void SetCurrentRect_5A4D90();
     EXPORT void UpdateRotatedBoundingBox_5A3550(Fix16 x, Fix16 y, Fix16 z, Ang16 ang);
 
