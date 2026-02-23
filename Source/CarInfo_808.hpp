@@ -17,7 +17,7 @@ enum
 
 struct UnknownList
 {
-    Fix16 sub_41FE70(s8& var)
+    Fix16 sub_41FE70(const s8& var)
     {
         if (var < 0)
         {
@@ -26,7 +26,9 @@ struct UnknownList
         return list[var];
     }
 
-    EXPORT Fix16 sub_440860(s8& var);
+    // This one won't match with a ref argument even though its the
+    // same as the above function :')
+    EXPORT Fix16 sub_440860(s8 var);
 
     Fix16 list[256];
 };

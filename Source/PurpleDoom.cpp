@@ -709,7 +709,7 @@ char_type PurpleDoom::CheckRowForRectCollisions_4785D0(u32 y_pos, Fix16_Rect* pR
                 Fix16_Rect* pBBox = &pObj->field_0_sprt->field_C_sprite_4c_ptr->field_30_boundingBox;
                 if (pRect->AABB_Intersects_41E2F0(pBBox) &&
                     (!bDoCollisionCheck_679006 || pObj->field_0_sprt->field_C_sprite_4c_ptr->IsZeroWidth_41E390() ||
-                     pObj->field_0_sprt->field_0.jIsAxisAligned_41E3C0() || pObj->field_0_sprt->sub_59FB10(pRect) ||
+                     pObj->field_0_sprt->field_0.jIsAxisAligned_41E3C0() || pObj->field_0_sprt->IntersectsRectSAT_59FB10(pRect) ||
                      pRect->IntersectsSpriteRenderingRect_59DDF0(pObj->field_0_sprt)))
                 {
                     if (gPurpleDoom_list_679214)
