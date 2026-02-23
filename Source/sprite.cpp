@@ -254,15 +254,60 @@ void Sprite::sub_59E320(char_type a2)
     }
 }
 
-STUB_FUNC(0x59e390) // https://decomp.me/scratch/dijmx
-bool Sprite::ShrinkSprite_59E390(Fix16 a2, Fix16 a3, s32 a4)
+// https://decomp.me/scratch/dijmx
+WIP_FUNC(0x59e390)
+bool Sprite::ShrinkSprite_59E390(Fix16 xoff, Fix16 yoff, s32 bUnknown)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+
+    Update_4C_59F990();
+
+    Fix16 w_val;
+    Fix16 h_val;
+    Fix16 f8_val;
+    field_4_0x4C_len->GetXYZ_4BA0F0(&w_val, &h_val, &f8_val);
+
+    bool bHOrWLimit = field_4_0x4C_len->ReduceHeightBy_4BA160(yoff) || field_4_0x4C_len->ReduceWidthBy_4BA120(xoff);
+
+    if (bUnknown == 1)
+    {
+        Fix16 w_val1;
+        Fix16 h_val1;
+        Fix16 f8_val1;
+        field_C_sprite_4c_ptr->GetXYZ_4BA0F0(&w_val1, &h_val1, &f8_val1);
+
+        Fix16 w_val2;
+        Fix16 h_val2;
+        Fix16 f8_val2;        
+        field_4_0x4C_len->GetXYZ_4BA0F0(&w_val2, &h_val2, &f8_val2);
+
+        Fix16 new_w;
+        if (w_val != gFix16_7035C0)
+        {
+            new_w = (w_val1 / w_val) * w_val2;
+        }
+        else
+        {
+            new_w = gFix16_7035C0;
+        }
+
+        Fix16 new_h;
+        if (h_val != gFix16_7035C0)
+        {
+            new_h = ((h_val1 / h_val) * h_val2);
+        }
+        else
+        {
+            new_h = gFix16_7035C0;
+        }
+
+        field_C_sprite_4c_ptr->set_wh_4BA030(new_w, new_h);
+    }
+    return bHOrWLimit;
 }
 
 STUB_FUNC(0x59e4c0)
-s32 Sprite::sub_59E4C0(Fix16 a2, s32 a3)
+s32 Sprite::ApplyScaleToDimensions_59E4C0(Fix16 a2, s32 a3)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -292,7 +337,7 @@ char_type Sprite::CollisionCheck_59E590(Sprite* pOther)
 }
 
 STUB_FUNC(0x59E680)
-char_type Sprite::sub_59E680(Fix16 a2, Sprite* a3)
+char_type Sprite::CheckDirectionalSliceCollision_59E680(Fix16 a2, Sprite* a3)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -758,7 +803,7 @@ void Sprite::Update_4C_59F990()
 }
 
 MATCH_FUNC(0x59fa40)
-void Sprite::sub_59FA40()
+void Sprite::UpdateDimensionsFromSpriteIndex_59FA40()
 {
     if (field_4_0x4C_len)
     {
@@ -789,7 +834,7 @@ void Sprite::FreeSprite4CChildren_59FAD0()
 }
 
 STUB_FUNC(0x59FB10)
-bool Sprite::sub_59FB10(Fix16_Rect* a2)
+bool Sprite::IntersectsRectSAT_59FB10(Fix16_Rect* a2)
 {
     NOT_IMPLEMENTED;
     return false;
@@ -869,26 +914,28 @@ char_type Sprite::CheckBBoxScanlineIntersection_5A0970(Fix16 scanXMin, Fix16 sca
 }
 
 STUB_FUNC(0x5A0A70)
-char_type Sprite::sub_5A0A70(Sprite_4C* a2, Sprite** a3, u8* a4)
+char_type Sprite::GetNearestHorizontalEdgeToCoordinate_5A0A70(Sprite_4C* a2, Sprite** a3, u8* a4)
 {
     NOT_IMPLEMENTED;
     return 0;
 }
 
 STUB_FUNC(0x4F77D0)
-EXPORT bool __stdcall sub_4F77D0(Fix16* a1, Fix16* a2, Fix16* a3, Fix16* a4, Fix16* a5)
+EXPORT bool __stdcall IntersectVerticalLineWithSegment_4F77D0(Fix16* a1, Fix16* a2, Fix16* a3, Fix16* a4, Fix16* a5)
 {
     return 0;
 }
 
 WIP_FUNC(0x5A0EF0)
-char_type Sprite::sub_5A0EF0(Fix16 a2, Fix16 a3, Fix16 a4)
+char_type Sprite::HitTestVerticalLine_5A0EF0(Fix16 a2, Fix16 a3, Fix16 a4)
 {
     WIP_IMPLEMENTED;
 
     Fix16_Point* pBBox = this->field_C_sprite_4c_ptr->field_C_renderingRect;
-    if (sub_4F77D0(&a2, &a3, &a4, &pBBox[0].x, &pBBox[1].y) || sub_4F77D0(&a2, &a3, &a4, &pBBox[1].x, &pBBox[2].y) ||
-        sub_4F77D0(&a2, &a3, &a4, &pBBox[2].x, &pBBox[3].y) || sub_4F77D0(&a2, &a3, &a4, &pBBox[3].x, &pBBox[0].y))
+    if (IntersectVerticalLineWithSegment_4F77D0(&a2, &a3, &a4, &pBBox[0].x, &pBBox[1].y) ||
+        IntersectVerticalLineWithSegment_4F77D0(&a2, &a3, &a4, &pBBox[1].x, &pBBox[2].y) ||
+        IntersectVerticalLineWithSegment_4F77D0(&a2, &a3, &a4, &pBBox[2].x, &pBBox[3].y) ||
+        IntersectVerticalLineWithSegment_4F77D0(&a2, &a3, &a4, &pBBox[3].x, &pBBox[0].y))
     {
         gRozza_679188.field_C_mapy_t2 = a2;
         gRozza_679188.field_0_type = 2;
@@ -901,14 +948,14 @@ char_type Sprite::sub_5A0EF0(Fix16 a2, Fix16 a3, Fix16 a4)
 }
 
 STUB_FUNC(0x5a1030)
-char_type Sprite::sub_5A1030(Sprite* a2, Sprite** a3, u8* a4)
+char_type Sprite::GetNearestVerticalEdgeToCoordinate_5A1030(Sprite* a2, Sprite** a3, u8* a4)
 {
     NOT_IMPLEMENTED;
     return 0;
 }
 
 STUB_FUNC(0x5a1490)
-bool Sprite::sub_5A1490(s32 a2, s32 a3)
+bool Sprite::PointInsideRotatedBounds_5A1490(s32 a2, s32 a3)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -1053,7 +1100,7 @@ char_type Sprite::IsTouchingSlopeBlock_5A1EB0()
 
     UpdateCollisionBoundsIfNeeded_59E9C0();
     Fix16_Point* pBBox = this->field_C_sprite_4c_ptr->field_C_renderingRect;
-    
+
     gmp_block_info* pBlock1 = gMap_0x370_6F6268->get_block_4DFE10(pBBox[0].x.ToInt(), pBBox[0].y.ToInt(), zpos_int);
     if (pBlock1)
     {
@@ -1064,7 +1111,7 @@ char_type Sprite::IsTouchingSlopeBlock_5A1EB0()
         }
     }
 
-    gmp_block_info* pBlock2 = gMap_0x370_6F6268->get_block_4DFE10( pBBox[1].x.ToInt(), pBBox[1].y.ToInt(), zpos_int);
+    gmp_block_info* pBlock2 = gMap_0x370_6F6268->get_block_4DFE10(pBBox[1].x.ToInt(), pBBox[1].y.ToInt(), zpos_int);
     if (pBlock2)
     {
         u8 slope_mask2 = pBlock2->field_B_slope_type;

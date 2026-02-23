@@ -677,7 +677,7 @@ void Phi_74::ApplyDefinitionToSprite_5331A0(Sprite* pSprite)
     if (pSprite->field_22_sprite_id != f1E)
     {
         pSprite->field_22_sprite_id = f1E;
-        pSprite->sub_59FA40();
+        pSprite->UpdateDimensionsFromSpriteIndex_59FA40();
     }
 
     pSprite->field_28_num = this->field_2C;

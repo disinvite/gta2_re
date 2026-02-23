@@ -882,7 +882,7 @@ Car_BC* Car_6C::SpawnCarAt_446230(Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rota
 
     if (maybe_w_scale != dword_6777D0)
     {
-        pCar->field_50_car_sprite->sub_59E4C0(maybe_w_scale, 1);
+        pCar->field_50_car_sprite->ApplyScaleToDimensions_59E4C0(maybe_w_scale, 1);
     }
 
     gPurpleDoom_1_679208->AddToRegionBuckets_477B20(pCar->field_50_car_sprite);
@@ -1905,7 +1905,7 @@ char_type Car_BC::CanCarCollideWithSprite_43AAF0(Sprite* pSprite)
     if ((gGtx_0x106C_703DD4->get_car_info_5AA3B0(this->field_84_car_info_idx)->info_flags & 8) == 8 && !cBC->field_64_pTrailer &&
         (gGtx_0x106C_703DD4->get_car_info_5AA3B0(cBC->field_84_car_info_idx)->info_flags & 0x10) == 0x10)
     {
-        return field_50_car_sprite->sub_59E680(k_dword_6778C8, pSprite);
+        return field_50_car_sprite->CheckDirectionalSliceCollision_59E680(k_dword_6778C8, pSprite);
     }
 
     if (this->field_64_pTrailer || (gGtx_0x106C_703DD4->get_car_info_5AA3B0(this->field_84_car_info_idx)->info_flags & 0x10) != 0x10 ||
@@ -1914,7 +1914,7 @@ char_type Car_BC::CanCarCollideWithSprite_43AAF0(Sprite* pSprite)
         return 1;
     }
 
-    bUnknown = pSprite->sub_59E680(k_dword_6778C8, this->field_50_car_sprite);
+    bUnknown = pSprite->CheckDirectionalSliceCollision_59E680(k_dword_6778C8, this->field_50_car_sprite);
     if (!sub_43A230() && this->field_74_damage != 32001)
     {
         f_88 = this->field_88;
