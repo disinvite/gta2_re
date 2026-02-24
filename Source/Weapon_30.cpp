@@ -517,11 +517,11 @@ void Weapon_30::rocket_5E3850()
             if (field_24_pPed->IsField238_45EDE0(2))
             {
                 pBullet = spawn_bullet_5DCF60(128,
-                                         field_24_pPed->get_cam_x(),
-                                         field_24_pPed->get_cam_y(),
-                                         field_24_pPed->get_cam_z(),
-                                         field_24_pPed->Get_F12E_4CCA90(),
-                                         field_24_pPed->sub_45B520());
+                                              field_24_pPed->get_cam_x(),
+                                              field_24_pPed->get_cam_y(),
+                                              field_24_pPed->get_cam_z(),
+                                              field_24_pPed->Get_F12E_4CCA90(),
+                                              field_24_pPed->sub_45B520());
             }
             else
             {
@@ -539,11 +539,11 @@ void Weapon_30::rocket_5E3850()
                 }
 
                 pBullet = spawn_bullet_5DCF60(128,
-                                         field_24_pPed->get_cam_x(),
-                                         field_24_pPed->get_cam_y(),
-                                         field_24_pPed->get_cam_z(),
-                                         field_24_pPed->Get_F12E_4CCA90(),
-                                         field_24_pPed->sub_45B520());
+                                              field_24_pPed->get_cam_x(),
+                                              field_24_pPed->get_cam_y(),
+                                              field_24_pPed->get_cam_z(),
+                                              field_24_pPed->Get_F12E_4CCA90(),
+                                              field_24_pPed->sub_45B520());
             }
 
             // People get scared when someone starts firing off rockets
@@ -609,26 +609,20 @@ char_type Weapon_30::IsExplosiveWeapon_5E3BD0()
     return result;
 }
 
-WIP_FUNC(0x5E3F90)
+// 9.6f 0x4CD8C0
+MATCH_FUNC(0x5E3F90)
 void Weapon_30::GetSoundPos_5E3F90(Fix16* pX, Fix16* pY, Fix16* pZ)
 {
-    WIP_IMPLEMENTED;
-
-    Ped* pPed = field_24_pPed;
-    if (pPed)
+    if (field_24_pPed)
     {
-        *pX = pPed->field_1AC_cam.x;
-        *pY = pPed->field_1AC_cam.y;
-        *pZ = pPed->field_1AC_cam.z;
+        *pX = field_24_pPed->get_cam_x();
+        *pY = field_24_pPed->get_cam_y();
+        *pZ = field_24_pPed->get_cam_z();
     }
-    else
+    else if (field_14_car)
     {
-        Car_BC* pCar = field_14_car;
-        if (pCar)
-        {
-            *pX = pCar->field_50_car_sprite->field_14_xy.x;
-            *pY = pCar->field_50_car_sprite->field_14_xy.y;
-            *pZ = pCar->field_50_car_sprite->field_1C_zpos;
-        }
+        *pX = field_14_car->field_50_car_sprite->GetXPos();
+        *pY = field_14_car->field_50_car_sprite->GetYPos();
+        *pZ = field_14_car->field_50_car_sprite->GetZPos();
     }
 }
