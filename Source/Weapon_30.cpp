@@ -1,5 +1,6 @@
 #include "Weapon_30.hpp"
 #include "Object_3C.hpp"
+#include "Object_5C.hpp"
 #include "Particle_8.hpp"
 #include "Ped.hpp"
 #include "Player.hpp"
@@ -10,11 +11,10 @@
 #include "enums.hpp"
 #include "root_sound.hpp"
 #include "sprite.hpp"
-#include "Object_5C.hpp"
 
 DEFINE_GLOBAL_INIT(Fix16, dword_706CF4, Fix16(0x1000, 0), 0x706CF4);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_706EC0, Fix16(0x8000, 0), 0x706EC0);
-DEFINE_GLOBAL(u8, bAllowFlameSegment_706D60, 0x706D60);
+DEFINE_GLOBAL(bool, bAllowFlameSegment_706D60, 0x706D60);
 
 // TODO: move
 EXTERN_GLOBAL(Shooey_CC*, gShooey_CC_67A4B8);
@@ -180,11 +180,10 @@ Object_2C* Weapon_30::spawn_bullet_5DCF60(s32 bullet_type, Fix16 xpos, Fix16 ypo
     p5CSprite->set_ang_lazy_420690(pNewBullet->field_4->field_0);
 
     p5CSprite->AllocInternal_59F950(pNewBullet->field_8->field_0, dword_706CF4, pNewBullet->field_8->field_8);
-    p5CSprite->field_30_sprite_type_enum = pNewBullet->field_4->field_30_sprite_type_enum;
-    p5CSprite->sub_59E960();
-    p5CSprite->field_8_pSprite = pNewBullet->field_4->field_8_pSprite;
+    p5CSprite->SetType_4206F0(pNewBullet->field_4->get_type_416B40());
+    p5CSprite->SetObj2C_482A30(pNewBullet->field_4->field_8_object_2C_ptr);
 
-    pNewBullet->SetDamageOwner_529080(field_24_pPed->field_267_varrok_idx);
+    pNewBullet->SetDamageOwner_529080(field_24_pPed->get_varrok_idx_420B50());
 
     if (bullet_type == 254 || bullet_type == 265)
     {
@@ -195,7 +194,7 @@ Object_2C* Weapon_30::spawn_bullet_5DCF60(s32 bullet_type, Fix16 xpos, Fix16 ypo
     {
         pNewBullet->sub_5290A0();
         bAllowFlameSegment_706D60 = 0;
-        return 0;
+        return NULL;
     }
     else
     {

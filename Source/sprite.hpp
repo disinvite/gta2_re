@@ -330,6 +330,11 @@ class Sprite
         sub_59E960(); // Update field_28
     }
 
+    void SetObj2C_482A30(Object_2C* a2)
+    {
+        this->field_8_object_2C_ptr = a2;
+    }
+
     void Set_Car_420710(Car_BC* pCar)
     {
         this->field_8_car_bc_ptr = pCar;
