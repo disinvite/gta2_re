@@ -25,27 +25,27 @@ class Weapon_30
     EXPORT bool is_max_capacity_5DCEA0();
     EXPORT bool sub_5DCEF0();
     EXPORT void TickReloadSpeed_5DCF40();
-    EXPORT Object_2C* spawn_bullet_5DCF60(s32 bullet_type, Fix16 x, Fix16 y, Fix16 z, Ang16 rot, const Fix16_Point* pPoint);
+    EXPORT Object_2C* spawn_bullet_5DCF60(s32 bullet_type, Fix16 x, Fix16 y, Fix16 z, Ang16 rot, const Fix16_Point& pPoint);
     EXPORT void flamethrower_5DD0F0();
-    EXPORT u8 shotgun_5DD290();
+    EXPORT void shotgun_5DD290();
     EXPORT void pistol_5DD860();
-    EXPORT u8 dual_pistol_5DDA70();
-    EXPORT u8 smg_5DDD20();
+    EXPORT void dual_pistol_5DDA70();
+    EXPORT void smg_5DDD20();
     EXPORT void throwable_5DDFC0(s32 a2, s32 a3, s32 a4);
     EXPORT s32 sub_5DE4F0();
     EXPORT char_type sub_5DFB60(char_type a2, Sprite* a3, Ang16 a4);
     EXPORT void shocker_5E06B0();
-    EXPORT char_type electro_batton_5E0740();
+    EXPORT void electro_batton_5E0740();
     EXPORT void car_bomb_5E0AB0(char_type a2);
-    EXPORT char_type fire_truck_flamethrower_5E0B10();
-    EXPORT s32* fire_truck_gun_5E0E70();
-    EXPORT u8 tank_main_gun_5E10E0();
-    EXPORT u8 army_gun_jeep_5E13E0();
-    EXPORT char_type oil_stain_5E1DC0();
-    EXPORT char_type car_mine_5E2550();
-    EXPORT u8 car_smg_5E2940();
+    EXPORT void fire_truck_flamethrower_5E0B10();
+    EXPORT void fire_truck_gun_5E0E70();
+    EXPORT void tank_main_gun_5E10E0();
+    EXPORT void army_gun_jeep_5E13E0();
+    EXPORT void oil_stain_5E1DC0();
+    EXPORT void car_mine_5E2550();
+    EXPORT void car_smg_5E2940();
     EXPORT char_type sub_5E33C0();
-    EXPORT char_type sub_5E34B0();
+    EXPORT void ChuckThrowable_5E34B0();
     EXPORT void pull_trigger_5E3670();
     EXPORT void rocket_5E3850();
     EXPORT char_type IsExplosiveWeapon_5E3BD0();
@@ -70,7 +70,7 @@ class Weapon_30
         }
     }
 
-    void decrement_ammo_4CCA30()
+    __forceinline void decrement_ammo_4CCA30()
     {
         s32 new_ammo = field_0_ammo - 10;
         if (!is_infinite_ammo_4A4FA0())

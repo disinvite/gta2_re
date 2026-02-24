@@ -273,9 +273,9 @@ class Phi_74
     EXPORT Phi_74();
 
 
-    Fix16 field_0;
-    Fix16 field_4;
-    Fix16 field_8;
+    Fix16 field_0; // w ?
+    Fix16 field_4; // h ?
+    Fix16 field_8; // d ?
     Fix16 field_C;
     Fix16 field_10;
     Fix16 field_14_friction;

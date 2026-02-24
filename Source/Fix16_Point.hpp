@@ -74,11 +74,11 @@ struct Fix16_Point_POD
         y = ((-x_old) * sin) + (y * cos);
     }
 
-    void FromPolar_41E210(Fix16 radius, Ang16 angle)
+    void FromPolar_41E210(const Fix16& radius, const Ang16& angle)
     {
 
-        x = radius * Ang16::cosine_40F520(angle);
-        y = radius * Ang16::sine_40F500(angle);
+        x = radius * Ang16::sine_40F500(angle);
+        y = radius * Ang16::cosine_40F520(angle);
     }
 
     // 9.6f 0x40F5C0

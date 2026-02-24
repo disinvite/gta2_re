@@ -554,6 +554,11 @@ class Ped
         return field_258_objective == objectives_enum::enter_car_as_driver_35 || field_25C_car_state == 35;
     }
 
+    Ang16 Get_F12E_4CCA90()
+    {
+        return field_12E;
+    }
+
     Marz_3 field_0_patrol_points[100];
     Ang16 field_12C;
     Ang16 field_12E;

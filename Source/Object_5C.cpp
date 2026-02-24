@@ -310,7 +310,7 @@ char_type Object_2C::SelectCollisionSprite_522460(Sprite* a2)
 }
 
 STUB_FUNC(0x5224e0)
-s16* Object_2C::SetMovementVector_5224E0(Fix16_Point* a2)
+s16* Object_2C::SetMovementVector_5224E0(const Fix16_Point* a2)
 {
     NOT_IMPLEMENTED;
     return 0;

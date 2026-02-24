@@ -96,6 +96,18 @@ static inline void __fastcall SetUV_4B9BC0(f32& u, f32& v)
     gTileVerts_7036D0[3].v = v;
 }
 
+WIP_FUNC(0x5A5AA0)
+EXPORT Fix16* __stdcall ProjectOntoAxis_5A5AA0(Fix16* xpos1, Fix16* ypos1, Ang16* v1, Fix16* xpos2, Fix16* ypos2, Fix16* v2, Fix16* v3)
+{
+    WIP_IMPLEMENTED;
+    
+    Fix16* result;
+    *v2 = (Ang16::sine_40F500(*v1) * (*ypos1 - *ypos2)) + (Ang16::cosine_40F520(*v1) * (*xpos1 - *xpos2));
+    result = v3;
+    *v3 = (Ang16::sine_40F500(*v1) * (*xpos2 - *xpos1)) + (Ang16::cosine_40F520(*v1) * (*ypos1 - *ypos2));
+    return result;
+}
+
 MATCH_FUNC(0x562450)
 Fix16_Point Sprite::GetBoundingBoxCorner_562450(s32 idx)
 {
@@ -278,7 +290,7 @@ bool Sprite::ShrinkSprite_59E390(Fix16 xoff, Fix16 yoff, s32 bUnknown)
 
         Fix16 w_val2;
         Fix16 h_val2;
-        Fix16 f8_val2;        
+        Fix16 f8_val2;
         field_4_0x4C_len->GetXYZ_4BA0F0(&w_val2, &h_val2, &f8_val2);
 
         Fix16 new_w;
