@@ -396,19 +396,15 @@ void Weapon_30::car_mine_5E2550()
 
     Sprite* Sprite_440840 = field_14_car->GetSprite_440840();
 
-    Fix16 ypos = -(dword_706FF4 + ((dword_706FEC + Sprite_440840->field_C_sprite_4c_ptr->field_4_height)) / k_dword_706EC0);
+    Fix16_Point p;
+    p.y = -(dword_706FF4 + ((dword_706FEC + Sprite_440840->field_C_sprite_4c_ptr->field_4_height)) / k_dword_706EC0);
+    p.x = dword_706EB8;
+    
+    p.RotateByAngle_40F6B0(Sprite_440840->field_0);
 
-    Fix16 vSin = gSin_table_667A80[Sprite_440840->field_0.rValue];
-    Fix16 vCos = gCos_table_669260[Sprite_440840->field_0.rValue];
+    Fix16_Point x_y_443580 = Sprite_440840->get_x_y_443580() + p;
 
-    Fix16 xpos = ((dword_706EB8 * vCos) + (ypos * vSin));
-    ypos = ((-dword_706EB8 * vSin) + (ypos * vCos));
-
-    Fix16_Point x_y_443580 = Sprite_440840->get_x_y_443580();
-    Fix16 newX = x_y_443580.x + xpos;
-    Fix16 newY = x_y_443580.y + ypos;
     Fix16 v13 = Sprite_440840->field_C_sprite_4c_ptr->field_8;
-
     Fix16 v14 = Sprite_440840->field_1C_zpos + v13 / 2;    
     if (v14 >= k_dword_706EDC)
     {
@@ -416,9 +412,9 @@ void Weapon_30::car_mine_5E2550()
     }
 
     Fix16 newZ;
-    if (gMap_0x370_6F6268->CanPlaceOilOrMine_4E5480(newX, newY, Sprite_440840->field_1C_zpos - v13 / 2, v14, &newZ))
+    if (gMap_0x370_6F6268->CanPlaceOilOrMine_4E5480(x_y_443580.x, x_y_443580.y, Sprite_440840->field_1C_zpos - v13 / 2, v14, &newZ))
     {
-        Object_2C* pMine = gObject_5C_6F8F84->NewPhysicsObj_5299B0(10, newX, newY, newZ, Sprite_440840->field_0);
+        Object_2C* pMine = gObject_5C_6F8F84->NewPhysicsObj_5299B0(10, x_y_443580.x, x_y_443580.y, newZ, Sprite_440840->field_0);
         pMine->SetDamageOwner_529080(field_24_pPed->field_267_varrok_idx);
 
         decrement_ammo_4CCA30(); // NOTE: Didn't get inlined without __forceinline here, wtf??
