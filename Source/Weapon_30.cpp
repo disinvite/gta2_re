@@ -11,10 +11,18 @@
 #include "enums.hpp"
 #include "root_sound.hpp"
 #include "sprite.hpp"
+#include "map_0x370.hpp"
 
 DEFINE_GLOBAL_INIT(Fix16, dword_706CF4, Fix16(0x1000, 0), 0x706CF4);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_706EC0, Fix16(0x8000, 0), 0x706EC0);
 DEFINE_GLOBAL(bool, bAllowFlameSegment_706D60, 0x706D60);
+
+// TODO: Check these for inits
+DEFINE_GLOBAL(Fix16, dword_706FF4, 0x706FF4);
+DEFINE_GLOBAL(Fix16, dword_706FEC, 0x706FEC);
+DEFINE_GLOBAL(Fix16, dword_706EB8, 0x706EB8);
+DEFINE_GLOBAL(Fix16, k_dword_706EDC, 0x706EDC);
+DEFINE_GLOBAL(Fix16, k_dword_706F70, 0x706F70);
 
 // TODO: move
 EXTERN_GLOBAL(Shooey_CC*, gShooey_CC_67A4B8);
@@ -379,10 +387,43 @@ void Weapon_30::oil_stain_5E1DC0()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x5e2550)
+WIP_FUNC(0x5e2550)
 void Weapon_30::car_mine_5E2550()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    field_24_pPed = field_14_car->get_driver_4118B0();
+
+    Sprite* Sprite_440840 = field_14_car->GetSprite_440840();
+
+    Fix16 ypos = -(dword_706FF4 + ((dword_706FEC + Sprite_440840->field_C_sprite_4c_ptr->field_4_height)) / k_dword_706EC0);
+
+    Fix16 vSin = gSin_table_667A80[Sprite_440840->field_0.rValue];
+    Fix16 vCos = gCos_table_669260[Sprite_440840->field_0.rValue];
+
+    Fix16 xpos = ((dword_706EB8 * vCos) + (ypos * vSin));
+    ypos = ((-dword_706EB8 * vSin) + (ypos * vCos));
+
+    Fix16_Point x_y_443580 = Sprite_440840->get_x_y_443580();
+    Fix16 newX = x_y_443580.x + xpos;
+    Fix16 newY = x_y_443580.y + ypos;
+    Fix16 v13 = Sprite_440840->field_C_sprite_4c_ptr->field_8;
+
+    Fix16 v14 = Sprite_440840->field_1C_zpos + v13 / 2;    
+    if (v14 >= k_dword_706EDC)
+    {
+        v14 = k_dword_706EDC - k_dword_706F70;
+    }
+
+    Fix16 newZ;
+    if (gMap_0x370_6F6268->CanPlaceOilOrMine_4E5480(newX, newY, Sprite_440840->field_1C_zpos - v13 / 2, v14, &newZ))
+    {
+        Object_2C* pMine = gObject_5C_6F8F84->NewPhysicsObj_5299B0(10, newX, newY, newZ, Sprite_440840->field_0);
+        pMine->SetDamageOwner_529080(field_24_pPed->field_267_varrok_idx);
+
+        decrement_ammo_4CCA30(); // NOTE: Didn't get inlined without __forceinline here, wtf??
+        set_field_2C_4CCA80(1);
+    }
 }
 
 STUB_FUNC(0x5e2940)
