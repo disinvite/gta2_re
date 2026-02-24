@@ -7854,7 +7854,7 @@ void Ped::ManageWeapon_46F390()
     }
     else if (pWeapon)
     {
-        pWeapon->sub_5E34B0();
+        pWeapon->ChuckThrowable_5E34B0();
     }
 }
 

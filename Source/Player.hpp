@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Draw.hpp"
 #include "Camera.hpp"
+#include "Draw.hpp"
 #include "Function.hpp"
 #include "ang16.hpp"
 #include "eager_benz.hpp"
@@ -22,7 +22,7 @@ class Gang_144;
 
 namespace power_up_indices
 {
-enum 
+enum
 {
     Unk_0 = 0,
     Unk_1 = 1,
@@ -42,7 +42,7 @@ enum
     Unk_15 = 15,
     Unk_16 = 16,
 };
-}
+} // namespace power_up_indices
 
 class Player
 {
@@ -80,10 +80,9 @@ class Player
 
     s32 sub_4CCAD0()
     {
-        s32 f50_or_k60 = this->field_50;
-        if (f50_or_k60 <= 0x3C)
+        if (field_50 <= 0x3C)
         {
-            return f50_or_k60;
+            return field_50;
         }
         else
         {
@@ -95,6 +94,11 @@ class Player
     inline Ped* GetPlayerPed_41D020()
     {
         return field_2C4_player_ped;
+    }
+
+    bool sub_4CCB00()
+    {
+        return this->field_50 >= 0;
     }
 
     inline void sub_4A5180()
@@ -110,7 +114,8 @@ class Player
     bool sub_4A5100()
     {
         s32 occupation;
-        if (!field_2D0 || !field_2C8_unkq || (occupation = field_2C8_unkq->get_occupation_403980(), occupation != ped_ocupation_enum::empty))
+        if (!field_2D0 || !field_2C8_unkq ||
+            (occupation = field_2C8_unkq->get_occupation_403980(), occupation != ped_ocupation_enum::empty))
         {
             return false;
         }

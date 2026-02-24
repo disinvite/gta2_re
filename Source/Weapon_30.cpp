@@ -422,11 +422,33 @@ char_type Weapon_30::sub_5E33C0()
     return result;
 }
 
-STUB_FUNC(0x5e34b0)
-char_type Weapon_30::sub_5E34B0()
+MATCH_FUNC(0x5e34b0)
+void Weapon_30::ChuckThrowable_5E34B0()
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    if (field_2_reload_speed > 0)
+    {
+        field_2_reload_speed--;
+    }
+    else
+    {
+        if (field_24_pPed)
+        {
+            if (field_24_pPed->field_15C_player)
+            {
+                if (field_1C_idx == weapon_type::molotov || field_1C_idx == weapon_type::grenade)
+                {
+                    s32 obj_type = (field_1C_idx != weapon_type::molotov ? 183 : 138);
+                    if (field_24_pPed->field_15C_player->sub_4CCB00())
+                    {
+                        s32 v1 = field_24_pPed->field_15C_player->sub_4CCAD0();
+                        s32 v2 = field_24_pPed->field_15C_player->Get_Field_50();
+                        throwable_5DDFC0(obj_type, v1, v2);
+                    }
+                    field_24_pPed->field_15C_player->sub_4A5180();
+                }
+            }
+        }
+    }
 }
 
 MATCH_FUNC(0x5e3670)
