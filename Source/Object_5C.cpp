@@ -2160,18 +2160,15 @@ void Object_2C::Sprite_UpdateZFromSlopeAndTile_522FA0(Sprite* pSprite)
 {
     WIP_IMPLEMENTED;
 
-    Fix16 y_val = pSprite->field_14_xy.y;
-    Fix16 x_val = pSprite->field_14_xy.x;
     Fix16 z_val = pSprite->field_1C_zpos;
-    
-    if (gMap_0x370_6F6268->sub_466CF0(x_val.ToInt(), y_val.ToInt(), (z_val.ToInt()) - 1))
+    if (gMap_0x370_6F6268->sub_466CF0(pSprite->field_14_xy.x.ToInt(), pSprite->field_14_xy.y.ToInt(), (z_val.ToInt()) - 1))
     {
         z_val -= Fix16(0x4000, 0);
     }
 
     u8 slope_direction = gMap_0x370_6F6268->UpdateZFromSlopeAtCoord_4E5BF0(pSprite->field_14_xy.x, pSprite->field_14_xy.y, z_val) == 0;
     Fix16 new_z = z_val;
-    if (slope_direction > 0 )
+    if (slope_direction > 0)
     {
         Fix16 v8 = z_val.GetFracValue();
         if (v8 != kFpZero_6F8E10)
@@ -2193,7 +2190,6 @@ void Object_2C::Sprite_UpdateZFromSlopeAndTile_522FA0(Sprite* pSprite)
 
     pSprite->set_z_lazy_420660(new_z);
 }
-
 
 WIP_FUNC(0x525100)
 void Object_2C::sub_525100()
