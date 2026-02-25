@@ -67,6 +67,8 @@ DEFINE_GLOBAL(Ang16, word_6F8C88, 0x6F8C88); // TODO: Init via func 0x5269F0
 DEFINE_GLOBAL(Ang16, word_6F8D88, 0x6F8D88); // TODO: Init via func 0x526E70
 
 DEFINE_GLOBAL(Fix16, dword_6F8CF0, 0x6F8CF0);
+DEFINE_GLOBAL(Fix16, k_dword_6F8BFC, 0x6F8BFC);
+DEFINE_GLOBAL(Fix16, dword_6F8D10, 0x6F8D10);
 
 DEFINE_GLOBAL_INIT(u8, byte_6771DC, 0, 0x6771DC);
 
@@ -883,7 +885,7 @@ void Object_2C::UpdatePhysicsAndMovement_525B80()
     UpdatePhysics_5222D0();
     Fix16 mov_speed;
     field_10_obj_3c->GetMovementSpeedAndAngle_521FD0(&mov_speed, &ang);
-    
+
     if (!field_8->field_58)
     {
         IntegrateHorizontalMovementAndCollisions_524630(mov_speed, ang);
@@ -2152,6 +2154,46 @@ void Object_2C::IntegrateMovementAndCollisions_523BF0(Fix16 a2, Ang16 a)
 {
     NOT_IMPLEMENTED;
 }
+
+WIP_FUNC(0x522FA0)
+void Object_2C::Sprite_UpdateZFromSlopeAndTile_522FA0(Sprite* pSprite)
+{
+    WIP_IMPLEMENTED;
+
+    Fix16 y_val = pSprite->field_14_xy.y;
+    Fix16 x_val = pSprite->field_14_xy.x;
+    Fix16 z_val = pSprite->field_1C_zpos;
+    
+    if (gMap_0x370_6F6268->sub_466CF0(x_val.ToInt(), y_val.ToInt(), (z_val.ToInt()) - 1))
+    {
+        z_val -= Fix16(0x4000, 0);
+    }
+
+    u8 slope_direction = gMap_0x370_6F6268->UpdateZFromSlopeAtCoord_4E5BF0(pSprite->field_14_xy.x, pSprite->field_14_xy.y, z_val) == 0;
+    Fix16 new_z = z_val;
+    if (slope_direction > 0 )
+    {
+        Fix16 v8 = z_val.GetFracValue();
+        if (v8 != kFpZero_6F8E10)
+        {
+            new_z = z_val.GetRoundValue();
+            z_val = z_val.GetRoundValue();
+            if (v8 > dword_6F8D10)
+            {
+                new_z += Fix16(0x4000, 0);
+                z_val = new_z;
+            }
+
+            if (new_z > k_dword_6F8BFC)
+            {
+                new_z = k_dword_6F8BFC;
+            }
+        }
+    }
+
+    pSprite->set_z_lazy_420660(new_z);
+}
+
 
 WIP_FUNC(0x525100)
 void Object_2C::sub_525100()
