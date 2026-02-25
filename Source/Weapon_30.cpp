@@ -26,6 +26,8 @@ DEFINE_GLOBAL(Fix16, k_dword_706EDC, 0x706EDC);
 DEFINE_GLOBAL(Fix16, k_dword_706F70, 0x706F70);
 DEFINE_GLOBAL(Fix16, dword_706DCC, 0x706DCC);
 DEFINE_GLOBAL(Fix16, dword_706FD0, 0x706FD0);
+DEFINE_GLOBAL(Fix16, dword_706EA4, 0x706EA4);
+DEFINE_GLOBAL(Fix16, dword_706EE8, 0x706EE8);
 
 // TODO: move
 EXTERN_GLOBAL(Shooey_CC*, gShooey_CC_67A4B8);
@@ -378,10 +380,61 @@ void Weapon_30::tank_main_gun_5E10E0()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x5e13e0)
+WIP_FUNC(0x5e13e0)
 void Weapon_30::army_gun_jeep_5E13E0()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    Ang16 gun_ang;
+    if (field_2_reload_speed == 0)
+    {
+        field_24_pPed = field_14_car->field_54_driver;
+
+        Sprite* pGunSprite = field_14_car->field_0_qq.GetSpriteForModel_5A6A50(248)->field_0;
+        gun_ang = pGunSprite->field_0;
+
+        Fix16_Point bullet_pos;
+        bullet_pos.SetXY_432860(Fix16(0), dword_706EA4);
+        bullet_pos.RotateByAngle_40F6B0(gun_ang);
+
+        Fix16_Point v41;
+        v41.SetXY_432860(Fix16(0), dword_706EE8);
+        v41.RotateByAngle_40F6B0(field_14_car->field_50_car_sprite->field_0);
+
+        bullet_pos += (v41 + field_14_car->field_50_car_sprite->get_x_y_443580());
+
+        Fix16_Point v42 = field_14_car->field_58_physics->GetPointVelocity_561350(&v41);
+
+        set_field_2C_4CCA80(1);
+
+        if (!field_4)
+        {
+            if (spawn_bullet_5DCF60(254, bullet_pos.x, bullet_pos.y, field_14_car->field_50_car_sprite->field_1C_zpos, gun_ang, v42))
+            {
+                if (field_24_pPed->IsField238_45EDE0(2) && !is_infinite_ammo_4A4FA0())
+                {
+                    field_0_ammo--;
+                }
+            }
+            field_2_reload_speed = 2;
+
+            field_24_pPed->AddThreateningPedToList_46FC70();
+            if (field_24_pPed->field_15C_player)
+            {
+                gShooey_CC_67A4B8->ReportCrimeForPed(2u, field_24_pPed);
+            }
+        }
+        else
+        {
+            spawn_bullet_5DCF60(154, bullet_pos.x, bullet_pos.y, field_14_car->field_50_car_sprite->field_1C_zpos, gun_ang, v42);
+            field_2_reload_speed = 1;
+        }
+        TickReloadSpeed_5DCF40();
+    }
+    else
+    {
+        field_2_reload_speed--;
+    }
 }
 
 STUB_FUNC(0x5e1dc0)
