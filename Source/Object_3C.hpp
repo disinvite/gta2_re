@@ -72,6 +72,8 @@ class Object_3C
     // ?? not sure if this is O3C either :skull:
     EXPORT Fix16_Point GetRot_52ADF0();
 
+    EXPORT Ang16* GetMovementSpeedAndAngle_521FD0(Fix16 *a2, Ang16 *a3);
+
     struct_4 field_0;
     Ang16 field_4;
     s16 field_6;

@@ -66,6 +66,9 @@ DEFINE_GLOBAL_INIT(Fix16, dword_6F8ECC, dword_6F8DC8, 0x6F8ECC);
 DEFINE_GLOBAL(Ang16, word_6F8C88, 0x6F8C88); // TODO: Init via func 0x5269F0
 DEFINE_GLOBAL(Ang16, word_6F8D88, 0x6F8D88); // TODO: Init via func 0x526E70
 
+DEFINE_GLOBAL(Fix16, dword_6F8CF0, 0x6F8CF0);
+
+
 DEFINE_GLOBAL_INIT(u8, byte_6771DC, 0, 0x6771DC);
 
 // TODO: From CarPhysics_B0
@@ -581,7 +584,7 @@ void Object_2C::sub_524550()
 }
 
 STUB_FUNC(0x524630)
-void Object_2C::IntegrateHorizontalMovementAndCollisions_524630(s32 a2, s16 a3)
+void Object_2C::IntegrateHorizontalMovementAndCollisions_524630(Fix16 a2, Ang16 a3)
 {
     NOT_IMPLEMENTED;
 }
@@ -879,10 +882,85 @@ void Object_2C::UpdatePhysicsAndMovement_525B80()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x525d90)
+WIP_FUNC(0x525d90)
 void Object_2C::UpdatePhysicsMovementAndAnimation_525D90()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    Ang16 ang;
+    Sprite* pPhi_ = this->field_4;
+    Fix16 x_val = pPhi_->field_14_xy.x;
+    Fix16 y_val = pPhi_->field_14_xy.y;
+    Fix16 zpos = pPhi_->field_1C_zpos;
+
+    UpdatePhysics_5222D0();
+
+    Fix16 mov_speed;
+    field_10_obj_3c->GetMovementSpeedAndAngle_521FD0(&mov_speed, &ang);
+
+    if (field_8->field_58)
+    {
+        IntegrateMovementAndCollisions_523BF0(mov_speed, ang);
+    }
+    else
+    {
+        IntegrateHorizontalMovementAndCollisions_524630(mov_speed, ang);
+    }
+
+    Fix16 fC = Fix16::Abs(field_10_obj_3c->field_C);
+    if (fC < dword_6F8CF0)
+    {
+        fC = kFpZero_6F8E10;
+    }
+    field_10_obj_3c->field_C = fC;
+
+    Phi_74* pPhi = this->field_8;
+    if (pPhi->field_65 != -1 || pPhi->field_34_behavior_type == 9 || (field_4->field_14_xy.x != x_val) || field_4->field_14_xy.y != y_val ||
+        field_4->field_1C_zpos != zpos)
+    {
+        if (!this->field_10_obj_3c->field_30_bSkipAnim)
+        {
+            UpdateAninmation_5257D0();
+        }
+    }
+
+    if (!DispatchFrameAction_525910())
+    {
+        if (field_10_obj_3c->field_0.field_0_p18)
+        {
+            field_10_obj_3c->field_0.PoolUpdate_5A6F70(field_4);
+            if (!field_10_obj_3c->field_0.field_0_p18 && field_18_model == 127)
+            {
+                sub_5290A0();
+            }
+        }
+
+        if (mov_speed == kFpZero_6F8E10)
+        {
+            if (!field_10_obj_3c->field_2A && field_10_obj_3c->field_34 == 2 && !CheckWaterDeath_525B60() && !dword_6F8F8C)
+            {
+                field_10_obj_3c->field_1C = kFpZero_6F8E10;
+                field_10_obj_3c->field_10 = kFpZero_6F8E10;
+
+                if (field_18_model != 183)
+                {
+                    if (field_8->field_34_behavior_type != 6 && field_8->field_34_behavior_type != 7 &&
+                        field_8->field_34_behavior_type != 8 && field_8->field_34_behavior_type != 9 &&
+                        field_8->field_34_behavior_type != 10 && field_8->field_34_behavior_type != 1 &&
+                        field_8->field_34_behavior_type != 12)
+                    {
+                        s32 varrok_idx = this->field_26_varrok_idx;
+                        if (varrok_idx)
+                        {
+                            gVarrok_7F8_703398->sub_59B0D0(varrok_idx);
+                            this->field_26_varrok_idx = 0;
+                        }
+                    }
+                }
+                TickObject_5283C0(field_8->field_38);
+            }
+        }
+    }
 }
 
 MATCH_FUNC(0x525f30)
@@ -2029,6 +2107,13 @@ void Object_2C::UpdateLight_527A30()
 */
 }
 
+STUB_FUNC(0x523BF0)
+void Object_2C::IntegrateMovementAndCollisions_523BF0(Fix16 a2, Ang16 a)
+{
+    NOT_IMPLEMENTED;
+}
+ 
+
 WIP_FUNC(0x525100)
 void Object_2C::sub_525100()
 {
@@ -2480,13 +2565,29 @@ char_type Object_5C::sub_52A210(char_type a2)
 }
 
 MATCH_FUNC(0x52a240)
-Object_2C* Object_5C::NewUnknown_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, Fix16 a9, Fix16 a10)
+Object_2C* Object_5C::NewUnknown_52A240(s32 object_type,
+                                        Fix16 maybe_x,
+                                        Fix16 maybe_y,
+                                        Fix16 maybe_z,
+                                        Ang16 unk_ang,
+                                        Ang16 maybe_ang,
+                                        Fix16 a8,
+                                        Fix16 a9,
+                                        Fix16 a10)
 {
     return Object_5C::New_52A2C0(object_type, maybe_x, maybe_y, maybe_z, unk_ang, maybe_ang, a8, a9, a10, 0);
 }
 
 MATCH_FUNC(0x52a280)
-Object_2C* Object_5C::sub_52A280(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 unk_ang, Ang16 rotation, Fix16 a8, Fix16 a9, Fix16 a10)
+Object_2C* Object_5C::sub_52A280(s32 object_type,
+                                 Fix16 xpos,
+                                 Fix16 ypos,
+                                 Fix16 zpos,
+                                 Ang16 unk_ang,
+                                 Ang16 rotation,
+                                 Fix16 a8,
+                                 Fix16 a9,
+                                 Fix16 a10)
 {
     return Object_5C::New_52A2C0(object_type, xpos, ypos, zpos, unk_ang, rotation, a8, a9, a10, 1);
 }
