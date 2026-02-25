@@ -57,6 +57,7 @@ bool Kfc_30::sub_5CBC60()
     // TODO: Something strange going on here:
     // mov 0x28(%ecx),%ecx
     //this = (Kfc_30*)field_28;
+    s32 v4 = this->field_28;
     return true;
 }
 
@@ -106,14 +107,16 @@ void Kfc_30::sub_5CBD50()
     NOT_IMPLEMENTED;
 }
 
+// 9.6f 0x4C5A00
 WIP_FUNC(0x5cc1c0)
 void Kfc_30::sub_5CC1C0()
 {
     WIP_IMPLEMENTED;
 
-    bool b1 = 0;
-    bool b2 = 1;
-    bool b3 = 1;
+    bool bClearRouteAndTryClearOthers = 0;
+    bool bClearPedAndGroup = 1;
+    bool bClearCharB4F24 = 1;
+    Ped* pPedListIter;
 
     if (field_8_group)
     {
@@ -124,137 +127,136 @@ void Kfc_30::sub_5CC1C0()
         }
     }
 
-    Ped* pPedListIter;
-    s32 i;
-
     if (this->field_24 == 1)
     {
-        if (this->field_0_car && field_0_car->field_88 != 5 && !field_0_car->IsMaxDamage_40F890())
+        if (this->field_0_car && !field_0_car->sub_4215B0() && !field_0_car->IsMaxDamage_40F890())
         {
-            if (field_0_car->field_76_last_seen_timer <= this->field_1A)
+            if (field_0_car->Get_F76_4A9AD0() > this->field_1A)
             {
-            LABEL_14:
-                if (field_4_ped)
+                field_0_car->sub_421470();
+                bClearRouteAndTryClearOthers = 1;
+            }
+        }
+        else
+        {
+            bClearRouteAndTryClearOthers = 1;
+        }
+
+        if (field_4_ped)
+        {
+            if (field_4_ped->field_168_game_object)
+            {
+                if (field_4_ped->Get_F20E_4039F0() < this->field_1A)
                 {
-                    if (field_4_ped->field_168_game_object)
+                    bClearPedAndGroup = 0;
+                }
+            }
+            else if (field_4_ped->isDead_403B60())
+            {
+                this->field_4_ped = 0;
+            }
+        }
+
+        if (field_4_ped)
+        {
+            if (field_4_ped->field_168_game_object)
+            {
+                bClearPedAndGroup = 0;
+            }
+        }
+
+        if (field_8_group)
+        {
+            u8 i = 0;
+            for (pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;)
+            {
+                if (pPedListIter->field_168_game_object)
+                {
+                    if (pPedListIter->get_field_20e() < this->field_1A)
                     {
-                        if (field_4_ped->field_20e < this->field_1A)
-                        {
-                            b2 = 0;
-                        }
-                    }
-                    else if (field_4_ped->field_278_ped_state_1 == ped_state_1::dead_9)
-                    {
-                        this->field_4_ped = 0;
+                        bClearPedAndGroup = 0;
                     }
                 }
+                else
+                {
+                    bClearCharB4F24 = 0;
+                }
+                i++;
+                pPedListIter = field_8_group->field_4_ped_list[i];
+            }
+        }
 
+        if (bClearRouteAndTryClearOthers)
+        {
+            if (field_0_car)
+            {
+                if (field_0_car->field_60)
+                {
+                    gHamburger_500_678E30->Cancel_474CC0(field_0_car->field_60); // something to do with car route
+                    field_0_car->field_60 = 0;
+                }
+            }
+            field_0_car = 0;
+
+            if (bClearPedAndGroup)
+            {
                 if (field_4_ped)
                 {
-                    if (field_4_ped->field_168_game_object)
-                    {
-                        b2 = 0;
-                    }
+                    field_4_ped->set_occupation_403970(ped_ocupation_enum::dummy);
+                    field_4_ped->ClearGroupAndGroupIdx_403A30();
+                    field_4_ped->Deallocate_45EB60();
                 }
 
                 if (field_8_group)
                 {
-                    pPedListIter = field_8_group->field_4_ped_list[0];
-                    for (i = 0; pPedListIter; pPedListIter = field_8_group->field_4_ped_list[i])
+                    u8 i = 0;
+                    for (pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;)
                     {
-                        if (pPedListIter->field_168_game_object)
-                        {
-                            if (pPedListIter->field_20e < this->field_1A)
-                            {
-                                b2 = 0;
-                            }
-                        }
-                        else
-                        {
-                            b3 = 0;
-                        }
-                        ++i;
+                        pPedListIter->set_occupation_403970(ped_ocupation_enum::dummy);
+                        pPedListIter->ClearGroupAndGroupIdx_403A30();
+                        pPedListIter->Deallocate_45EB60();
+                        i++;
+                        pPedListIter = field_8_group->field_4_ped_list[i];
                     }
+                    field_8_group->ClearGroupData_4C8E90();
                 }
-
-                if (b1)
-                {
-                    if (field_0_car)
-                    {
-                        if (field_0_car->field_60)
-                        {
-                            gHamburger_500_678E30->Cancel_474CC0(field_0_car->field_60); // something to do with car route
-                            field_0_car->field_60 = 0;
-                        }
-                    }
-                    field_0_car = 0;
-
-                    if (b2)
-                    {
-                        if (field_4_ped)
-                        {
-                            field_4_ped->set_occupation_403970(ped_ocupation_enum::dummy);
-                            field_4_ped->ClearGroupAndGroupIdx_403A30();
-                            field_4_ped->Deallocate_45EB60();
-                        }
-
-                        i = 0;
-                        if (field_8_group)
-                        {
-                            for (pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;
-                                 pPedListIter = this->field_8_group->field_4_ped_list[i])
-                            {
-                                pPedListIter->set_occupation_403970(ped_ocupation_enum::dummy);
-                                pPedListIter->ClearGroupAndGroupIdx_403A30();
-                                pPedListIter->Deallocate_45EB60();
-                                ++i;
-                            }
-                            field_8_group->ClearGroupData_4C8E90();
-                        }
-                        this->field_8_group = 0;
-                        this->field_2C = 1;
-                    }
-                    else if (b3)
-                    {
-                        if (this->field_4_ped->field_168_game_object)
-                        {
-                            this->field_24 = 0;
-                        }
-                    }
-                }
-                return;
+                this->field_8_group = 0;
+                this->field_2C = 1;
             }
-            else
+            else if (bClearCharB4F24)
             {
-                field_0_car->sub_421470();
+                if (this->field_4_ped->field_168_game_object)
+                {
+                    this->field_24 = 0;
+                }
             }
         }
-        b1 = 1;
-        goto LABEL_14;
+        return;
     }
 
     if (field_4_ped)
     {
-        if (field_4_ped->field_20e < this->field_1A)
+        if (field_4_ped->Get_F20E_4039F0() < this->field_1A)
         {
-            b2 = 0;
+            bClearPedAndGroup = 0;
         }
     }
 
     if (field_8_group)
     {
-        pPedListIter = field_8_group->field_4_ped_list[0];
-        for (i = 0; pPedListIter; pPedListIter = field_8_group->field_4_ped_list[i])
+        u8 i = 0;
+        for (pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;)
         {
-            if (pPedListIter->field_20e < this->field_1A)
+            if (pPedListIter->Get_F20E_4039F0() < this->field_1A)
             {
-                b2 = 0;
+                bClearPedAndGroup = 0;
             }
-            ++i;
+            i++;
+            pPedListIter = field_8_group->field_4_ped_list[i];
         }
     }
 
-    if (b2)
+    if (bClearPedAndGroup)
     {
         if (field_4_ped)
         {
@@ -262,14 +264,15 @@ void Kfc_30::sub_5CC1C0()
             field_4_ped->Deallocate_45EB60();
         }
 
-        i = 0;
         if (field_8_group)
         {
-            for (pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter; pPedListIter = field_8_group->field_4_ped_list[i])
+            u8 i = 0;
+            for (pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;)
             {
                 pPedListIter->ClearGroupAndGroupIdx_403A30();
                 pPedListIter->Deallocate_45EB60();
-                ++i;
+                i++;
+                pPedListIter = field_8_group->field_4_ped_list[i];
             }
             field_8_group->ClearGroupData_4C8E90();
         }

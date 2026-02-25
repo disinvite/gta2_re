@@ -559,6 +559,16 @@ class Ped
         return field_12E;
     }
 
+    bool isDead_403B60()
+    {
+        return this->field_278_ped_state_1 == ped_state_1::dead_9;
+    }
+
+    u16 Ped::Get_F20E_4039F0()
+    {
+        return this->field_20e;
+    }
+    
     Marz_3 field_0_patrol_points[100];
     Ang16 field_12C;
     Ang16 field_12E;

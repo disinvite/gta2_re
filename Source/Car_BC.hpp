@@ -364,7 +364,6 @@ class Car_BC
 
     EXPORT s16 ApplyImpactDamage_43D5D0(Fix16 a2);
 
-
     EXPORT bool IsPoliceCar_439EC0();
     EXPORT Fix16 GetDamageFactorOnSpeed_439EE0();
     EXPORT Fix16 GetMaxSpeed_439F30();
@@ -936,6 +935,16 @@ class Car_BC
     {
         // Not sure what is going on here, seems to same as 0x411970 ??
         return field_A7_horn <= 0xF8u && field_A7_horn > 0;
+    }
+
+    s16 Get_F76_4A9AD0()
+    {
+        return field_76_last_seen_timer;
+    }
+
+    bool sub_4215B0()
+    {
+        return this->field_88 == 5;
     }
 
     EXPORT char SnapCarToGreenArrow_444E40(Fix16 xpos, Fix16 ypos, Fix16 zpos);
