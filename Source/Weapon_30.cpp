@@ -1,4 +1,5 @@
 #include "Weapon_30.hpp"
+#include "CarPhysics_B0.hpp"
 #include "Object_3C.hpp"
 #include "Object_5C.hpp"
 #include "Particle_8.hpp"
@@ -9,9 +10,9 @@
 #include "char.hpp"
 #include "debug.hpp"
 #include "enums.hpp"
+#include "map_0x370.hpp"
 #include "root_sound.hpp"
 #include "sprite.hpp"
-#include "map_0x370.hpp"
 
 DEFINE_GLOBAL_INIT(Fix16, dword_706CF4, Fix16(0x1000, 0), 0x706CF4);
 DEFINE_GLOBAL_INIT(Fix16, k_dword_706EC0, Fix16(0x8000, 0), 0x706EC0);
@@ -23,6 +24,10 @@ DEFINE_GLOBAL(Fix16, dword_706FEC, 0x706FEC);
 DEFINE_GLOBAL(Fix16, dword_706EB8, 0x706EB8);
 DEFINE_GLOBAL(Fix16, k_dword_706EDC, 0x706EDC);
 DEFINE_GLOBAL(Fix16, k_dword_706F70, 0x706F70);
+DEFINE_GLOBAL(Fix16, dword_706DCC, 0x706DCC);
+DEFINE_GLOBAL(Fix16, dword_706FD0, 0x706FD0);
+DEFINE_GLOBAL(Fix16, dword_706EA4, 0x706EA4);
+DEFINE_GLOBAL(Fix16, dword_706EE8, 0x706EE8);
 
 // TODO: move
 EXTERN_GLOBAL(Shooey_CC*, gShooey_CC_67A4B8);
@@ -375,10 +380,61 @@ void Weapon_30::tank_main_gun_5E10E0()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x5e13e0)
+WIP_FUNC(0x5e13e0)
 void Weapon_30::army_gun_jeep_5E13E0()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    Ang16 gun_ang;
+    if (field_2_reload_speed == 0)
+    {
+        field_24_pPed = field_14_car->field_54_driver;
+
+        Sprite* pGunSprite = field_14_car->field_0_qq.GetSpriteForModel_5A6A50(248)->field_0;
+        gun_ang = pGunSprite->field_0;
+
+        Fix16_Point bullet_pos;
+        bullet_pos.SetXY_432860(Fix16(0), dword_706EA4);
+        bullet_pos.RotateByAngle_40F6B0(gun_ang);
+
+        Fix16_Point v41;
+        v41.SetXY_432860(Fix16(0), dword_706EE8);
+        v41.RotateByAngle_40F6B0(field_14_car->field_50_car_sprite->field_0);
+
+        bullet_pos += (v41 + field_14_car->field_50_car_sprite->get_x_y_443580());
+
+        Fix16_Point v42 = field_14_car->field_58_physics->GetPointVelocity_561350(&v41);
+
+        set_field_2C_4CCA80(1);
+
+        if (!field_4)
+        {
+            if (spawn_bullet_5DCF60(254, bullet_pos.x, bullet_pos.y, field_14_car->field_50_car_sprite->field_1C_zpos, gun_ang, v42))
+            {
+                if (field_24_pPed->IsField238_45EDE0(2) && !is_infinite_ammo_4A4FA0())
+                {
+                    field_0_ammo--;
+                }
+            }
+            field_2_reload_speed = 2;
+
+            field_24_pPed->AddThreateningPedToList_46FC70();
+            if (field_24_pPed->field_15C_player)
+            {
+                gShooey_CC_67A4B8->ReportCrimeForPed(2u, field_24_pPed);
+            }
+        }
+        else
+        {
+            spawn_bullet_5DCF60(154, bullet_pos.x, bullet_pos.y, field_14_car->field_50_car_sprite->field_1C_zpos, gun_ang, v42);
+            field_2_reload_speed = 1;
+        }
+        TickReloadSpeed_5DCF40();
+    }
+    else
+    {
+        field_2_reload_speed--;
+    }
 }
 
 STUB_FUNC(0x5e1dc0)
@@ -399,13 +455,13 @@ void Weapon_30::car_mine_5E2550()
     Fix16_Point p;
     p.y = -(dword_706FF4 + ((dword_706FEC + Sprite_440840->field_C_sprite_4c_ptr->field_4_height)) / k_dword_706EC0);
     p.x = dword_706EB8;
-    
+
     p.RotateByAngle_40F6B0(Sprite_440840->field_0);
 
     Fix16_Point x_y_443580 = Sprite_440840->get_x_y_443580() + p;
 
     Fix16 v13 = Sprite_440840->field_C_sprite_4c_ptr->field_8;
-    Fix16 v14 = Sprite_440840->field_1C_zpos + v13 / 2;    
+    Fix16 v14 = Sprite_440840->field_1C_zpos + v13 / 2;
     if (v14 >= k_dword_706EDC)
     {
         v14 = k_dword_706EDC - k_dword_706F70;
@@ -422,10 +478,69 @@ void Weapon_30::car_mine_5E2550()
     }
 }
 
-STUB_FUNC(0x5e2940)
+// 9.6f 0x4D0230
+WIP_FUNC(0x5e2940)
 void Weapon_30::car_smg_5E2940()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    Ang16 sprite_ang;
+    if (field_2_reload_speed == 0)
+    {
+        field_24_pPed = field_14_car->field_54_driver;
+
+        Sprite* pCarSprite = field_14_car->field_50_car_sprite;
+        sprite_ang = field_14_car->field_50_car_sprite->field_0;
+
+        Fix16 tmpx = dword_706DCC + field_14_car->get_car_width() / 2;
+        Fix16 tmpy = dword_706FD0 + field_14_car->get_car_height() / 2;
+
+        Fix16_Point left;
+        left.SetXY_432860(tmpx, tmpy);
+        left.RotateByAngle_40F6B0(sprite_ang);
+        left += pCarSprite->get_x_y_443580();
+
+        Fix16_Point right;
+        right.SetXY_432860(-left.x, left.y);
+        right.RotateByAngle_40F6B0(sprite_ang);
+        right += pCarSprite->get_x_y_443580();
+
+        Fix16_Point left_point = field_14_car->field_58_physics->GetPointVelocity_561350(&left);
+        Fix16_Point right_point = field_14_car->field_58_physics->GetPointVelocity_561350(&right);
+
+        if (!field_4)
+        {
+            Object_2C* pLeft = spawn_bullet_5DCF60(254, left.x, left.y, pCarSprite->field_1C_zpos, sprite_ang, left_point);
+            Object_2C* pRight = spawn_bullet_5DCF60(254, right.x, right.y, pCarSprite->field_1C_zpos, sprite_ang, right_point);
+            if ((pLeft || pRight) && field_24_pPed->IsField238_45EDE0(2) && !is_infinite_ammo_4A4FA0())
+            {
+                field_0_ammo--;
+            }
+
+            gParticle_8_6FD5E8->GunMuzzelFlash_53E970(field_14_car->field_50_car_sprite);
+
+            field_2_reload_speed = 2;
+
+            field_24_pPed->AddThreateningPedToList_46FC70();
+            if (field_24_pPed->is_player_41B0A0())
+            {
+                gShooey_CC_67A4B8->ReportCrimeForPed(2u, field_24_pPed);
+            }
+        }
+        else
+        {
+            spawn_bullet_5DCF60(154, left.x, left.y, pCarSprite->field_1C_zpos, sprite_ang, left_point);
+            spawn_bullet_5DCF60(154, right.x, right.y, pCarSprite->field_1C_zpos, sprite_ang, right_point);
+            field_2_reload_speed = 1;
+        }
+
+        TickReloadSpeed_5DCF40();
+        set_field_2C_4CCA80(1);
+    }
+    else
+    {
+        field_2_reload_speed--;
+    }
 }
 
 MATCH_FUNC(0x5e33c0)

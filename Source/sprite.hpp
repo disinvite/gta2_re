@@ -77,6 +77,16 @@ class Sprite_4C
         *pOutF8 = this->field_8;
     }
 
+    Fix16 GetW_420590()
+    {
+        return field_0_width;
+    }
+
+    Fix16 GetH_447E10()
+    {
+        return field_4_height;
+    }
+
     bool ReduceWidthBy_4BA120(Fix16 a2)
     {
         field_0_width -= a2;
@@ -193,6 +203,16 @@ class Sprite
     inline bool TypeIs_446940(s32 a2)
     {
         return field_30_sprite_type_enum == a2;
+    }
+
+    Fix16 GetW_420740()
+    {
+        return field_C_sprite_4c_ptr->GetW_420590();
+    }
+
+    Fix16 GetH_447E70()
+    {
+        return field_C_sprite_4c_ptr->GetH_447E10();
     }
 
     void GetXYZ_4117B0(Fix16* a2, Fix16* a3, Fix16* a4)

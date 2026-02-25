@@ -12,7 +12,9 @@
 class Fix16;
 
 EXTERN_GLOBAL(Fix16, kFP16Zero_6FE20C);
+EXTERN_GLOBAL(Fix16, kFpZero_6F8E10);
 EXTERN_GLOBAL(Fix16, dword_6FE07C);
+EXTERN_GLOBAL(Fix16, dword_6F8CF0);
 
 class Fix16
 {
@@ -236,6 +238,15 @@ class Fix16
         {
             return -input;
         }
+    }
+
+    inline Fix16 sub_482730()
+    {
+        if (Fix16::Abs(*this) < dword_6F8CF0)
+        {
+            return kFpZero_6F8E10;
+        }
+        return *this;
     }
 
     inline Fix16 GetRoundValue() const

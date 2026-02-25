@@ -46,7 +46,7 @@ class Object_2C
     EXPORT void HandleCollisionOutcome_523440(Fix16_Point a3, char_type a4, char_type a5);
     EXPORT char_type HandleSpriteGroundAndCollision_5235B0(Sprite* a2, u32* a3, u8* a4, s32 a5);
     EXPORT void sub_524550();
-    EXPORT void IntegrateHorizontalMovementAndCollisions_524630(s32 a2, s16 a3);
+    EXPORT void IntegrateHorizontalMovementAndCollisions_524630(Fix16 a2, Ang16 a3);
     EXPORT void sub_525190(u8 varrok_idx);
     EXPORT void UpdateAninmation_5257D0();
     EXPORT bool DispatchFrameAction_525910();
@@ -105,6 +105,8 @@ class Object_2C
     EXPORT void UpdateLight_527A30();
     EXPORT void sub_525100();
 
+    EXPORT void IntegrateMovementAndCollisions_523BF0(Fix16 a2, Ang16 a);
+    
     inline bool check_is_busy_shop()
     {
         s32 v1 = field_8->field_34_behavior_type;

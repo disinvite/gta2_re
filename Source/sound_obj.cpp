@@ -1097,9 +1097,12 @@ char_type sound_obj::IsHeavyTruckOrBus_417F40(s32 a1)
     }
 }
 
-MATCH_FUNC(0x417EF0)
+// TODO: Another "too many inlines" issue (changing call ordering)
+WIP_FUNC(0x417EF0)
 s32 sound_obj::Type_7_417EF0(sound_0x68* pObj)
 {
+    WIP_IMPLEMENTED;
+
     pObj->field_14_samp_idx = 29;
     pObj->field_3C = 400;
     pObj->field_20_rate = RandomDisplacement_41A650(29) + gSampManager_6FFF00.GetPlayBackRateIdx_58DBF0(29);

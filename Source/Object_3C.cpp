@@ -46,6 +46,13 @@ Fix16_Point Object_3C::GetRot_52ADF0()
     return Fix16_Point(Ang16::sine_40F500(field_4) * field_C, Ang16::cosine_40F520(field_4) * field_C);
 }
 
+STUB_FUNC(0x521FD0)
+Ang16* Object_3C::GetMovementSpeedAndAngle_521FD0(Fix16 *a2, Ang16 *a3)
+{
+    NOT_IMPLEMENTED;
+    return a3;
+}
+
 MATCH_FUNC(0x5a6a50)
 Sprite_18* struct_4::GetSpriteForModel_5A6A50(s32 obj_type)
 {
