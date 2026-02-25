@@ -67,6 +67,8 @@ DEFINE_GLOBAL(Ang16, word_6F8C88, 0x6F8C88); // TODO: Init via func 0x5269F0
 DEFINE_GLOBAL(Ang16, word_6F8D88, 0x6F8D88); // TODO: Init via func 0x526E70
 
 DEFINE_GLOBAL(Fix16, dword_6F8CF0, 0x6F8CF0);
+DEFINE_GLOBAL(Fix16, k_dword_6F8BFC, 0x6F8BFC);
+DEFINE_GLOBAL(Fix16, dword_6F8D10, 0x6F8D10);
 
 DEFINE_GLOBAL_INIT(u8, byte_6771DC, 0, 0x6771DC);
 
@@ -883,7 +885,7 @@ void Object_2C::UpdatePhysicsAndMovement_525B80()
     UpdatePhysics_5222D0();
     Fix16 mov_speed;
     field_10_obj_3c->GetMovementSpeedAndAngle_521FD0(&mov_speed, &ang);
-    
+
     if (!field_8->field_58)
     {
         IntegrateHorizontalMovementAndCollisions_524630(mov_speed, ang);
@@ -1516,7 +1518,7 @@ char_type Object_2C::HandleRotationStateTransition_528240(s32 current, s32 desir
 }
 
 STUB_FUNC(0x5283c0)
-void Object_2C::TickObject_5283C0(s32 a2)
+void Object_2C::TickObject_5283C0(s32 obj_type)
 {
     NOT_IMPLEMENTED;
 }
@@ -2153,6 +2155,36 @@ void Object_2C::IntegrateMovementAndCollisions_523BF0(Fix16 a2, Ang16 a)
     NOT_IMPLEMENTED;
 }
 
+MATCH_FUNC(0x522FA0)
+void Object_2C::Sprite_UpdateZFromSlopeAndTile_522FA0(Sprite* pSprite)
+{
+    Fix16 z_val = pSprite->field_1C_zpos;
+    if (gMap_0x370_6F6268->sub_466CF0(pSprite->field_14_xy.x.ToInt(), pSprite->field_14_xy.y.ToInt(), (z_val.ToInt()) - 1))
+    {
+        z_val -= Fix16(0x4000, 0);
+    }
+
+    if (gMap_0x370_6F6268->UpdateZFromSlopeAtCoord_4E5BF0(pSprite->field_14_xy.x, pSprite->field_14_xy.y, z_val) == 0)
+    {
+        Fix16 z_frac = z_val.GetFracValue();
+        if (z_frac != kFpZero_6F8E10)
+        {
+            z_val = z_val.GetRoundValue();
+            if (z_frac > dword_6F8D10)
+            {
+                z_val += Fix16(0x4000, 0);
+            }
+
+            if (z_val > k_dword_6F8BFC)
+            {
+                z_val = k_dword_6F8BFC;
+            }
+        }
+    }
+
+    pSprite->set_z_lazy_420660(z_val);
+}
+
 WIP_FUNC(0x525100)
 void Object_2C::sub_525100()
 {
@@ -2423,9 +2455,11 @@ Object_2C* Object_5C::sub_529BC0(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 
 }
 
 // https://decomp.me/scratch/dZQWS
-STUB_FUNC(0x529c00)
+WIP_FUNC(0x529c00)
 Object_2C* Object_5C::New_529C00(int object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 rotation, char bUnknown)
 {
+    WIP_IMPLEMENTED;
+
     Phi_74* pPhi; // edi
     Object_2C* pNew2C; // esi
     Wolfy_30* pNew30; // eax

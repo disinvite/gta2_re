@@ -106,7 +106,8 @@ class Object_2C
     EXPORT void sub_525100();
 
     EXPORT void IntegrateMovementAndCollisions_523BF0(Fix16 a2, Ang16 a);
-    
+    EXPORT void Sprite_UpdateZFromSlopeAndTile_522FA0(Sprite* pSprite);
+
     inline bool check_is_busy_shop()
     {
         s32 v1 = field_8->field_34_behavior_type;
