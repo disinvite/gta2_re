@@ -813,14 +813,16 @@ class Car_BC
         }
     }
 
+    // 0x48A930
     Fix16 get_car_width()
     {
-        return field_50_car_sprite->field_C_sprite_4c_ptr->field_0_width;
+        return field_50_car_sprite->GetW_420740();
     }
 
+    // 0x48A950
     Fix16 get_car_height()
     {
-        return field_50_car_sprite->field_C_sprite_4c_ptr->field_4_height;
+        return field_50_car_sprite->GetH_447E70();
     }
 
     bool sub_4214B0()

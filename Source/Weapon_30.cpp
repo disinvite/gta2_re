@@ -431,27 +431,25 @@ void Weapon_30::car_smg_5E2940()
 {
     WIP_IMPLEMENTED;
 
+    Ang16 sprite_ang;
     if (field_2_reload_speed == 0)
     {
         field_24_pPed = field_14_car->field_54_driver;
 
         Sprite* pCarSprite = field_14_car->field_50_car_sprite;
-        Sprite_4C* sprite_4c_ptr = pCarSprite->field_C_sprite_4c_ptr;
-        Ang16 sprite_ang = pCarSprite->field_0;
+        sprite_ang = field_14_car->field_50_car_sprite->field_0;
+
+        Fix16 tmpx = dword_706DCC + field_14_car->get_car_width() / 2;
+        Fix16 tmpy = dword_706FD0 + field_14_car->get_car_height() / 2;
 
         Fix16_Point left;
-        left.x = dword_706DCC + sprite_4c_ptr->field_0_width / 2;
-        left.y = dword_706FD0 + sprite_4c_ptr->field_4_height / 2;
-
-        left.x = (left.x * gCos_table_669260[sprite_ang.rValue]) + (left.y * gSin_table_667A80[sprite_ang.rValue]);
-        left.y = ((-left.x * gSin_table_667A80[sprite_ang.rValue]) + (left.y * gCos_table_669260[sprite_ang.rValue]));
+        left.SetXY_432860(tmpx, tmpy);
+        left.RotateByAngle_40F6B0(sprite_ang);
         left += pCarSprite->get_x_y_443580();
 
         Fix16_Point right;
-        right.y = left.y;
-        right.x = -left.x;
-        right.x = (right.x * gCos_table_669260[sprite_ang.rValue]) + (right.y * gSin_table_667A80[sprite_ang.rValue]);
-        right.y = ((-right.x * gSin_table_667A80[sprite_ang.rValue]) + (right.y * gCos_table_669260[sprite_ang.rValue]));
+        right.SetXY_432860(-left.x, left.y);
+        right.RotateByAngle_40F6B0(sprite_ang);
         right += pCarSprite->get_x_y_443580();
 
         Fix16_Point left_point = field_14_car->field_58_physics->GetPointVelocity_561350(&left);
@@ -459,9 +457,9 @@ void Weapon_30::car_smg_5E2940()
 
         if (!field_4)
         {
-            Object_2C* v24 = spawn_bullet_5DCF60(254, left.x, left.y, pCarSprite->field_1C_zpos, sprite_ang, left_point);
-            Object_2C* v25 = spawn_bullet_5DCF60(254, right.x, right.y, pCarSprite->field_1C_zpos, sprite_ang, right_point);
-            if ((v24 || v25) && field_24_pPed->IsField238_45EDE0(2) && !is_infinite_ammo_4A4FA0())
+            Object_2C* pLeft = spawn_bullet_5DCF60(254, left.x, left.y, pCarSprite->field_1C_zpos, sprite_ang, left_point);
+            Object_2C* pRight = spawn_bullet_5DCF60(254, right.x, right.y, pCarSprite->field_1C_zpos, sprite_ang, right_point);
+            if ((pLeft || pRight) && field_24_pPed->IsField238_45EDE0(2) && !is_infinite_ammo_4A4FA0())
             {
                 field_0_ammo--;
             }
