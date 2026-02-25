@@ -1,8 +1,8 @@
 #include "Kfc_1E0.hpp"
 #include "Car_BC.hpp"
+#include "Hamburger_500.hpp"
 #include "Ped.hpp"
 #include "PedGroup.hpp"
-#include "Hamburger_500.hpp"
 
 DEFINE_GLOBAL(Kfc_1E0*, gKfc_1E0_706280, 0x706280);
 
@@ -111,69 +111,56 @@ void Kfc_30::sub_5CC1C0()
 {
     WIP_IMPLEMENTED;
 
-    PedGroup* pGroup = this->field_8_group;
     bool b1 = 0;
     bool b2 = 1;
     bool b3 = 1;
 
-    if (pGroup)
+    if (field_8_group)
     {
-        if (pGroup->field_34_count == 0)
+        if (field_8_group->field_34_count == 0)
         {
-            pGroup->ClearGroupData_4C8E90();
+            field_8_group->ClearGroupData_4C8E90();
             this->field_8_group = 0;
         }
     }
 
-    Ped* pPed;
-    Ped* pPed_;
-    PedGroup* pGroup_1;
     Ped* pPedListIter;
     s32 i;
-    s32 i_;
-    PedGroup* pGroup_2;
-    Ped* pPed_1;
-    Ped* pPed_2;
-    Ped* pPedListIter_1;
 
     if (this->field_24 == 1)
     {
-        Car_BC* pCar = this->field_0_car;
-        if (this->field_0_car && pCar->field_88 != 5 && !pCar->IsMaxDamage_40F890())
+        if (this->field_0_car && field_0_car->field_88 != 5 && !field_0_car->IsMaxDamage_40F890())
         {
-            if (pCar->field_76_last_seen_timer <= this->field_1A)
+            if (field_0_car->field_76_last_seen_timer <= this->field_1A)
             {
             LABEL_14:
-                pPed = this->field_4_ped;
-                if (pPed)
+                if (field_4_ped)
                 {
-                    if (pPed->field_168_game_object)
+                    if (field_4_ped->field_168_game_object)
                     {
-                        if (pPed->field_20e < this->field_1A)
+                        if (field_4_ped->field_20e < this->field_1A)
                         {
                             b2 = 0;
                         }
                     }
-                    else if (pPed->field_278_ped_state_1 == ped_state_1::dead_9)
+                    else if (field_4_ped->field_278_ped_state_1 == ped_state_1::dead_9)
                     {
                         this->field_4_ped = 0;
                     }
                 }
 
-                pPed_ = this->field_4_ped;
-                if (pPed_)
+                if (field_4_ped)
                 {
-                    if (pPed_->field_168_game_object)
+                    if (field_4_ped->field_168_game_object)
                     {
                         b2 = 0;
                     }
                 }
 
-                pGroup_1 = this->field_8_group;
-                if (pGroup_1)
+                if (field_8_group)
                 {
-                    pPedListIter = pGroup_1->field_4_ped_list[0];
-                    for (i = 0; pPedListIter; pPedListIter = pGroup_1->field_4_ped_list[i])
+                    pPedListIter = field_8_group->field_4_ped_list[0];
+                    for (i = 0; pPedListIter; pPedListIter = field_8_group->field_4_ped_list[i])
                     {
                         if (pPedListIter->field_168_game_object)
                         {
@@ -204,25 +191,23 @@ void Kfc_30::sub_5CC1C0()
 
                     if (b2)
                     {
-                        pPed_1 = this->field_4_ped;
-                        if (pPed_1)
+                        if (field_4_ped)
                         {
-                            pPed_1->set_occupation_403970(ped_ocupation_enum::dummy);
-                            pPed_2 = this->field_4_ped;
-                            pPed_2->ClearGroupAndGroupIdx_403A30();
+                            field_4_ped->set_occupation_403970(ped_ocupation_enum::dummy);
+                            field_4_ped->ClearGroupAndGroupIdx_403A30();
                             field_4_ped->Deallocate_45EB60();
                         }
-                        pGroup_2 = this->field_8_group;
-                        i_ = 0;
-                        if (pGroup_2)
+
+                        i = 0;
+                        if (field_8_group)
                         {
-                            for (pPedListIter_1 = pGroup_2->field_4_ped_list[0]; pPedListIter_1;
-                                 pPedListIter_1 = this->field_8_group->field_4_ped_list[i_])
+                            for (pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;
+                                 pPedListIter = this->field_8_group->field_4_ped_list[i])
                             {
-                                pPedListIter_1->set_occupation_403970(ped_ocupation_enum::dummy);
-                                pPedListIter_1->ClearGroupAndGroupIdx_403A30();
-                                pPedListIter_1->Deallocate_45EB60();
-                                ++i_;
+                                pPedListIter->set_occupation_403970(ped_ocupation_enum::dummy);
+                                pPedListIter->ClearGroupAndGroupIdx_403A30();
+                                pPedListIter->Deallocate_45EB60();
+                                ++i;
                             }
                             field_8_group->ClearGroupData_4C8E90();
                         }
@@ -241,58 +226,54 @@ void Kfc_30::sub_5CC1C0()
             }
             else
             {
-                pCar->sub_421470();
+                field_0_car->sub_421470();
             }
         }
         b1 = 1;
         goto LABEL_14;
     }
 
-    Ped* pPed_3 = this->field_4_ped;
-    if (pPed_3)
+    if (field_4_ped)
     {
-        if (pPed_3->field_20e < this->field_1A)
+        if (field_4_ped->field_20e < this->field_1A)
         {
             b2 = 0;
         }
     }
 
-    PedGroup* pGroup_3 = this->field_8_group;
-    if (pGroup_3)
+    if (field_8_group)
     {
-        Ped* pPedListIter_2 = pGroup_3->field_4_ped_list[0];
-        for (s32 i__ = 0; pPedListIter_2; pPedListIter_2 = pGroup_3->field_4_ped_list[i__])
+        pPedListIter = field_8_group->field_4_ped_list[0];
+        for (i = 0; pPedListIter; pPedListIter = field_8_group->field_4_ped_list[i])
         {
-            if (pPedListIter_2->field_20e < this->field_1A)
+            if (pPedListIter->field_20e < this->field_1A)
             {
                 b2 = 0;
             }
-            ++i__;
+            ++i;
         }
     }
 
     if (b2)
     {
-        if (pPed_3)
+        if (field_4_ped)
         {
-            pPed_3->ClearGroupAndGroupIdx_403A30();
+            field_4_ped->ClearGroupAndGroupIdx_403A30();
             field_4_ped->Deallocate_45EB60();
         }
 
-        PedGroup* pGroup_4 = this->field_8_group;
-        s32 i___ = 0;
-        if (pGroup_4)
+        i = 0;
+        if (field_8_group)
         {
-            for (Ped* pPedListIter_3 = pGroup_4->field_4_ped_list[0]; pPedListIter_3;
-                 pPedListIter_3 = this->field_8_group->field_4_ped_list[i___])
+            for (pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter; pPedListIter = field_8_group->field_4_ped_list[i])
             {
-                pPedListIter_3->ClearGroupAndGroupIdx_403A30();
-                pPedListIter_3->Deallocate_45EB60();
-                ++i___;
+                pPedListIter->ClearGroupAndGroupIdx_403A30();
+                pPedListIter->Deallocate_45EB60();
+                ++i;
             }
             field_8_group->ClearGroupData_4C8E90();
         }
-        this->field_2C = 1;
+        field_2C = 1;
     }
 }
 
