@@ -47,6 +47,7 @@ Fix16_Point Object_3C::GetRot_52ADF0()
     return p;
 }
 
+// 9.6f 0x482D90
 STUB_FUNC(0x521FD0)
 Ang16* Object_3C::GetMovementSpeedAndAngle_521FD0(Fix16 *a2, Ang16 *a3)
 {
