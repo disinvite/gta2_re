@@ -4433,8 +4433,8 @@ void Char_B4::HandleGenericImpact_553E00(Ang16 ang, Fix16 a3, Fix16 a4, char_typ
 {
     WIP_IMPLEMENTED;
 
-    s32 damageToUse;
-    if (field_7C_pPed->field_208_invulnerability)
+    u16 damageToUse;
+    if (field_7C_pPed->field_208_invulnerability > 0)
     {
         damageToUse = 0;
     }
@@ -4443,16 +4443,15 @@ void Char_B4::HandleGenericImpact_553E00(Ang16 ang, Fix16 a3, Fix16 a4, char_typ
         damageToUse = a5;
     }
 
-    if (field_7C_pPed->field_278_ped_state_1 != ped_state_1::dead_9)
+    if (field_7C_pPed->GetPedState_403990() != ped_state_1::dead_9)
     {
-        Sprite* pSprite = this->field_80_sprite_ptr;
         this->field_16 = 1;
         this->field_7C_pPed->field_184_pObj2C = gObject_5C_6F8F84->NewUnknown_52A240(110,
-                                                                                     pSprite->field_14_xy.x,
-                                                                                     pSprite->field_14_xy.y,
-                                                                                     pSprite->field_1C_zpos,
+                                                                                     field_80_sprite_ptr->field_14_xy.x,
+                                                                                     field_80_sprite_ptr->field_14_xy.y,
+                                                                                     field_80_sprite_ptr->field_1C_zpos,
                                                                                      ang,
-                                                                                     pSprite->field_0,
+                                                                                     field_80_sprite_ptr->field_0,
                                                                                      a3,
                                                                                      -dword_6FD9AC,
                                                                                      a4);
@@ -4473,9 +4472,14 @@ void Char_B4::HandleGenericImpact_553E00(Ang16 ang, Fix16 a3, Fix16 a4, char_typ
 
             case 1:
                 field_7C_pPed->field_184_pObj2C->field_10_obj_3c->field_10 = a4;
-                if (!field_7C_pPed->field_208_invulnerability)
+                if (field_7C_pPed->field_208_invulnerability > 0)
                 {
-                    if (field_7C_pPed->IsField238_45EDE0(2))
+                   
+                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_24);
+                }
+                else
+                {
+                     if (field_7C_pPed->IsField238_45EDE0(2))
                     {
                         field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_25);
                     }
@@ -4483,10 +4487,6 @@ void Char_B4::HandleGenericImpact_553E00(Ang16 ang, Fix16 a3, Fix16 a4, char_typ
                     {
                         field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_26);
                     }
-                }
-                else
-                {
-                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_24);
                 }
 
                 this->field_C_ped_state_2 = ped_state_2::Unknown_24;
@@ -4498,13 +4498,13 @@ void Char_B4::HandleGenericImpact_553E00(Ang16 ang, Fix16 a3, Fix16 a4, char_typ
 
             case 2:
                 field_7C_pPed->field_184_pObj2C->field_10_obj_3c->field_10 = a4;
-                if (!field_7C_pPed->field_208_invulnerability)
+                if (field_7C_pPed->field_208_invulnerability > 0)
                 {
-                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_26);
+                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_24);
                 }
                 else
                 {
-                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_24);
+                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_26);
                 }
 
                 this->field_C_ped_state_2 = ped_state_2::Unknown_24;
