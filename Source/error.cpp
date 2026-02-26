@@ -49,7 +49,7 @@ void ErrorLog::sub_4D9470(const char_type* path, s32 a3)
 }
 
 // TODO: Does match when ostream is added
-STUB_FUNC(0x4D94E0)
+WIP_FUNC(0x4D94E0)
 ErrorLog::ErrorLog(const char* FileName, int a3)
 {
     NOT_IMPLEMENTED;
@@ -57,16 +57,16 @@ ErrorLog::ErrorLog(const char* FileName, int a3)
 }
 
 // This func matches but for some reason it's crashing the patched version
-STUB_FUNC(0x4D9690)
+WIP_FUNC(0x4D9690)
 EXPORT void __cdecl log_on_line_written_cb_4D9690(void* a1)
 {
     ((ostream_type*)a1)->flush();
 }
 
-STUB_FUNC(0x4D9620)
+WIP_FUNC(0x4D9620)
 void ErrorLog::Write_4D9620(const char_type* pMsg)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
 
     // For some reason log_on_line_written_cb_4D9690 addr gets pushed between these calls ??
     ((ostream_type&)this->field_0_ofstr) << pMsg << '\n';
