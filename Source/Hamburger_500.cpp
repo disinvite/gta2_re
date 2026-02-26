@@ -122,10 +122,24 @@ char_type Hamburger_500::sub_474970(Ped* pPed)
     return 0;
 }
 
-STUB_FUNC(0x4749b0)
-char_type Hamburger_500::sub_4749B0(Ped* a1)
+MATCH_FUNC(0x4749b0)
+char_type Hamburger_500::sub_4749B0(Ped* pPed)
 {
-    NOT_IMPLEMENTED;
+    for (u8 i = 0; i < 20; i++)
+    {
+        if (field_0[i].field_0 == 1)
+        {
+            if (sub_474850(pPed, field_0[i].field_4_ped_owner))
+            {
+                switch (field_0[i].field_C)
+                {
+                    case 13:
+                    case 15:
+                        return 1;
+                }
+            }
+        }
+    }
     return 0;
 }
 
