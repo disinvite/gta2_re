@@ -38,12 +38,13 @@ Object_3C::~Object_3C()
     mpNext = 0;
 }
 
-WIP_FUNC(0x52adf0)
+// 9.6f 0x482BA0
+MATCH_FUNC(0x52adf0)
 Fix16_Point Object_3C::GetRot_52ADF0()
 {
-    WIP_IMPLEMENTED;
-
-    return Fix16_Point(Ang16::sine_40F500(field_4) * field_C, Ang16::cosine_40F520(field_4) * field_C);
+    Fix16_Point p;
+    p.FromPolar_41E210(field_C, field_4);
+    return p;
 }
 
 STUB_FUNC(0x521FD0)
