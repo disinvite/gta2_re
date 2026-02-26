@@ -244,7 +244,7 @@ MATCH_FUNC(0x503a20)
 void miss2_0x11C::SCRCMD_PLAYER_PED_503A20(SCR_PLAYER_PED* pCmd)
 {
 
-    Player* v1 = gGame_0x40_67E008->sub_4B9750();
+    Player* v1 = gGame_0x40_67E008->GetFirstPlayerWithoutPed_4B9750();
 
     if (v1)
     {
@@ -4552,13 +4552,13 @@ void miss2_0x11C::sub_50F270() // WARP_FROM_CAR_TO_POINT
         pCar->ClearDriver_4407F0();
         pCar->field_54_driver = 0;
         gGame_0x40_67E008->field_38_orf1->DisableInputs_569F40();
-        gGame_0x40_67E008->field_38_orf1->field_90_game_camera.sub_436540(pPointer->field_8_char);
+        gGame_0x40_67E008->field_38_orf1->field_90_game_camera.UpdateFollowPedCamera_436540(pPointer->field_8_char);
 
         Camera_0xBC* p_game_camera = &(gGame_0x40_67E008->field_38_orf1->field_90_game_camera);
 
-        p_game_camera->sub_41E410();
+        p_game_camera->CommitCameraTarget_41E410();
 
-        gGame_0x40_67E008->field_38_orf1->field_90_game_camera.sub_435DD0();
+        gGame_0x40_67E008->field_38_orf1->field_90_game_camera.ResetCameraSmoothing_435DD0();
         gGame_0x40_67E008->field_38_orf1->field_90_game_camera.field_3C_followed_ped_id = 1;
     }
     miss2_0x11C::Next_503620(gBasePtr_6F8070);

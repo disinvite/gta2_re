@@ -1,5 +1,6 @@
 #include "Kfc_1E0.hpp"
 #include "Car_BC.hpp"
+#include "Hamburger_500.hpp"
 #include "Ped.hpp"
 #include "PedGroup.hpp"
 
@@ -56,6 +57,7 @@ bool Kfc_30::sub_5CBC60()
     // TODO: Something strange going on here:
     // mov 0x28(%ecx),%ecx
     //this = (Kfc_30*)field_28;
+    s32 v4 = this->field_28;
     return true;
 }
 
@@ -105,10 +107,179 @@ void Kfc_30::sub_5CBD50()
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x5cc1c0)
+// 9.6f 0x4C5A00
+WIP_FUNC(0x5cc1c0)
 void Kfc_30::sub_5CC1C0()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    bool bClearRouteAndTryClearOthers = 0;
+    bool bClearPedAndGroup = 1;
+    bool bClearCharB4F24 = 1;
+
+    if (field_8_group)
+    {
+        if (field_8_group->field_34_count == 0)
+        {
+            field_8_group->ClearGroupData_4C8E90();
+            this->field_8_group = 0;
+        }
+    }
+
+    if (this->field_24 == 1)
+    {
+        if (this->field_0_car && !field_0_car->sub_4215B0() && !field_0_car->IsMaxDamage_40F890())
+        {
+            if (field_0_car->Get_F76_4A9AD0() > this->field_1A)
+            {
+                field_0_car->sub_421470();
+                bClearRouteAndTryClearOthers = 1;
+            }
+        }
+        else
+        {
+            bClearRouteAndTryClearOthers = 1;
+        }
+
+        if (field_4_ped)
+        {
+            if (field_4_ped->field_168_game_object)
+            {
+                if (field_4_ped->Get_F20E_4039F0() < this->field_1A)
+                {
+                    bClearPedAndGroup = 0;
+                }
+            }
+            else if (field_4_ped->isDead_403B60())
+            {
+                this->field_4_ped = 0;
+            }
+        }
+
+        if (field_4_ped)
+        {
+            if (field_4_ped->field_168_game_object)
+            {
+                bClearPedAndGroup = 0;
+            }
+        }
+
+        if (field_8_group)
+        {
+            u8 i = 0;
+            for (Ped* pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;)
+            {
+                if (pPedListIter->field_168_game_object)
+                {
+                    if (pPedListIter->get_field_20e() < this->field_1A)
+                    {
+                        bClearPedAndGroup = 0;
+                    }
+                }
+                else
+                {
+                    bClearCharB4F24 = 0;
+                }
+                i++;
+                pPedListIter = field_8_group->field_4_ped_list[i];
+            }
+        }
+
+        if (bClearRouteAndTryClearOthers)
+        {
+            if (field_0_car)
+            {
+                if (field_0_car->field_60)
+                {
+                    gHamburger_500_678E30->FreeEntry_474CC0(field_0_car->field_60); // something to do with car route
+                    field_0_car->field_60 = 0;
+                }
+            }
+            field_0_car = 0;
+
+            if (bClearPedAndGroup)
+            {
+                if (field_4_ped)
+                {
+                    field_4_ped->set_occupation_403970(ped_ocupation_enum::dummy);
+                    field_4_ped->ClearGroupAndGroupIdx_403A30();
+                    field_4_ped->Deallocate_45EB60();
+                }
+
+                if (field_8_group)
+                {
+                    u8 i = 0;
+                    for (Ped* pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;)
+                    {
+                        pPedListIter->set_occupation_403970(ped_ocupation_enum::dummy);
+                        pPedListIter->ClearGroupAndGroupIdx_403A30();
+                        pPedListIter->Deallocate_45EB60();
+                        // TODO: Instruction swap
+                        i++;
+                        pPedListIter = field_8_group->field_4_ped_list[i];
+                    }
+                    field_8_group->ClearGroupData_4C8E90();
+                }
+                this->field_8_group = 0;
+                this->field_2C = 1;
+            }
+            else if (bClearCharB4F24)
+            {
+                if (this->field_4_ped->field_168_game_object)
+                {
+                    this->field_24 = 0;
+                }
+            }
+        }
+        return;
+    }
+
+    if (field_4_ped)
+    {
+        if (field_4_ped->Get_F20E_4039F0() < this->field_1A)
+        {
+            bClearPedAndGroup = 0;
+        }
+    }
+
+    if (field_8_group)
+    {
+        u8 i = 0;
+        for (Ped* pPedListIter = field_8_group->field_4_ped_list[0]; pPedListIter;)
+        {
+            if (pPedListIter->Get_F20E_4039F0() < this->field_1A)
+            {
+                bClearPedAndGroup = 0;
+            }
+            i++;
+            pPedListIter = field_8_group->field_4_ped_list[i];
+        }
+    }
+
+    if (bClearPedAndGroup)
+    {
+        if (field_4_ped)
+        {
+            field_4_ped->ClearGroupAndGroupIdx_403A30();
+            field_4_ped->Deallocate_45EB60();
+        }
+
+        if (field_8_group)
+        {
+            u8 i = 0;
+            Ped* pPedListIter = field_8_group->field_4_ped_list[0];
+            while(pPedListIter)
+            {
+                pPedListIter->ClearGroupAndGroupIdx_403A30();
+                pPedListIter->Deallocate_45EB60();
+                // TODO: Instruction swap
+                i++;
+                pPedListIter = field_8_group->field_4_ped_list[i];
+            }
+            field_8_group->ClearGroupData_4C8E90();
+        }
+        field_2C = 1;
+    }
 }
 
 MATCH_FUNC(0x5cc480)
@@ -148,8 +319,10 @@ bool Kfc_30::Service_5CC480()
         case 1:
             if (gCar_6C_677930->CanAllocateOfType_446930(4))
             {
-                this->field_0_car =
-                    gCar_6C_677930->SpawnCarAtRoadDirection_444CF0(car_model_enum::MEDICAR, this->field_C_x, this->field_10_y, this->field_14_z);
+                this->field_0_car = gCar_6C_677930->SpawnCarAtRoadDirection_444CF0(car_model_enum::MEDICAR,
+                                                                                   this->field_C_x,
+                                                                                   this->field_10_y,
+                                                                                   this->field_14_z);
             }
             else
             {
@@ -166,7 +339,10 @@ bool Kfc_30::Service_5CC480()
         case 3:
             if (gCar_6C_677930->CanAllocateOfType_446930(6))
             {
-                this->field_0_car = gCar_6C_677930->SpawnCarAtRoadDirection_444CF0(car_model_enum::COPCAR, this->field_C_x, this->field_10_y, this->field_14_z);
+                this->field_0_car = gCar_6C_677930->SpawnCarAtRoadDirection_444CF0(car_model_enum::COPCAR,
+                                                                                   this->field_C_x,
+                                                                                   this->field_10_y,
+                                                                                   this->field_14_z);
             }
             else
             {
@@ -182,8 +358,10 @@ bool Kfc_30::Service_5CC480()
         case 5:
             if (gCar_6C_677930->CanAllocateOfType_446930(6))
             {
-                this->field_0_car =
-                    gCar_6C_677930->SpawnCarAtRoadDirection_444CF0(car_model_enum::SWATVAN, this->field_C_x, this->field_10_y, this->field_14_z);
+                this->field_0_car = gCar_6C_677930->SpawnCarAtRoadDirection_444CF0(car_model_enum::SWATVAN,
+                                                                                   this->field_C_x,
+                                                                                   this->field_10_y,
+                                                                                   this->field_14_z);
             }
             else
             {

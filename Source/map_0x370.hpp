@@ -294,7 +294,7 @@ class Map_0x370
 
     EXPORT Gang_144* GetGangAtCoords_4DFB50(Fix16 x, Fix16 y);
 
-    EXPORT void sub_4DFB90();
+    EXPORT void SpawnMapObjects_4DFB90();
     EXPORT void alloc_zones_4DFCA0();
     EXPORT void update_lights_4DFCD0();
 

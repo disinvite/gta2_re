@@ -139,8 +139,7 @@ char_type Ped_List_4::RemovePedsInSpecificState_471290()
     char_type removedCount = 0;
     while (pIter)
     {
-        if ((pIter->field_0_char_ped->field_21C & 1) != 0 
-            && pIter->field_0_char_ped->field_278_ped_state_1 == ped_state_1::dead_9)
+        if ((pIter->field_0_char_ped->field_21C & 1) != 0 && pIter->field_0_char_ped->field_278_ped_state_1 == ped_state_1::dead_9)
         {
             pLast = pIter;
             pIter = pIter->mpNext;
@@ -196,11 +195,29 @@ Ped* Ped_List_4::RemoveFirstPed_471320()
     return pPed;
 }
 
+// 9.6f 0x445C30
 STUB_FUNC(0x471340)
 Ped* Ped_List_4::GetFromListClosestPedToPoint_471340(Fix16 x, Fix16 y)
 {
     NOT_IMPLEMENTED;
-    return 0;
+    Fix16 smallest(99999);
+    Ped* pNearest = 0;
+    Char_8* pIter = this->field_0_pFirstPed;
+    while (pIter)
+    {
+        Ped* pPed = pIter->field_0_char_ped;
+        if (pIter->field_0_char_ped->CheckBit0_433B40() == 1)
+        {
+            Fix16 curr = Fix16::MaxAbsDistance_42A6B0(x, y, pPed->get_cam_x(), pPed->get_cam_y());
+            if (curr < smallest)
+            {
+                pNearest = pPed;
+                smallest = curr;
+            }
+        }
+        pIter = pIter->mpNext;
+    }
+    return pNearest;
 }
 
 STUB_FUNC(0x4713C0)

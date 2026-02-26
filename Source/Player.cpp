@@ -1077,7 +1077,7 @@ void Player::Hud_Controls_565890(u16 action)
             case DIK_ADD:
                 if (bDo_debug_keys_67D6CF)
                 {
-                    gGame_0x40_67E008->sub_4B9710();
+                    gGame_0x40_67E008->SinglePlayerStepFrame_4B9710();
                 }
                 break;
             case DIK_SUBTRACT:
@@ -1707,7 +1707,7 @@ void Player::sub_566EE0(char_type bDoNothing)
             gBurgerKing_67F8B0.ShowInput_4CEE10(); // input
         }
 
-        gGame_0x40_67E008->sub_4B9270();
+        gGame_0x40_67E008->DebugShowCarStatsAndFrameSkip_4B9270();
     }
 }
 
@@ -1825,7 +1825,7 @@ void Player::Wasted_567130()
                     Player::sub_564CF0();
                 }
                 field_68 = 0;
-                field_90_game_camera.sub_435DD0();
+                field_90_game_camera.ResetCameraSmoothing_435DD0();
                 field_90_game_camera.inline_set_ped_id_to_1_475B60();
 
                 if (field_2C8_unkq != NULL)
@@ -1957,7 +1957,7 @@ void Player::Busted_5679E0()
                     }
                 }
                 field_68 = 0;
-                field_90_game_camera.sub_435DD0();
+                field_90_game_camera.ResetCameraSmoothing_435DD0();
                 field_90_game_camera.inline_set_ped_id_to_1_475B60();
                 field_2C8_unkq->field_210_shock_counter = 0;
                 field_2C8_unkq->field_210_shock_counter = 0;
@@ -2129,14 +2129,14 @@ void Player::Service_5687F0()
                 Player::HandleControls_5668D0(this->field_2C4_player_ped);
             }
 
-            field_90_game_camera.sub_436540(this->field_2C4_player_ped);
+            field_90_game_camera.UpdateFollowPedCamera_436540(this->field_2C4_player_ped);
             field_90_game_camera.sub_435FF0();
 
             if (this->field_2D0)
             {
                 if (this->field_2C8_unkq)
                 {
-                    field_208_aux_game_camera.sub_436540(this->field_2C8_unkq);
+                    field_208_aux_game_camera.UpdateFollowPedCamera_436540(this->field_2C8_unkq);
                 }
                 else if (this->field_2CC)
                 {
@@ -2163,9 +2163,9 @@ void Player::Service_5687F0()
                 {
                     Player::HandleControls_5668D0(this->field_2C8_unkq);
                 }
-                field_208_aux_game_camera.sub_436540(this->field_2C8_unkq);
+                field_208_aux_game_camera.UpdateFollowPedCamera_436540(this->field_2C8_unkq);
             }
-            field_90_game_camera.sub_436540(this->field_2C4_player_ped);
+            field_90_game_camera.UpdateFollowPedCamera_436540(this->field_2C4_player_ped);
             field_90_game_camera.sub_435FF0();
             field_208_aux_game_camera.sub_435FF0();
             if (!this->field_6C_bIn_debug_cam_mode)
@@ -2175,10 +2175,10 @@ void Player::Service_5687F0()
             break;
 
         case 3:
-            field_90_game_camera.sub_436540(this->field_2C4_player_ped);
+            field_90_game_camera.UpdateFollowPedCamera_436540(this->field_2C4_player_ped);
             if (this->field_2C8_unkq)
             {
-                field_208_aux_game_camera.sub_436540(this->field_2C8_unkq);
+                field_208_aux_game_camera.UpdateFollowPedCamera_436540(this->field_2C8_unkq);
             }
             else if (this->field_2CC)
             {
@@ -2371,9 +2371,9 @@ void Player::sub_569600(Car_BC* pCar)
         pCar->field_98 = 1;
     }
     field_68 = 2;
-    field_208_aux_game_camera.sub_436540(field_2C8_unkq);
-    field_208_aux_game_camera.sub_41E410();
-    field_208_aux_game_camera.sub_435DD0();
+    field_208_aux_game_camera.UpdateFollowPedCamera_436540(field_2C8_unkq);
+    field_208_aux_game_camera.CommitCameraTarget_41E410();
+    field_208_aux_game_camera.ResetCameraSmoothing_435DD0();
     field_2D0 = 1;
     Player::sub_564C00();
     Player::sub_564AD0(pCar);
@@ -2386,8 +2386,8 @@ void Player::sub_5696D0(Car_BC* pCar)
     {
         field_2CC = pCar;
         field_208_aux_game_camera.sub_4364A0(pCar);
-        field_208_aux_game_camera.sub_41E410();
-        field_208_aux_game_camera.sub_435DD0();
+        field_208_aux_game_camera.CommitCameraTarget_41E410();
+        field_208_aux_game_camera.ResetCameraSmoothing_435DD0();
         field_68 = 3;
         field_2D0 = 1;
     }
@@ -2447,7 +2447,7 @@ Car_BC* Player::sub_5698E0()
         Car_BC* pCar = pPed->field_16C_car;
         if (!pCar)
         {
-            pCar = pPed->sub_45BBF0();
+            pCar = pPed->GetCarBeingEnteredOrExited_45BBF0();
         }
         return pCar;
     }
@@ -2460,7 +2460,7 @@ void Player::get_pos_569920(Fix16* pXPos, Fix16* pYPos, Fix16* pZPos)
     Ped* pPed = (field_68 == 2 || field_68 == 3) ? field_2C8_unkq : field_2C4_player_ped;
     if (pPed)
     {
-        Car_BC* pCar = pPed->sub_45BBF0();
+        Car_BC* pCar = pPed->GetCarBeingEnteredOrExited_45BBF0();
         if (pCar)
         {
             *pXPos = pCar->field_50_car_sprite->GetXPos();
@@ -2580,7 +2580,7 @@ void Player::SetScoreTextColour_569C20()
 }
 
 MATCH_FUNC(0x569CB0)
-void Player::sub_569CB0()
+void Player::InitializePlayerState_569CB0()
 {
     if (!gMap_0x370_6F6268->first_zone_by_type_4DF1D0(Restart_16))
     {
@@ -2615,15 +2615,15 @@ void Player::sub_569CB0()
         field_6BC_multpliers.ChangeStatByAmount_4921B0(1);
     }
 
-    field_90_game_camera.sub_436540(field_2C4_player_ped);
+    field_90_game_camera.UpdateFollowPedCamera_436540(field_2C4_player_ped);
     field_90_game_camera.inline_set_ped_id_to_1_475B60();
-    field_90_game_camera.sub_41E410();
-    field_90_game_camera.sub_435DD0();
+    field_90_game_camera.CommitCameraTarget_41E410();
+    field_90_game_camera.ResetCameraSmoothing_435DD0();
 
-    field_208_aux_game_camera.sub_436540(field_2C4_player_ped);
+    field_208_aux_game_camera.UpdateFollowPedCamera_436540(field_2C4_player_ped);
     field_208_aux_game_camera.inline_set_ped_id_to_1_475B60();
-    field_208_aux_game_camera.sub_41E410();
-    field_208_aux_game_camera.sub_435DD0();
+    field_208_aux_game_camera.CommitCameraTarget_41E410();
+    field_208_aux_game_camera.ResetCameraSmoothing_435DD0();
 
     field_2D0 = 0;
 

@@ -7,7 +7,7 @@ DEFINE_GLOBAL(Hamburger_500*, gHamburger_500_678E30, 0x678E30);
 DEFINE_GLOBAL_INIT(Fix16, dword_678D0C, Fix16(0), 0x678D0C);
 
 MATCH_FUNC(0x4747b0)
-void Hamburger_40::sub_4747B0()
+void Hamburger_40::ResetEntry_4747B0()
 {
     field_0 = 0;
     field_10 = 0;
@@ -26,7 +26,7 @@ void Hamburger_40::sub_4747B0()
     field_2A = 0;
     field_2C = 0;
     field_2E = 0;
-    field_C = 0;
+    field_C = PedRelationship::Code0;
     field_34 = 0;
     field_4_ped_owner = 0;
     field_38 = 0;
@@ -36,7 +36,7 @@ void Hamburger_40::sub_4747B0()
 MATCH_FUNC(0x474ca0)
 Hamburger_40::Hamburger_40()
 {
-    sub_4747B0();
+    ResetEntry_4747B0();
 }
 
 MATCH_FUNC(0x474cb0)
@@ -45,7 +45,7 @@ Hamburger_40::~Hamburger_40()
 }
 
 MATCH_FUNC(0x474810)
-Hamburger_40* Hamburger_500::sub_474810()
+Hamburger_40* Hamburger_500::AllocateEntry_474810()
 {
     for (u8 i = 0; i < 20; i++)
     {
@@ -59,7 +59,7 @@ Hamburger_40* Hamburger_500::sub_474810()
 }
 
 MATCH_FUNC(0x474850)
-char_type Hamburger_500::sub_474850(Ped* pPed1, Ped* pPed2)
+char_type Hamburger_500::ArePedsCompatible_474850(Ped* pPed1, Ped* pPed2)
 {
     if (pPed1->field_240_occupation < 24 || pPed1->field_240_occupation > 27) // ped 1 is not police
     {
@@ -79,11 +79,12 @@ char_type Hamburger_500::sub_474850(Ped* pPed1, Ped* pPed2)
 }
 
 MATCH_FUNC(0x4748a0)
-Ped* Hamburger_500::sub_4748A0(s32 a2, Ped* pPed)
+Ped* Hamburger_500::FindOwnerForFollowCode_4748A0(s32 a2, Ped* pPed)
 {
     for (u8 i = 0; i < 20; i++)
     {
-        if (field_0[i].field_0 == 1 && field_0[i].field_30_ped_to_follow == pPed && sub_474850(pPed, field_0[i].field_4_ped_owner) && a2 == field_0[i].field_C)
+        if (field_0[i].field_0 == 1 && field_0[i].field_30_ped_to_follow == pPed && ArePedsCompatible_474850(pPed, field_0[i].field_4_ped_owner) &&
+            a2 == field_0[i].field_C)
         {
             return field_0[i].field_4_ped_owner;
         }
@@ -92,14 +93,14 @@ Ped* Hamburger_500::sub_4748A0(s32 a2, Ped* pPed)
 }
 
 MATCH_FUNC(0x474920)
-char_type Hamburger_500::sub_474920(Ped* a2, Ped* a3)
+char_type Hamburger_500::CountFollowers_474920(Ped* a2, Ped* a3)
 {
     u8 total = 0;
     for (u8 i = 0; i < 20; i++)
     {
         if (field_0[i].field_0 == 1 && field_0[i].field_30_ped_to_follow == a2)
         {
-            if (sub_474850(a3, field_0[i].field_4_ped_owner))
+            if (ArePedsCompatible_474850(a3, field_0[i].field_4_ped_owner))
             {
                 total++;
             }
@@ -109,7 +110,7 @@ char_type Hamburger_500::sub_474920(Ped* a2, Ped* a3)
 }
 
 MATCH_FUNC(0x474970)
-char_type Hamburger_500::sub_474970(Ped* pPed)
+char_type Hamburger_500::HasAnyFollower_474970(Ped* pPed)
 {
     for (u8 i = 0; i < 20; i++)
     {
@@ -121,21 +122,35 @@ char_type Hamburger_500::sub_474970(Ped* pPed)
     return 0;
 }
 
-STUB_FUNC(0x4749b0)
-char_type Hamburger_500::sub_4749B0(Ped* a1)
+MATCH_FUNC(0x4749b0)
+char_type Hamburger_500::HasRelationshipCode_13_15_4749B0(Ped* pPed)
 {
-    NOT_IMPLEMENTED;
+    for (u8 i = 0; i < 20; i++)
+    {
+        if (field_0[i].field_0 == 1)
+        {
+            if (ArePedsCompatible_474850(pPed, field_0[i].field_4_ped_owner))
+            {
+                switch (field_0[i].field_C)
+                {
+                    case PedRelationship::Code13:
+                    case PedRelationship::Code15:
+                        return 1;
+                }
+            }
+        }
+    }
     return 0;
 }
 
 MATCH_FUNC(0x474a20)
-char_type Hamburger_500::sub_474A20(Ped* pPed)
+char_type Hamburger_500::HasRelationshipCode_8_474A20(Ped* pPed)
 {
     for (u8 i = 0; i < 20; i++)
     {
         if (field_0[i].field_0 == 1)
         {
-            if (sub_474850(pPed, field_0[i].field_4_ped_owner) && field_0[i].field_C == 8)
+            if (ArePedsCompatible_474850(pPed, field_0[i].field_4_ped_owner) && field_0[i].field_C == 8)
             {
                 return 1;
             }
@@ -144,21 +159,36 @@ char_type Hamburger_500::sub_474A20(Ped* pPed)
     return 0;
 }
 
-STUB_FUNC(0x474a80)
-char_type Hamburger_500::sub_474A80(Ped* pPed)
+MATCH_FUNC(0x474a80)
+char_type Hamburger_500::HasRelationshipCode_6_8_10_474A80(Ped* pPed)
 {
-    NOT_IMPLEMENTED;
+    for (u8 i = 0; i < 20; i++)
+    {
+        if (field_0[i].field_0 == 1)
+        {
+            if (ArePedsCompatible_474850(pPed, field_0[i].field_4_ped_owner))
+            {
+                switch (field_0[i].field_C)
+                {
+                    case PedRelationship::Code6:
+                    case PedRelationship::Code8:
+                    case PedRelationship::Code10:
+                        return 1;
+                }
+            }
+        }
+    }
     return 0;
 }
 
 MATCH_FUNC(0x474af0)
-char_type Hamburger_500::sub_474AF0(Ped* pPed)
+char_type Hamburger_500::HasRelationshipCode_9_474AF0(Ped* pPed)
 {
     for (u8 i = 0; i < 20; i++)
     {
         if (field_0[i].field_0 == 1)
         {
-            if (sub_474850(pPed, field_0[i].field_4_ped_owner) && field_0[i].field_C == 9)
+            if (ArePedsCompatible_474850(pPed, field_0[i].field_4_ped_owner) && field_0[i].field_C == 9)
             {
                 return 1;
             }
@@ -167,40 +197,23 @@ char_type Hamburger_500::sub_474AF0(Ped* pPed)
     return 0;
 }
 
-STUB_FUNC(0x474b50)
-char_type Hamburger_500::sub_474B50(Ped* pPed)
+MATCH_FUNC(0x474b50)
+char_type Hamburger_500::HasRelationshipCode_7_9_11_474B50(Ped* pPed)
 {
-    NOT_IMPLEMENTED;
     for (u8 i = 0; i < 20; i++)
     {
         if (field_0[i].field_0 == 1)
         {
-            if (sub_474850(pPed, field_0[i].field_4_ped_owner))
+            if (ArePedsCompatible_474850(pPed, field_0[i].field_4_ped_owner))
             {
-                if (field_0[i].field_C == 7)
+                switch (field_0[i].field_C)
                 {
-                    return 1;
+                    case PedRelationship::Code7:
+                        return 1;
+                    case PedRelationship::Code9:
+                    case PedRelationship::Code11:
+                        return 1;
                 }
-
-                if (field_0[i].field_C == 2 || field_0[i].field_C == 0)
-                {
-                    return 1;
-                }
-
-                // TODO: Some sort switch case annoyance?
-                /*
-                f_c = field_0[i].field_C - 7;
-                if (!f_c)
-                {
-                    return 1;
-                }
-
-                f_c_m2 = f_c - 2;
-                if (!f_c_m2 || f_c_m2 == 2)
-                {
-                    return 1;
-                }
-                */
             }
         }
     }
@@ -208,15 +221,15 @@ char_type Hamburger_500::sub_474B50(Ped* pPed)
 }
 
 MATCH_FUNC(0x474bc0)
-char_type Hamburger_500::sub_474BC0(Ped* pPed)
+char_type Hamburger_500::HasRelationshipCode_6_7_8_9_13_474BC0(Ped* pPed)
 {
     for (u8 i = 0; i < 20; i++)
     {
         if (field_0[i].field_0 == 1)
         {
-            if (sub_474850(pPed, field_0[i].field_4_ped_owner))
+            if (ArePedsCompatible_474850(pPed, field_0[i].field_4_ped_owner))
             {
-                if (field_0[i].field_C >= 6 && (field_0[i].field_C <= 9 || field_0[i].field_C == 13))
+                if (field_0[i].field_C >= PedRelationship::Code6 && (field_0[i].field_C <= PedRelationship::Code9 || field_0[i].field_C == PedRelationship::Code13))
                 {
                     return 1;
                 }
@@ -227,20 +240,20 @@ char_type Hamburger_500::sub_474BC0(Ped* pPed)
 }
 
 MATCH_FUNC(0x474c30)
-char_type Hamburger_500::sub_474C30(Ped* pPed)
+char_type Hamburger_500::HasRelationshipCode_4_5_474C30(Ped* pPed)
 {
     for (u8 i = 0; i < 20; i++)
     {
         if (field_0[i].field_0 == 1)
         {
-            if (sub_474850(pPed, field_0[i].field_4_ped_owner))
+            if (ArePedsCompatible_474850(pPed, field_0[i].field_4_ped_owner))
             {
-                if (field_0[i].field_C < 4)
+                if (field_0[i].field_C < PedRelationship::Code4)
                 {
                     continue;
                 }
 
-                if (field_0[i].field_C <= 5)
+                if (field_0[i].field_C <= PedRelationship::Code5)
                 {
                     return 1;
                 }
@@ -251,14 +264,14 @@ char_type Hamburger_500::sub_474C30(Ped* pPed)
 }
 
 MATCH_FUNC(0x474cc0)
-void Hamburger_500::Cancel_474CC0(Hamburger_40* toFind)
+void Hamburger_500::FreeEntry_474CC0(Hamburger_40* toFind)
 {
     for (u8 i = 0; i < 20; i++)
     {
         if (&field_0[i] == toFind)
         {
             field_0[i].field_0 = 0;
-            field_0[i].sub_4747B0();
+            field_0[i].ResetEntry_4747B0();
             return;
         }
     }

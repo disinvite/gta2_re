@@ -1270,12 +1270,12 @@
         "v105_address": "0x435d20"
     },
     {
-        "name": "Camera_0xBC::sub_435DD0",
+        "name": "Camera_0xBC::ResetCameraSmoothing_435DD0",
         "v96f_address": null,
         "v105_address": "0x435dd0"
     },
     {
-        "name": "Camera_0xBC::sub_435F90",
+        "name": "Camera_0xBC::AccumulateSuspicionOnDriver_435F90",
         "v96f_address": null,
         "v105_address": "0x435f90"
     },
@@ -1305,7 +1305,7 @@
         "v105_address": "0x4361b0"
     },
     {
-        "name": "Camera_0xBC::sub_436200",
+        "name": "Camera_0xBC::ApplyCarVelocityCameraOffset_436200",
         "v96f_address": null,
         "v105_address": "0x436200"
     },
@@ -1315,7 +1315,7 @@
         "v105_address": "0x4364a0"
     },
     {
-        "name": "Camera_0xBC::sub_436540",
+        "name": "Camera_0xBC::UpdateFollowPedCamera_436540",
         "v96f_address": "0x41F410",
         "v105_address": "0x436540"
     },
@@ -1330,7 +1330,7 @@
         "v105_address": "0x436830"
     },
     {
-        "name": "Camera_0xBC::sub_436860",
+        "name": "Camera_0xBC::ApplyZOffsetToScreenPosition_436860",
         "v96f_address": "0x41F0D0",
         "v105_address": "0x436860"
     },
@@ -2890,7 +2890,7 @@
         "v105_address": "0x45b5b0"
     },
     {
-        "name": "Ped::sub_45BBF0",
+        "name": "Ped::GetCarBeingEnteredOrExited_45BBF0",
         "v96f_address": null,
         "v105_address": "0x45bbf0"
     },
@@ -4085,67 +4085,67 @@
         "v105_address": "0x471710"
     },
     {
-        "name": "Hamburger_40::sub_4747B0",
+        "name": "Hamburger_40::ResetEntry_4747B0",
         "v96f_address": null,
         "v105_address": "0x4747b0"
     },
     {
-        "name": "Hamburger_500::sub_474810",
+        "name": "Hamburger_500::AllocateEntry_474810",
         "v96f_address": null,
         "v105_address": "0x474810"
     },
     {
-        "name": "Hamburger_500::sub_474850",
+        "name": "Hamburger_500::ArePedsCompatible_474850",
         "v96f_address": null,
         "v105_address": "0x474850"
     },
     {
-        "name": "Hamburger_500::sub_4748A0",
+        "name": "Hamburger_500::FindOwnerForFollowCode_4748A0",
         "v96f_address": null,
         "v105_address": "0x4748a0"
     },
     {
-        "name": "Hamburger_500::sub_474920",
+        "name": "Hamburger_500::CountFollowers_474920",
         "v96f_address": null,
         "v105_address": "0x474920"
     },
     {
-        "name": "Hamburger_500::sub_474970",
+        "name": "Hamburger_500::HasAnyFollower_474970",
         "v96f_address": null,
         "v105_address": "0x474970"
     },
     {
-        "name": "Hamburger_500::sub_4749B0",
+        "name": "Hamburger_500::HasRelationshipCode_13_15_4749B0",
         "v96f_address": null,
         "v105_address": "0x4749b0"
     },
     {
-        "name": "Hamburger_500::sub_474A20",
+        "name": "Hamburger_500::HasRelationshipCode_8_474A20",
         "v96f_address": null,
         "v105_address": "0x474a20"
     },
     {
-        "name": "Hamburger_500::sub_474A80",
+        "name": "Hamburger_500::HasRelationshipCode_6_8_10_474A80",
         "v96f_address": null,
         "v105_address": "0x474a80"
     },
     {
-        "name": "Hamburger_500::sub_474AF0",
+        "name": "Hamburger_500::HasRelationshipCode_9_474AF0",
         "v96f_address": null,
         "v105_address": "0x474af0"
     },
     {
-        "name": "Hamburger_500::sub_474B50",
+        "name": "Hamburger_500::HasRelationshipCode_7_9_11_474B50",
         "v96f_address": null,
         "v105_address": "0x474b50"
     },
     {
-        "name": "Hamburger_500::sub_474BC0",
+        "name": "Hamburger_500::HasRelationshipCode_6_7_8_9_13_474BC0",
         "v96f_address": null,
         "v105_address": "0x474bc0"
     },
     {
-        "name": "Hamburger_500::sub_474C30",
+        "name": "Hamburger_500::HasRelationshipCode_4_5_474C30",
         "v96f_address": null,
         "v105_address": "0x474c30"
     },
@@ -4160,7 +4160,7 @@
         "v105_address": "0x474cb0"
     },
     {
-        "name": "Hamburger_500::Cancel_474CC0",
+        "name": "Hamburger_500::FreeEntry_474CC0",
         "v96f_address": null,
         "v105_address": "0x474cc0"
     },
@@ -5910,7 +5910,7 @@
         "v105_address": "0x4b8ff0"
     },
     {
-        "name": "Game_0x40::sub_4B9270",
+        "name": "Game_0x40::DebugShowCarStatsAndFrameSkip_4B9270",
         "v96f_address": null,
         "v105_address": "0x4b9270"
     },
@@ -5945,7 +5945,7 @@
         "v105_address": "0x4b9700"
     },
     {
-        "name": "Game_0x40::sub_4B9710",
+        "name": "Game_0x40::SinglePlayerStepFrame_4B9710",
         "v96f_address": null,
         "v105_address": "0x4b9710"
     },
@@ -5955,7 +5955,7 @@
         "v105_address": "0x4b9720"
     },
     {
-        "name": "Game_0x40::sub_4B9750",
+        "name": "Game_0x40::GetFirstPlayerWithoutPed_4B9750",
         "v96f_address": null,
         "v105_address": "0x4b9750"
     },
@@ -6000,7 +6000,7 @@
         "v105_address": "0x4b9a80"
     },
     {
-        "name": "Game_0x40::sub_4B9B10",
+        "name": "Game_0x40::IsRectVisibleToAnyPlayer_4B9B10",
         "v96f_address": null,
         "v105_address": "0x4b9b10"
     },
@@ -7335,7 +7335,7 @@
         "v105_address": "0x4dfb50"
     },
     {
-        "name": "Map_0x370::sub_4DFB90",
+        "name": "Map_0x370::SpawnMapObjects_4DFB90",
         "v96f_address": null,
         "v105_address": "0x4dfb90"
     },
@@ -12880,7 +12880,7 @@
         "v105_address": "0x569c20"
     },
     {
-        "name": "Player::sub_569CB0",
+        "name": "Player::InitializePlayerState_569CB0",
         "v96f_address": "0x4A81E0",
         "v105_address": "0x569cb0"
     },
@@ -13140,7 +13140,7 @@
         "v105_address": "0x56f800"
     },
     {
-        "name": "Police_7B8::sub_56F880",
+        "name": "Police_7B8::IsPedActiveCriminal_56F880",
         "v96f_address": null,
         "v105_address": "0x56f880"
     },

@@ -49,19 +49,19 @@ class Camera_0xBC
     EXPORT s32 IsCoordsPosVisible_435A70(Fix16 a2, Fix16 a3, Fix16 a4);
     EXPORT void sub_435B90();
     EXPORT void sub_435D20(char_type a2, char_type a3, char_type a4, char_type a5, char_type a6, char_type a7);
-    EXPORT void sub_435DD0();
-    EXPORT void sub_435F90(Car_BC* a2);
+    EXPORT void ResetCameraSmoothing_435DD0();
+    EXPORT void AccumulateSuspicionOnDriver_435F90(Car_BC* a2);
     EXPORT void sub_435FF0();
     EXPORT void sub_436110();
     EXPORT void sub_436120(Fix16 a2);
     EXPORT void sub_436140();
     EXPORT void sub_4361B0(u32 a2, u32 a3);
-    EXPORT s32 sub_436200(Car_BC* a2, Fix16* a3, Fix16* a4, Fix16* a5);
+    EXPORT s32 ApplyCarVelocityCameraOffset_436200(Car_BC* a2, Fix16* a3, Fix16* a4, Fix16* a5);
     EXPORT void sub_4364A0(Car_BC* pCar);
-    EXPORT void sub_436540(Ped* a2);
+    EXPORT void UpdateFollowPedCamera_436540(Ped* a2);
     EXPORT void HandlePanning_436710(char_type a2, char_type a3, char_type a4, char_type a5);
     EXPORT void sub_436830();
-    EXPORT void sub_436860(Ped* a2, Fix16& x_pos, Fix16& y_pos, Fix16 z_pos);
+    EXPORT void ApplyZOffsetToScreenPosition_436860(Ped* a2, Fix16& x_pos, Fix16& y_pos, Fix16 z_pos);
     EXPORT Camera_0xBC(); // 4368E0
     EXPORT ~Camera_0xBC(); // empty 4369E0
     EXPORT void sub_4397D0(Fix16 a2, Fix16 a3, Fix16 a4, Fix16 a5);
@@ -107,19 +107,19 @@ class Camera_0xBC
             a3_fp >= field_78_boundaries_non_neg.field_8_top && a3_fp <= field_78_boundaries_non_neg.field_C_bottom;
     }
 
-    inline void sub_41E410()
+    inline void CommitCameraTarget_41E410()
     {
         field_0_cam_pos_tgt1 = field_10_cam_pos_tgt2;
     }
 
-    inline void sub_41E410_reversed()
+    inline void ResetPendingCameraTarget()
     {
         field_10_cam_pos_tgt2 = field_0_cam_pos_tgt1;
     }
 
     inline void ctor_inline(s32 x, s32 y)
     {
-        sub_41E410();
+        CommitCameraTarget_41E410();
         field_60.x = Fix16(-1);
         field_60.y = Fix16(-1);
         field_AC_cam_velocity.field_0_x = dword_676818;

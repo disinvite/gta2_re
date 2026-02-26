@@ -284,7 +284,7 @@ bool Police_7B8::HasCriminalBeenFound_56F800(Ped* a2)
 }
 
 MATCH_FUNC(0x56f880)
-bool Police_7B8::sub_56F880(Ped* a2)
+bool Police_7B8::IsPedActiveCriminal_56F880(Ped* a2)
 {
     for (u8 i = 0; i < 4; i++)
     {

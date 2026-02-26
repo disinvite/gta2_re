@@ -267,7 +267,7 @@ void Camera_0xBC::sub_435B90()
 MATCH_FUNC(0x435D20)
 void Camera_0xBC::sub_435D20(char_type a2, char_type a3, char_type a4, char_type a5, char_type a6, char_type a7)
 {
-    sub_41E410_reversed();
+    ResetPendingCameraTarget();
     if (a2)
     {
         field_10_cam_pos_tgt2.field_4_y -= dword_67671C;
@@ -301,7 +301,7 @@ void Camera_0xBC::sub_435D20(char_type a2, char_type a3, char_type a4, char_type
 }
 
 MATCH_FUNC(0x435DD0)
-void Camera_0xBC::sub_435DD0()
+void Camera_0xBC::ResetCameraSmoothing_435DD0()
 {
     field_98_cam_pos2.field_0_x = field_0_cam_pos_tgt1.field_0_x;
     field_98_cam_pos2.field_4_y = field_0_cam_pos_tgt1.field_4_y;
@@ -315,10 +315,10 @@ void Camera_0xBC::sub_435DD0()
 }
 
 MATCH_FUNC(0x435F90)
-void Camera_0xBC::sub_435F90(Car_BC* a2)
+void Camera_0xBC::AccumulateSuspicionOnDriver_435F90(Car_BC* a2)
 {
     if (a2->field_54_driver &&
-        (gPolice_7B8_6FEE40->sub_56F880(a2->field_54_driver) || gHamburger_500_678E30->sub_474970(a2->field_54_driver)))
+        (gPolice_7B8_6FEE40->IsPedActiveCriminal_56F880(a2->field_54_driver) || gHamburger_500_678E30->HasAnyFollower_474970(a2->field_54_driver)))
     {
         field_44++;
         if (field_44 > 80u)
@@ -557,7 +557,7 @@ void Camera_0xBC::sub_4361B0(u32 x_pos, u32 y_pos)
 }
 
 STUB_FUNC(0x436200)
-s32 Camera_0xBC::sub_436200(Car_BC* a2, Fix16* a3, Fix16* a4, Fix16* a5)
+s32 Camera_0xBC::ApplyCarVelocityCameraOffset_436200(Car_BC* a2, Fix16* a3, Fix16* a4, Fix16* a5)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -570,10 +570,10 @@ void Camera_0xBC::sub_4364A0(Car_BC* pCar)
 }
 
 MATCH_FUNC(0x436540)
-void Camera_0xBC::sub_436540(Ped* pPed)
+void Camera_0xBC::UpdateFollowPedCamera_436540(Ped* pPed)
 {
     Car_BC* pCar_2;
-    Fix16 a5;
+    Fix16 zposToUse;
 
     field_38_car = NULL;
     field_34_ped = pPed;
@@ -583,7 +583,7 @@ void Camera_0xBC::sub_436540(Ped* pPed)
         Fix16 ypos;
         Fix16 zpos;
         Car_BC* pCar = pPed->field_16C_car;
-        if (pCar || (pCar_2 = pPed->sub_45BBF0(), pCar_2 == 0))
+        if (pCar || (pCar_2 = pPed->GetCarBeingEnteredOrExited_45BBF0(), pCar_2 == 0))
         {
             xpos = pPed->get_cam_x();
             ypos = pPed->get_cam_y();
@@ -592,11 +592,11 @@ void Camera_0xBC::sub_436540(Ped* pPed)
             {
                 zpos = dword_67681C;
             }
-            a5 = zpos;
+            zposToUse = zpos;
             if (pCar)
             {
-                Camera_0xBC::sub_435F90(pCar);
-                Camera_0xBC::sub_436200(pCar, &xpos, &ypos, &a5);
+                Camera_0xBC::AccumulateSuspicionOnDriver_435F90(pCar);
+                Camera_0xBC::ApplyCarVelocityCameraOffset_436200(pCar, &xpos, &ypos, &zposToUse);
             }
         }
         else
@@ -604,17 +604,17 @@ void Camera_0xBC::sub_436540(Ped* pPed)
             xpos = pCar_2->get_x_41E430();
             ypos = pCar_2->get_y_41E440();
             zpos = sub_41E130(pCar_2->get_z_41E450() - dword_676820, dword_67681C);
-            a5 = zpos;
-            Camera_0xBC::sub_435F90(pCar_2);
-            Camera_0xBC::sub_436200(pCar_2, &xpos, &ypos, &a5);
+            zposToUse = zpos;
+            Camera_0xBC::AccumulateSuspicionOnDriver_435F90(pCar_2);
+            Camera_0xBC::ApplyCarVelocityCameraOffset_436200(pCar_2, &xpos, &ypos, &zposToUse);
         }
-        Fix16 v10 = dword_6767B4;
+        Fix16 zoom = dword_6767B4;
         if (pPed->get_ped_state1() != 9)
         {
-            v10 = dword_6766D4;
+            zoom = dword_6766D4;
         }
-        Camera_0xBC::sub_436860(pPed, xpos, ypos, a5);
-        SetCamera_41E3D0(xpos, ypos, a5, v10);
+        Camera_0xBC::ApplyZOffsetToScreenPosition_436860(pPed, xpos, ypos, zposToUse);
+        SetCamera_41E3D0(xpos, ypos, zposToUse, zoom);
     }
 }
 
@@ -710,7 +710,7 @@ void Camera_0xBC::sub_436830()
 }
 
 MATCH_FUNC(0x436860)
-void Camera_0xBC::sub_436860(Ped* a2, Fix16& x_pos, Fix16& y_pos, Fix16 z_pos)
+void Camera_0xBC::ApplyZOffsetToScreenPosition_436860(Ped* a2, Fix16& x_pos, Fix16& y_pos, Fix16 z_pos)
 {
     Fix16 v5 = (z_pos - a2->get_cam_z() + Fix16(8)) / field_60.y;
     x_pos += field_48 * v5;

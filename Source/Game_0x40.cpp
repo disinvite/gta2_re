@@ -265,7 +265,7 @@ void Game_0x40::BootGame_4B8EB0()
     }
     gRouteFinder_6FFDC8->Reset_588C60();
     gHud_2B00_706620->sub_5D6BE0();
-    gMap_0x370_6F6268->sub_4DFB90(); // map objects
+    gMap_0x370_6F6268->SpawnMapObjects_4DFB90(); // map objects
     gMap_0x370_6F6268->update_lights_4DFCD0(); // lights
     if (!bSkip_traffic_lights_67D4EC)
     {
@@ -275,7 +275,7 @@ void Game_0x40::BootGame_4B8EB0()
 
     for (s32 i = 0; i < field_23_num_players; i++)
     {
-        field_4_players[i]->sub_569CB0(); // respawn dead players?
+        field_4_players[i]->InitializePlayerState_569CB0();
     }
 
     gJolly_poitras_0x2BC0_6FEAC0->DoMuchCashCheat_56C250();
@@ -323,7 +323,7 @@ void Game_0x40::ShowCounters_4B8FF0()
 }
 
 MATCH_FUNC(0x4B9270)
-void Game_0x40::sub_4B9270()
+void Game_0x40::DebugShowCarStatsAndFrameSkip_4B9270()
 {
     if (gDo_show_counter_67D6E6)
     {
@@ -599,7 +599,7 @@ void Game_0x40::TogglePause_4B9700()
 }
 
 MATCH_FUNC(0x4B9710)
-void Game_0x40::sub_4B9710()
+void Game_0x40::SinglePlayerStepFrame_4B9710()
 {
     if (field_23_num_players == 1)
     {
@@ -624,7 +624,7 @@ void Game_0x40::sub_4B9720()
 }
 
 MATCH_FUNC(0x4B9750)
-Player* Game_0x40::sub_4B9750()
+Player* Game_0x40::GetFirstPlayerWithoutPed_4B9750()
 {
     for (s32 i = 0; i < field_23_num_players; i++)
     {
@@ -777,10 +777,10 @@ bool Game_0x40::is_point_on_screen_4B9A80(Fix16 a2_fp, Fix16 a3_fp)
     return false;
 }
 
-STUB_FUNC(0x4B9B10)
-s8 Game_0x40::sub_4B9B10(Fix16_Rect* pBounds)
+WIP_FUNC(0x4B9B10)
+s8 Game_0x40::IsRectVisibleToAnyPlayer_4B9B10(Fix16_Rect* pBounds)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     // wip
     for (u8 i = 0; i < field_23_num_players; i++)
     {

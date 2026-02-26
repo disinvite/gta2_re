@@ -259,7 +259,7 @@ class Ang16
     {
     }
 
-    Ang16(Fix16 value) : rValue(value.mValue >> 14) // value.ToInt() breaks Map_0x370::sub_4DFB90
+    Ang16(Fix16 value) : rValue(value.mValue >> 14) // value.ToInt() breaks Map_0x370::SpawnMapObjects_4DFB90
     {
     }
 

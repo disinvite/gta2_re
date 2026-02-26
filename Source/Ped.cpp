@@ -710,7 +710,7 @@ s32 Ped::CopyStatsFromPed_45B5B0(s32 a2)
 }
 
 MATCH_FUNC(0x45bbf0)
-Car_BC* Ped::sub_45BBF0()
+Car_BC* Ped::GetCarBeingEnteredOrExited_45BBF0()
 {
     if (field_27C_ped_state_2 == ped_state_2::ped2_entering_a_car_6 || field_27C_ped_state_2 == ped_state_2::ped2_getting_out_a_car_7)
     {
@@ -3183,7 +3183,7 @@ void Ped::ForceDoNothing_462590()
 
         if (field_16C_car->field_60)
         {
-            gHamburger_500_678E30->Cancel_474CC0(field_16C_car->field_60);
+            gHamburger_500_678E30->FreeEntry_474CC0(field_16C_car->field_60);
             field_16C_car->field_60 = 0;
         }
     }
@@ -5398,7 +5398,7 @@ void Ped::KillCharAnyMeans_467E20()
                 }
                 if (field_16C_car->field_60)
                 {
-                    gHamburger_500_678E30->Cancel_474CC0(field_16C_car->field_60);
+                    gHamburger_500_678E30->FreeEntry_474CC0(field_16C_car->field_60);
                     field_16C_car->field_60 = 0;
                 }
             }
@@ -5428,7 +5428,7 @@ void Ped::KillCharAnyMeans_467E20()
                 }
                 if (field_16C_car->field_60)
                 {
-                    gHamburger_500_678E30->Cancel_474CC0(field_16C_car->field_60);
+                    gHamburger_500_678E30->FreeEntry_474CC0(field_16C_car->field_60);
                     field_16C_car->field_60 = 0;
                 }
             }
@@ -5547,7 +5547,7 @@ void Ped::sub_468310()
         {
             if (!this->field_16C_car->field_60)
             {
-                this->field_16C_car->field_60 = gHamburger_500_678E30->sub_474810();
+                this->field_16C_car->field_60 = gHamburger_500_678E30->AllocateEntry_474810();
                 this->field_16C_car->field_60->field_4_ped_owner = this;
             }
 
@@ -5579,7 +5579,7 @@ void Ped::sub_468310()
             {
                 pCar_ = this->field_16C_car;
                 this->field_225_objective_status = objective_status::passed_1;
-                gHamburger_500_678E30->Cancel_474CC0(pCar_->field_60);
+                gHamburger_500_678E30->FreeEntry_474CC0(pCar_->field_60);
                 this->field_16C_car->field_60 = 0;
                 this->field_16C_car->field_A6 |= 0x20u;
                 this->field_1A0_objective_target_object = dword_678558; // TODO: Never written so part of a bigger global obj?
@@ -5590,7 +5590,7 @@ void Ped::sub_468310()
                 if (pCar__->field_60->field_26)
                 {
                     this->field_225_objective_status = objective_status::passed_1;
-                    gHamburger_500_678E30->Cancel_474CC0(pCar__->field_60);
+                    gHamburger_500_678E30->FreeEntry_474CC0(pCar__->field_60);
                     this->field_16C_car->field_60 = 0;
                     this->field_16C_car->field_A6 |= 0x20u;
                 }
@@ -6066,7 +6066,7 @@ void Ped::sub_469E50()
     {
         if (!field_16C_car->field_60)
         {
-            field_16C_car->field_60 = gHamburger_500_678E30->sub_474810();
+            field_16C_car->field_60 = gHamburger_500_678E30->AllocateEntry_474810();
             field_16C_car->field_60->field_4_ped_owner = this;
         }
         field_16C_car->field_60->field_8_maybe_path_type = 4;
@@ -6094,7 +6094,7 @@ void Ped::sub_469F30()
 {
     if (!field_16C_car->field_60)
     {
-        field_16C_car->field_60 = gHamburger_500_678E30->sub_474810();
+        field_16C_car->field_60 = gHamburger_500_678E30->AllocateEntry_474810();
         field_16C_car->field_60->field_4_ped_owner = this;
     }
     field_16C_car->field_60->field_8_maybe_path_type = 2;
@@ -6245,7 +6245,7 @@ void Ped::FollowCarInCurrCar_46A290()
         if (!field_16C_car->field_60)
         {
             // If no path, create one
-            field_16C_car->field_60 = gHamburger_500_678E30->sub_474810();
+            field_16C_car->field_60 = gHamburger_500_678E30->AllocateEntry_474810();
             field_16C_car->field_60->field_4_ped_owner = this;
         }
         field_16C_car->field_60->field_8_maybe_path_type = 2;
@@ -6743,7 +6743,7 @@ void Ped::ExitCarStateMachine_46C250()
     {
         if (this->field_16C_car->field_60)
         {
-            gHamburger_500_678E30->Cancel_474CC0(this->field_16C_car->field_60);
+            gHamburger_500_678E30->FreeEntry_474CC0(this->field_16C_car->field_60);
             this->field_16C_car->field_60 = 0;
         }
 
@@ -7063,7 +7063,7 @@ void Ped::sub_46CA70()
 {
     if (!this->field_16C_car->field_60)
     {
-        this->field_16C_car->field_60 = gHamburger_500_678E30->sub_474810();
+        this->field_16C_car->field_60 = gHamburger_500_678E30->AllocateEntry_474810();
         this->field_16C_car->field_60->field_4_ped_owner = this;
     }
 

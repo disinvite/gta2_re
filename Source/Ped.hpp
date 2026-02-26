@@ -38,7 +38,7 @@ class Ped
     EXPORT void sub_45B560(Player* a2, char_type a3);
     EXPORT bool sub_45B590();
     EXPORT s32 CopyStatsFromPed_45B5B0(s32 a2);
-    EXPORT Car_BC* sub_45BBF0();
+    EXPORT Car_BC* GetCarBeingEnteredOrExited_45BBF0();
     EXPORT void TeleportToCoord_45BC10(Fix16 xpos, Fix16 ypos);
     EXPORT void ManageShocking_45BC70();
     EXPORT bool sub_45BD20(Car_BC* pCar);
@@ -559,6 +559,16 @@ class Ped
         return field_12E;
     }
 
+    bool isDead_403B60()
+    {
+        return this->field_278_ped_state_1 == ped_state_1::dead_9;
+    }
+
+    u16 Ped::Get_F20E_4039F0()
+    {
+        return this->field_20e;
+    }
+    
     Marz_3 field_0_patrol_points[100];
     Ang16 field_12C;
     Ang16 field_12E;
