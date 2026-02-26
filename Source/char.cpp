@@ -1,6 +1,6 @@
 #include "char.hpp"
-#include "Car_BC.hpp"
 #include "CarPhysics_B0.hpp"
+#include "Car_BC.hpp"
 #include "Char_Pool.hpp"
 #include "Door_4D4.hpp"
 #include "Game_0x40.hpp"
@@ -23,6 +23,9 @@
 #include "root_sound.hpp"
 #include "sprite.hpp"
 #include "winmain.hpp"
+
+// Ped.cpp
+EXTERN_GLOBAL(Fix16, dword_6FD9AC); 
 
 DEFINE_GLOBAL(s8, byte_6FDB48, 0x6FDB48);
 DEFINE_GLOBAL(s8, byte_6FDB49, 0x6FDB49);
@@ -115,11 +118,9 @@ DEFINE_GLOBAL(Ang16, word_6FDB3C, 0x6FDB3C);
 DEFINE_GLOBAL(Ang16, word_6FDA64, 0x6FDA64);
 DEFINE_GLOBAL(Ang16, word_6FD904, 0x6FD904);
 
-
 DEFINE_GLOBAL(Ang16, word_6FDA54, 0x6FDA54); // TODO: Init via func 0x54A300
-DEFINE_GLOBAL_INIT(Ang16, word_6FD920, word_6FD936, 0x6FD920);  
+DEFINE_GLOBAL_INIT(Ang16, word_6FD920, word_6FD936, 0x6FD920);
 DEFINE_GLOBAL(Ang16, dword_6FD9D8, 0x6FD9D8); // TODO: Init via func 0x54A270
-
 
 EXTERN_GLOBAL(Ang16, word_6FDB34);
 EXTERN_GLOBAL(Ped_List_4, gThreateningPedsList_678468);
@@ -2789,7 +2790,8 @@ LABEL_152:
 
                     field_45 = dword_6FD7B0.ToInt(); //dword_6FD7B0 >> 14;
                     //////if (Char_B4::CanReachTile_550090(v85, v86))
-                    if (Char_B4::CanReachTile_550090(field_80_sprite_ptr->field_14_xy.x.ToInt(), field_80_sprite_ptr->field_14_xy.y.ToInt()))
+                    if (Char_B4::CanReachTile_550090(field_80_sprite_ptr->field_14_xy.x.ToInt(),
+                                                     field_80_sprite_ptr->field_14_xy.y.ToInt()))
                     {
                         // Line 507 on 9.6f IDA
                         field_80_sprite_ptr->set_xyz_lazy_420600(field_80_sprite_ptr->field_14_xy.x,
@@ -3814,16 +3816,15 @@ void Char_B4::state_8_5520A0()
                     v33 = field_80_sprite_ptr;
                     if (field_84->field_58_physics)
                     {
-                        field_7C_pPed->field_184_pObj2C =
-                            gObject_5C_6F8F84->NewUnknown_52A240(110,
-                                                                 v33->field_14_xy.x,
-                                                                 v33->field_14_xy.y,
-                                                                 v33->field_1C_zpos,
-                                                                 field_84->field_50_car_sprite->field_0,
-                                                                 v33->field_0,
-                                                                 field_84->field_58_physics->vec_len_552DE0(),
-                                                                 -k_dword_6FD868,
-                                                                 0);
+                        field_7C_pPed->field_184_pObj2C = gObject_5C_6F8F84->NewUnknown_52A240(110,
+                                                                                               v33->field_14_xy.x,
+                                                                                               v33->field_14_xy.y,
+                                                                                               v33->field_1C_zpos,
+                                                                                               field_84->field_50_car_sprite->field_0,
+                                                                                               v33->field_0,
+                                                                                               field_84->field_58_physics->vec_len_552DE0(),
+                                                                                               -k_dword_6FD868,
+                                                                                               0);
                     }
                     else
                     {
@@ -4427,10 +4428,93 @@ void Char_B4::HandleCarImpact_5538A0(Car_BC* pCar, s32 a3, s32 a4, s32 a5)
     NOT_IMPLEMENTED;
 }
 
-STUB_FUNC(0x553E00)
+WIP_FUNC(0x553E00)
 void Char_B4::HandleGenericImpact_553E00(Ang16 ang, Fix16 a3, Fix16 a4, char_type a5)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    s32 damageToUse;
+    if (field_7C_pPed->field_208_invulnerability)
+    {
+        damageToUse = 0;
+    }
+    else
+    {
+        damageToUse = a5;
+    }
+
+    if (field_7C_pPed->field_278_ped_state_1 != ped_state_1::dead_9)
+    {
+        Sprite* pSprite = this->field_80_sprite_ptr;
+        this->field_16 = 1;
+        this->field_7C_pPed->field_184_pObj2C = gObject_5C_6F8F84->NewUnknown_52A240(110,
+                                                                                     pSprite->field_14_xy.x,
+                                                                                     pSprite->field_14_xy.y,
+                                                                                     pSprite->field_1C_zpos,
+                                                                                     ang,
+                                                                                     pSprite->field_0,
+                                                                                     a3,
+                                                                                     -dword_6FD9AC,
+                                                                                     a4);
+        if (!field_7C_pPed->field_267_varrok_idx)
+        {
+            field_7C_pPed->field_267_varrok_idx = gVarrok_7F8_703398->sub_59B060(field_7C_pPed->field_200_id);
+        }
+        field_7C_pPed->field_184_pObj2C->SetDamageOwner_529080(field_7C_pPed->field_267_varrok_idx);
+        field_7C_pPed->ChangeNextPedState1_45C500(ped_state_1::immobilized_8);
+
+        switch (damageToUse)
+        {
+            case 0:
+                field_7C_pPed->field_184_pObj2C->field_10_obj_3c->field_10 = k_dword_6FD9E4;
+                field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_24);
+                field_C_ped_state_2 = ped_state_2::Unknown_24;
+                break;
+
+            case 1:
+                field_7C_pPed->field_184_pObj2C->field_10_obj_3c->field_10 = a4;
+                if (!field_7C_pPed->field_208_invulnerability)
+                {
+                    if (field_7C_pPed->IsField238_45EDE0(2))
+                    {
+                        field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_25);
+                    }
+                    else
+                    {
+                        field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_26);
+                    }
+                }
+                else
+                {
+                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_24);
+                }
+
+                this->field_C_ped_state_2 = ped_state_2::Unknown_24;
+                gParticle_8_6FD5E8->EmitBloodBurst_53E450(this->field_80_sprite_ptr->field_14_xy.x,
+                                                          this->field_80_sprite_ptr->field_14_xy.y,
+                                                          this->field_80_sprite_ptr->field_1C_zpos,
+                                                          ang);
+                break;
+
+            case 2:
+                field_7C_pPed->field_184_pObj2C->field_10_obj_3c->field_10 = a4;
+                if (!field_7C_pPed->field_208_invulnerability)
+                {
+                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_26);
+                }
+                else
+                {
+                    field_7C_pPed->ChangeNextPedState2_45C540(ped_state_2::Unknown_24);
+                }
+
+                this->field_C_ped_state_2 = ped_state_2::Unknown_24;
+                gParticle_8_6FD5E8->EmitBloodBurst_53E450(this->field_80_sprite_ptr->field_14_xy.x,
+                                                          this->field_80_sprite_ptr->field_14_xy.y,
+                                                          this->field_80_sprite_ptr->field_1C_zpos,
+                                                          ang);
+                break;
+        }
+    }
 }
 
 MATCH_FUNC(0x553F90)
