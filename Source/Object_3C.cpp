@@ -512,10 +512,10 @@ void struct_4::CleanupSpriteList_5A7080()
             }
             else
             {
-                Sprite_18* pSaved = pIter->mpNext;
-                gSprite_18_Pool_703B80->DeAllocate(pSaved);
-                pIter = pSaved;
-                this->field_0_p18 = pSaved;
+                Sprite_18* pNext = pIter->mpNext;
+                gSprite_18_Pool_703B80->DeAllocate(pIter);
+                pIter = pNext;
+                this->field_0_p18 = pNext;
             }
         }
         else
