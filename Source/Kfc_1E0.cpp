@@ -191,7 +191,7 @@ void Kfc_30::sub_5CC1C0()
             {
                 if (field_0_car->field_60)
                 {
-                    gHamburger_500_678E30->Cancel_474CC0(field_0_car->field_60); // something to do with car route
+                    gHamburger_500_678E30->FreeEntry_474CC0(field_0_car->field_60); // something to do with car route
                     field_0_car->field_60 = 0;
                 }
             }

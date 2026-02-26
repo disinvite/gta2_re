@@ -3136,7 +3136,7 @@ void Car_BC::HandleCarExplosion_43D840(s32 a2)
     bOcc2 = 0;
     if (field_60)
     {
-        gHamburger_500_678E30->Cancel_474CC0(field_60);
+        gHamburger_500_678E30->FreeEntry_474CC0(field_60);
         this->field_60 = 0;
     }
 
@@ -5420,7 +5420,7 @@ void Car_BC::PoolDeallocate()
 
     if (field_60)
     {
-        gHamburger_500_678E30->Cancel_474CC0(field_60);
+        gHamburger_500_678E30->FreeEntry_474CC0(field_60);
         field_60 = 0;
     }
 
