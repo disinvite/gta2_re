@@ -496,8 +496,8 @@ void struct_4::CleanupSpriteList_5A7080()
 {
     WIP_IMPLEMENTED;
 
-    Sprite_18* pIter = this->field_0_p18;
     Sprite_18* pLast = 0;
+    Sprite_18* pIter = this->field_0_p18;
     while (pIter)
     {
         s32 type = pIter->field_0->get_type_416B40();
@@ -508,17 +508,21 @@ void struct_4::CleanupSpriteList_5A7080()
             {
                 pLast->mpNext = pIter->mpNext;
                 gSprite_18_Pool_703B80->DeAllocate(pIter);
-                // pIter = pIter->mpNext;
+                pIter = pLast->mpNext;
             }
             else
             {
-                gSprite_18_Pool_703B80->DeAllocate(pIter);
-                this->field_0_p18 = pIter->mpNext;
-                //pIter = pIter->mpNext;
+                Sprite_18* pSaved = pIter->mpNext;
+                gSprite_18_Pool_703B80->DeAllocate(pSaved);
+                pIter = pSaved;
+                this->field_0_p18 = pSaved;
             }
         }
-        pLast = pIter;
-        pIter = pIter->mpNext;
+        else
+        {
+            pLast = pIter;
+            pIter = pIter->mpNext;
+        }
     }
 }
 
