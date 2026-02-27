@@ -4,9 +4,9 @@
 #include "Function.hpp"
 #include "Object_3C.hpp"
 #include "Phi_8CA8.hpp"
-#include "sprite.hpp"
 #include "ang16.hpp"
 #include "fix16.hpp"
+#include "sprite.hpp"
 
 class Object_2C;
 class Sprite;
@@ -174,7 +174,7 @@ class Object_2C
         field_4 = 0;
         field_18_model = 0;
     }
-    
+
     inline Fix16 get_x_4340D0()
     {
         return field_4->field_14_xy.x;
@@ -188,6 +188,21 @@ class Object_2C
     inline Fix16 get_z_4340F0()
     {
         return field_4->field_1C_zpos;
+    }
+
+    char sub_4BE830()
+    {
+        if (this->field_18_model == 197)
+        {
+            return 1;
+        }
+
+        if (sub_525AC0())
+        {
+            return 1;
+        }
+
+        return 0;
     }
 
     Object_2C* mpNext;
@@ -246,18 +261,34 @@ class Object_5C
     EXPORT Object_2C* sub_529BC0(s32 a2, Fix16 a3, Fix16 a4, Fix16 a5, Ang16 a6);
     EXPORT Object_2C* New_529C00(s32 object_type, Fix16 a3, Fix16 a4, Fix16 a5, Ang16 a6, char_type a7);
     EXPORT char_type sub_52A210(char_type a2);
-    EXPORT Object_2C* NewUnknown_52A240(s32 object_type, Fix16 maybe_x, Fix16 maybe_y, Fix16 maybe_z, Ang16 unk_ang, Ang16 maybe_ang, Fix16 a8, Fix16 a9, Fix16 a10);
-    EXPORT Object_2C* sub_52A280(s32 object_type, Fix16 xpos, Fix16 ypos, Fix16 zpos, Ang16 unk_ang, Ang16 rotation, Fix16 a8, Fix16 a9, Fix16 a10);
+    EXPORT Object_2C* NewUnknown_52A240(s32 object_type,
+                                        Fix16 maybe_x,
+                                        Fix16 maybe_y,
+                                        Fix16 maybe_z,
+                                        Ang16 unk_ang,
+                                        Ang16 maybe_ang,
+                                        Fix16 a8,
+                                        Fix16 a9,
+                                        Fix16 a10);
+    EXPORT Object_2C* sub_52A280(s32 object_type,
+                                 Fix16 xpos,
+                                 Fix16 ypos,
+                                 Fix16 zpos,
+                                 Ang16 unk_ang,
+                                 Ang16 rotation,
+                                 Fix16 a8,
+                                 Fix16 a9,
+                                 Fix16 a10);
     EXPORT Object_2C* New_52A2C0(s32 object_type,
-                                    Fix16 xpos,
-                                    Fix16 ypos,
-                                    Fix16 zpos,
-                                    Ang16 unk_ang,
-                                    Ang16 maybe_rotation,
-                                    Fix16 a8,
-                                    Fix16 a9,
-                                    Fix16 a10,
-                                    char_type a11);
+                                 Fix16 xpos,
+                                 Fix16 ypos,
+                                 Fix16 zpos,
+                                 Ang16 unk_ang,
+                                 Ang16 maybe_rotation,
+                                 Fix16 a8,
+                                 Fix16 a9,
+                                 Fix16 a10,
+                                 char_type a11);
     EXPORT Object_2C* CreateExplosion_52A3D0(Fix16 x, Fix16 y, Fix16 z, Ang16 rot, s32 a6, s32 pedId);
 
     EXPORT void SaveObjects_52A500(TurkishDelight_164* pUnknownObj);

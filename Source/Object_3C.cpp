@@ -38,16 +38,18 @@ Object_3C::~Object_3C()
     mpNext = 0;
 }
 
-WIP_FUNC(0x52adf0)
+// 9.6f 0x482BA0
+MATCH_FUNC(0x52adf0)
 Fix16_Point Object_3C::GetRot_52ADF0()
 {
-    WIP_IMPLEMENTED;
-
-    return Fix16_Point(Ang16::sine_40F500(field_4) * field_C, Ang16::cosine_40F520(field_4) * field_C);
+    Fix16_Point p;
+    p.FromPolar_41E210(field_C, field_4);
+    return p;
 }
 
+// 9.6f 0x482D90
 STUB_FUNC(0x521FD0)
-Ang16* Object_3C::GetMovementSpeedAndAngle_521FD0(Fix16 *a2, Ang16 *a3)
+Ang16* Object_3C::GetMovementSpeedAndAngle_521FD0(Fix16* a2, Ang16* a3)
 {
     NOT_IMPLEMENTED;
     return a3;
@@ -489,45 +491,38 @@ void struct_4::DestroyAllSprites_5A7010()
 }
 
 // https://decomp.me/scratch/hQof2
-STUB_FUNC(0x5a7080)
+WIP_FUNC(0x5a7080)
 void struct_4::CleanupSpriteList_5A7080()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
 
-    Sprite_18* pIter; // esi
-    Sprite_18* pLastOfType; // edi
-    int type; // eax
-    Object_2C* o2c; // ecx
-    //Sprite_18_Pool* pRoot_; // eax
-
-    pIter = this->field_0_p18;
-    pLastOfType = 0;
+    Sprite_18* pLast = 0;
+    Sprite_18* pIter = this->field_0_p18;
     while (pIter)
     {
-        type = pIter->field_0->field_30_sprite_type_enum;
-        if ((type == 1 || type > 3 && type <= 5))
+        s32 type = pIter->field_0->get_type_416B40();
+        if ((type == 1 || type > 3 && type <= 5) && pIter->field_0->field_8_object_2C_ptr->sub_4BE830())
         {
-            o2c = pIter->field_0->field_8_object_2C_ptr;
-            if (o2c->field_18_model == 197 || o2c->sub_525AC0())
+            gObject_5C_6F8F84->RemoveAndFree_52A610(pIter->field_0->field_8_object_2C_ptr);
+            if (pLast)
             {
-                gObject_5C_6F8F84->RemoveAndFree_52A610((Object_2C*)o2c); // ??
-                if (pLastOfType)
-                {
-                    pLastOfType->mpNext = pIter->mpNext;
-                    gSprite_18_Pool_703B80->DeAllocate(pIter);
-                    pIter = pLastOfType->mpNext;
-                }
-                else
-                {
-                    Sprite_18* pOldNext = pIter->mpNext;
-                    gSprite_18_Pool_703B80->DeAllocate(pIter);
-                    pIter = pOldNext;
-                    this->field_0_p18 = pOldNext;
-                }
+                pLast->mpNext = pIter->mpNext;
+                gSprite_18_Pool_703B80->DeAllocate(pIter);
+                pIter = pLast->mpNext;
+            }
+            else
+            {
+                Sprite_18* pNext = pIter->mpNext;
+                gSprite_18_Pool_703B80->DeAllocate(pIter);
+                pIter = pNext;
+                this->field_0_p18 = pNext;
             }
         }
-        pLastOfType = pIter;
-        pIter = pIter->mpNext;
+        else
+        {
+            pLast = pIter;
+            pIter = pIter->mpNext;
+        }
     }
 }
 
