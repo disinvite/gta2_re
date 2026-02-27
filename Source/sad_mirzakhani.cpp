@@ -163,7 +163,7 @@ u16 sad_mirzakhani::find_431EC0(u16 idx,
                     if (l_12 == f_12 || l_12 == -2)
                     {
                         l_14 = pItem->field_14;
-                        if (l_14 == f_14 || l_14 == 23 || sad_mirzakhani::sub_432170(f_14, pItem->field_14))
+                        if (l_14 == f_14 || l_14 == 23 || sub_432170(f_14, pItem->field_14))
                         {
                             l_18 = pItem->field_8;
                             if ((l_18 == f_18 || l_18 == 87) && (pItem->field_0_pZone == pZone || !pItem->field_0_pZone))
@@ -277,11 +277,50 @@ void sad_mirzakhani::sub_4320D0(s16 f_4, s32 f_8, s32 f_c, s16 f_10, s16 f_12, s
     }
 }
 
-STUB_FUNC(0x432170);
+WIP_FUNC(0x432170);
 s8 sad_mirzakhani::sub_432170(int a2, int a3)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+    switch (a3)
+    {
+        case 1:
+            return a2 == 3;
+        case 12:
+            return a2 == 4;
+        case 21:
+            return a2 == 4;
+        case 15:
+            return a2 == 4;
+        case 16:
+            return a2 == 4;
+        case 17:
+            return a2 == 4;
+        case 14:
+            return a2 == 13;
+    }
+
+    if (a3 != 22)
+    {
+        return 0;
+    }
+
+    switch (a2)
+    {
+        case 4:
+        case 10:
+        case 11:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+        case 18:
+        case 19:
+            break;
+        default:
+            return 0;
+    }
+    return 1;
 }
 
 STUB_FUNC(0x432240);
