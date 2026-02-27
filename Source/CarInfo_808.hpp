@@ -17,6 +17,21 @@ enum
 
 struct UnknownList
 {
+    
+    UnknownList()
+    {
+        Init_4F79F0();
+    }
+
+    // 10.5 0x4F79F0
+    void Init_4F79F0()
+    {
+        for (s32 i = 0; i < 256; i++)
+        {
+            list[i] = Fix16(i) / 64;
+        }
+    }
+
     Fix16 sub_41FE70(const s8& var)
     {
         if (var < 0)
@@ -32,7 +47,6 @@ struct UnknownList
 
     Fix16 list[256];
 };
-
 
 EXTERN_GLOBAL(UnknownList, dword_6F6850);
 
