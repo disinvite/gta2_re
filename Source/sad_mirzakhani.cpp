@@ -106,11 +106,85 @@ u16 sad_mirzakhani::next_free_idx_431E90()
     return GTA2_COUNTOF(field_0);
 }
 
-STUB_FUNC(0x431EC0);
-u16 sad_mirzakhani::find_431EC0(u16 idx, s16 f_4, s32 f_8, s32 f_c, s16 f_10, s16 f_12, s32 f_14, s32 f_18, gmp_map_zone* pZone)
+WIP_FUNC(0x431EC0);
+u16 sad_mirzakhani::find_431EC0(u16 idx,
+                                s16 f_4,
+                                s32 car_info_idx,
+                                s32 occupation,
+                                s16 f_10,
+                                s16 f_12,
+                                s32 f_14,
+                                s32 f_18,
+                                gmp_map_zone* pZone)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    WIP_IMPLEMENTED;
+
+    u16 local_idx; // bp
+    silly_saha_0x2C* pItem; // esi
+    s16 l_4; // ax
+    s32 l_c; // eax
+    s32 l_8; // eax
+    s16 l_10; // ax
+    s16 l_12; // ax
+    s32 l_14; // eax
+    s32 l_18; // eax
+
+    local_idx = idx;
+    if (idx >= 10u)
+    {
+        return 10;
+    }
+    while (1)
+    {
+        pItem = &this->field_0[local_idx];
+        if (!pItem->field_2A_bUsed)
+        {
+            goto inc_idx;
+        }
+        if (!pItem->field_2B)
+        {
+            goto inc_idx;
+        }
+        l_4 = pItem->field_4;
+        if (l_4 != f_4 && l_4 != -1)
+        {
+            goto inc_idx;
+        }
+        l_c = pItem->field_C;
+        if (l_c == occupation || l_c == 51 || sub_432240(occupation, pItem->field_C))
+        {
+            l_8 = pItem->field_8;
+            if (l_8 == car_info_idx || l_8 == 87 || sub_432300(car_info_idx, pItem->field_8))
+            {
+                l_10 = pItem->field_10;
+                if (l_10 == f_10 || l_10 == -1)
+                {
+                    l_12 = pItem->field_12;
+                    if (l_12 == f_12 || l_12 == -2)
+                    {
+                        l_14 = pItem->field_14;
+                        if (l_14 == f_14 || l_14 == 23 || sad_mirzakhani::sub_432170(f_14, pItem->field_14))
+                        {
+                            l_18 = pItem->field_8;
+                            if ((l_18 == f_18 || l_18 == 87) && (pItem->field_0_pZone == pZone || !pItem->field_0_pZone))
+                            {
+                                return local_idx;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (pItem->field_24 == 1)
+        {
+            field_0[local_idx].sub_431DB0();
+        }
+    inc_idx:
+        if (++local_idx >= 10u)
+        {
+            return 10;
+        }
+    }
 }
 
 MATCH_FUNC(0x431FE0);
