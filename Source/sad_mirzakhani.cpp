@@ -323,10 +323,61 @@ s8 sad_mirzakhani::sub_432170(int a2, int a3)
     return 1;
 }
 
-STUB_FUNC(0x432240);
-s8 sad_mirzakhani::sub_432240(int a2, int a3)
+WIP_FUNC(0x432240);
+s8 sad_mirzakhani::sub_432240(int occupation, int a3)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+    switch (a3)
+    {
+        case 46:
+            switch (occupation)
+            {
+                case ped_ocupation_enum::police:
+                case ped_ocupation_enum::swat:
+                case ped_ocupation_enum::fbi:
+                case ped_ocupation_enum::army_army:
+                case ped_ocupation_enum::unknown_14:
+                case ped_ocupation_enum::unknown_15:
+                case ped_ocupation_enum::unknown_16:
+                case ped_ocupation_enum::tank_driver:
+                case ped_ocupation_enum::unknown_17:
+                case ped_ocupation_enum::road_block_tank_man:
+                    return 1;
+                default:
+                    return 0;
+            }
+        case 47:
+            switch (occupation)
+            {
+                case ped_ocupation_enum::unknown_13:
+                case ped_ocupation_enum::police:
+                case ped_ocupation_enum::swat:
+                case ped_ocupation_enum::fbi:
+                case ped_ocupation_enum::army_army:
+                case ped_ocupation_enum::unknown_14:
+                case ped_ocupation_enum::unknown_15:
+                case ped_ocupation_enum::unknown_16:
+                case ped_ocupation_enum::tank_driver:
+                case ped_ocupation_enum::unknown_17:
+                case ped_ocupation_enum::fireman:
+                case ped_ocupation_enum::road_block_tank_man:
+                    return 1;
+                default:
+                    return 0;
+            }
+        case 48:
+            if (occupation == ped_ocupation_enum::unknown_10 || occupation == ped_ocupation_enum::guard || occupation == ped_ocupation_enum::unknown_19)
+            {
+                return 1;
+            }
+            break;
+        default:
+            if (a3 == 49 && (occupation == ped_ocupation_enum::elvis || occupation == ped_ocupation_enum::elvis_leader))
+            {
+                return 1;
+            }
+            break;
+    }
     return 0;
 }
 
