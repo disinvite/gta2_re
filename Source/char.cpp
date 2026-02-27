@@ -125,6 +125,9 @@ DEFINE_GLOBAL(Ang16, dword_6FD9D8, 0x6FD9D8); // TODO: Init via func 0x54A270
 EXTERN_GLOBAL(Ang16, word_6FDB34);
 EXTERN_GLOBAL(Ped_List_4, gThreateningPedsList_678468);
 
+DEFINE_GLOBAL_INIT(Fix16, dword_6F67B0, Fix16(0x2000, 0), 0x6F67B0);
+
+
 //https://decomp.me/scratch/iQH9l
 MATCH_FUNC(0x544F70)
 void __stdcall sub_544F70()
@@ -585,11 +588,10 @@ void Char_B4::DrownPed_5459E0()
     }
 }
 
-STUB_FUNC(0x4F79B0)
+MATCH_FUNC(0x4F79B0)
 EXPORT Fix16 __stdcall SnapZTo16_4F79B0(Fix16 a2)
 {
-    NOT_IMPLEMENTED;
-    return 0;
+    return ((dword_6F67B0 + (a2 * 1000)).GetRoundValue()) / 1000;
 }
 
 // 9.6f 0x497DF0
