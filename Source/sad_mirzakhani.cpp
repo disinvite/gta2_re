@@ -179,10 +179,10 @@ s16 sad_mirzakhani::sub_432080(u16 idx)
     }
 }
 
-STUB_FUNC(0x4320D0);
+WIP_FUNC(0x4320D0);
 void sad_mirzakhani::sub_4320D0(s16 f_4, s32 f_8, s32 f_c, s16 f_10, s16 f_12, s32 f_14, s32 f_18, gmp_map_zone* pZone)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
     u16 found_idx = 0;
     for (s16 i = 0; i < 10u; i = found_idx + 1)
     {
