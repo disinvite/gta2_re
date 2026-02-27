@@ -294,7 +294,7 @@ class sound_obj
     EXPORT void HandleCarWeaponHitSound_415480(Sound_Params_8* a2);
     EXPORT void HandleCarAlarmSound_415570(Sound_Params_8* a2, sound_unknown_0xC* pAlloc);
     EXPORT char_type Type_5_InitEngineSoundProfile_415730(sound_0x68* a1);
-    EXPORT void HandleAICarEngineRevSound_4157C0(Sound_Params_8* a2);
+    EXPORT void HandleCarEngineSound_4157C0(Sound_Params_8* a2);
     EXPORT char_type Type_1_6_416260(sound_0x68* a2);
     EXPORT void HandleCarHornSound_417060(Sound_Params_8* a2);
     EXPORT char_type Type_3_HandleCarImpactSound_4174C0(sound_0x68* a2);

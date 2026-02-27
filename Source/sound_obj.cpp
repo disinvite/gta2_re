@@ -53,6 +53,12 @@ DEFINE_GLOBAL(u8, byte_66F542, 0x66F542);
 DEFINE_GLOBAL(u8, byte_67554D, 0x67554D);
 DEFINE_GLOBAL_INIT(Fix16, dword_674E18, Fix16(0x190000, 0), 0x674E18);
 
+DEFINE_GLOBAL_INIT(Fix16, dword_66F404, Fix16(0x14000, 0), 0x66F404);
+DEFINE_GLOBAL_INIT(Fix16, dword_66F1D0, dword_66F404, 0x66F1D0);
+DEFINE_GLOBAL_INIT(Fix16, dword_66F220, dword_66F1D0, 0x66F220);
+DEFINE_GLOBAL_INIT(Fix16, dword_66F258, Fix16(0x2000, 0), 0x66F258);
+
+
 // TODO: can't use 2d arrays here :Skull:
 //DEFINE_GLOBAL(char_type, byte_5FE434[8][44], 0x5FE434);
 char_type byte_5FE434[8][44];
@@ -3340,10 +3346,110 @@ s32 sound_obj::GetVehicleAudioClass_417BA0(s32 car_model)
     return result;
 }
 
-STUB_FUNC(0x4157C0)
-void sound_obj::HandleAICarEngineRevSound_4157C0(Sound_Params_8* a2)
+WIP_FUNC(0x4157C0)
+void sound_obj::HandleCarEngineSound_4157C0(Sound_Params_8* a2)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    Car_BC* pCar = a2->field_0_pObj->field_8_car_bc_ptr;
+
+    Fix16 div_factor;
+    Fix16 v8;
+    Fix16 v9;
+    Fix16 gear2_speed;
+    Fix16 gear3_speed;
+
+    if (pCar->field_9C == 3 && CalculateDistance_419020(Fix16(0x90000, 0)))
+    {
+        Fix16 gas_pedal = pCar->sub_43A240();
+        Fix16 max_speed = dword_6FE258->field_28_max_speed;
+        u8 emitting_vol;
+        if (max_speed <= k_dword_66F3F0)
+        {
+            emitting_vol = 20;
+        }
+        else
+        {
+            if (gas_pedal == k_dword_66F3F0)
+            {
+                if (pCar->field_68 != k_dword_66F3F4)
+                {
+                    return;
+                }
+
+                max_speed = dword_66F220;
+                if (!pCar->field_58_physics->field_94_is_backward_gas_on)
+                {
+                    max_speed = dword_66F1D0;
+                }
+                gas_pedal = pCar->field_58_physics->field_60_gas_pedal;
+                goto LABEL_9;
+            }
+
+            if (gas_pedal > max_speed)
+            {
+                gas_pedal = dword_6FE258->field_28_max_speed;
+            }
+
+            if (pCar->field_84_car_info_idx == car_model_enum::TANK || pCar->field_58_physics->field_94_is_backward_gas_on)
+            {
+            LABEL_9:
+                v8 = gas_pedal;
+                div_factor = max_speed;
+                goto LABEL_10;
+            }
+
+            if (pCar->field_68 == k_dword_66F3F4)
+            {
+                gear2_speed = dword_6FE258->field_40_gear2_speed;
+                gear3_speed = dword_6FE258->field_44_gear3_speed;
+                if (gas_pedal >= gear2_speed)
+                {
+                    if (gas_pedal >= gear3_speed)
+                    {
+                        v9 = (Fix16(573440, 0) * dword_66F258) * (gas_pedal - gear3_speed) / (max_speed - gear3_speed);
+                        goto LABEL_11;
+                    }
+                    v8 = (gas_pedal - gear2_speed);
+                    div_factor = gear3_speed - gear2_speed;
+                }
+                else
+                {
+                    v8 = gas_pedal;
+                    div_factor = gear2_speed;
+                }
+
+            LABEL_10:
+                v9 = Fix16(573440, 0) * (v8 / div_factor);
+
+            LABEL_11:
+                emitting_vol =  Fix16_Round_To_Int_410BF0(v9) + 25;
+                goto LABEL_24;
+            }
+            emitting_vol =  Fix16_Round_To_Int_410BF0((Fix16(655360, 0) * gas_pedal) / max_speed);
+        }
+
+    LABEL_24:
+        if (VolCalc_419070(emitting_vol, Fix16(98304, 0), a2->field_5_bHasSolidAbove))
+        {
+            this->field_30_sQueueSample.field_54 = Fix16(98304, 0);
+            this->field_30_sQueueSample.field_60_nEmittingVolume = emitting_vol;
+            this->field_30_sQueueSample.field_64_max_distance = 12;
+            this->field_30_sQueueSample.field_58_type = 1;
+            this->field_30_sQueueSample.field_4_SampleIndex = 0;
+            this->field_30_sQueueSample.field_41 = 0;
+            if (a2->field_4_bDrivenByPlayer)
+            {
+                this->field_30_sQueueSample.field_1C_ReleasingVolumeModificator = 3;
+            }
+            else
+            {
+                this->field_30_sQueueSample.field_1C_ReleasingVolumeModificator = 5;
+            }
+            this->field_30_sQueueSample.field_18 = 0;
+            AddSampleToRequestedQueue_41A850();
+        }
+    }
 }
 
 STUB_FUNC(0x418190)
@@ -3963,14 +4069,14 @@ void sound_obj::ProcessOtherCarTypes_413C50(Sound_Params_8* a2, sound_unknown_0x
     {
         if (cBC->field_58_physics)
         {
-            HandleAICarEngineRevSound_4157C0(a2);
+            HandleCarEngineSound_4157C0(a2);
         }
     }
     else
     {
         if (a2->field_0_pObj->field_8_car_bc_ptr->field_58_physics)
         {
-            HandleAICarEngineRevSound_4157C0(a2);
+            HandleCarEngineSound_4157C0(a2);
             HandleTruckCorneringAudio_417FD0(a2);
             HandleAICarEngineSound_418190(a2);
             HandleCarTireScrubSound_418720(a2);
@@ -4239,7 +4345,7 @@ void sound_obj::ProcessTank_413BF0(Sound_Params_8* a2, sound_unknown_0xC* pAlloc
     if (a2->field_0_pObj->field_8_car_bc_ptr->field_58_physics)
     {
         Tank_414A50(a2);
-        HandleAICarEngineRevSound_4157C0(a2);
+        HandleCarEngineSound_4157C0(a2);
         Tank_415190(a2);
     }
     Tank_414D30(a2);
