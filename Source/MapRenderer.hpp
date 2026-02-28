@@ -60,12 +60,13 @@ class MapRenderer
 
     EXPORT void sub_4E9D50(s32& a2, u16& a3);
     EXPORT void set_shading_lev_4E9DB0(u8 shading_lev);
-    EXPORT void draw_4E9EE0(u16& word_side, const bool& bUnk, u8& colour);
+    EXPORT void draw_4E9EE0(u16& word_side, const bool& bUnk, u8 colour);
     EXPORT void ambient_light_tick_4E9EA0();
     EXPORT void draw_4EA190(u16& rotation_and_flip);
     EXPORT void DrawLeftSide_4EA390(u16& left_word);
     EXPORT void sub_4EAE00(Fix16& xpos, Fix16& ypos, Vert* pVert);
     EXPORT void sub_4EAEA0(Fix16& xCoord, Fix16& yCoord, Vert* pVert);
+    EXPORT void sub_4EB940(Fix16& xpos, Fix16& ypos, Fix16& zpos, Vert* pVert);
     EXPORT void DrawRightSide_4EAF40(u16& right_word);
     EXPORT void DrawTopSide_4EBA60(u16& top_word);
     EXPORT void sub_4EC450(u16& left_word);
