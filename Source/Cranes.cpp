@@ -148,10 +148,9 @@ s32 Crane_15C::sub_47F220(s32 a2, s32 a3, Sprite* a4, Sprite* a5)
     field_108 = Ang16::Ang16_to_Fix16(a4->field_0);
     field_FC = a4->field_14_xy.x;
     field_100 = a4->field_14_xy.y;
-    s32 result = a4->field_1C_zpos.mValue;
-    field_104.mValue = result;
-    field_10C = field_80.mValue - result;
-    return result;
+    field_104 = a4->field_1C_zpos;
+    field_10C = field_80 - field_104;
+    return field_10C.mValue;
 }
 
 MATCH_FUNC(0x47f290)
