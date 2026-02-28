@@ -3855,6 +3855,11 @@
         "v105_address": "0x46f9d0"
     },
     {
+        "name": "MapRenderer::Draw_4F6A20",
+        "v96f_address": "0x472110",
+        "v105_address": "0x4f6a20"
+    },
+    {
         "name": "Ped::AddThreateningPedToList_46FC70",
         "v96f_address": null,
         "v105_address": "0x46fc70"
@@ -7766,12 +7771,12 @@
     },
     {
         "name": "MapRenderer::ambient_light_tick",
-        "v96f_address": null,
+        "v96f_address": "0x46c1a0",
         "v105_address": "0x4e9ea0"
     },
     {
         "name": "sub_4E9EE0",
-        "v96f_address": null,
+        "v96f_address": "0x46c210",
         "v105_address": "0x4e9ee0"
     },
     {
@@ -7781,7 +7786,7 @@
     },
     {
         "name": "MapRenderer::DrawLeftSide_4EA390",
-        "v96f_address": null,
+        "v96f_address": "0x46c2c0",
         "v105_address": "0x4ea390"
     },
     {
@@ -7801,7 +7806,7 @@
     },
     {
         "name": "MapRenderer::DrawRightSide_4EAF40",
-        "v96f_address": "0x470250",
+        "v96f_address": "0x46c7f0",
         "v105_address": "0x4eaf40"
     },
     {
@@ -7811,7 +7816,7 @@
     },
     {
         "name": "MapRenderer::DrawTopSide_4EBA60",
-        "v96f_address": null,
+        "v96f_address": "0x46ce30",
         "v105_address": "0x4eba60"
     },
     {
@@ -7845,43 +7850,68 @@
         "v105_address": "0x4f4d60"
     },
     {
+        "name": "MapRenderer::draw_lid_4EE130",
+        "v96f_address": "0x46dfe0",
+        "v105_address": "0x4ee130"
+    },
+    {
+        "name": "MapRenderer::DrawDiagonalWallUpLeft_4EE7D0",
+        "v96f_address": "0x46e2d0",
+        "v105_address": "0x4ee7d0"
+    },
+    {
+        "name": "MapRenderer::DrawDiagonalWallUpRight_4EE8A0",
+        "v96f_address": "0x46e340",
+        "v105_address": "0x4ee8a0"
+    },
+    {
+        "name": "MapRenderer::DrawDiagonalWallDownLeft_4EE970",
+        "v96f_address": "0x46e3b0",
+        "v105_address": "0x4ee970"
+    },
+    {
+        "name": "MapRenderer::DrawDiagonalWallDownRight_4EEA40",
+        "v96f_address": "0x46e420",
+        "v105_address": "0x4eea40"
+    },
+    {
         "name": "MapRenderer::Draw3SidedDiagonalUpLeft_4EEAF0",
-        "v96f_address": null,
+        "v96f_address": "0x46e490",
         "v105_address": "0x4eeaf0"
     },
     {
         "name": "MapRenderer::Draw3SidedDiagonalUpRight_4EEE60",
-        "v96f_address": null,
+        "v96f_address": "0x46e5c0",
         "v105_address": "0x4eee60"
     },
     {
         "name": "MapRenderer::Draw3SidedDiagonalDownLeft_4EF1C0",
-        "v96f_address": null,
+        "v96f_address": "0x46e6e0",
         "v105_address": "0x4ef1c0"
     },
     {
         "name": "MapRenderer::Draw3SidedDiagonalDownRight_4EF520",
-        "v96f_address": null,
+        "v96f_address": "0x46e800",
         "v105_address": "0x4ef520"
     },
     {
         "name": "MapRenderer::Draw4SidedDiagonalUpLeft_4EF880",
-        "v96f_address": null,
+        "v96f_address": "0x46e910",
         "v105_address": "0x4ef880"
     },
     {
         "name": "MapRenderer::Draw4SidedDiagonalUpRight_4EFB20",
-        "v96f_address": null,
+        "v96f_address": "0x46ea30",
         "v105_address": "0x4efb20"
     },
     {
         "name": "MapRenderer::Draw4SidedDiagonalDownLeft_4EFDB0",
-        "v96f_address": null,
+        "v96f_address": "0x46eb60",
         "v105_address": "0x4efdb0"
     },
     {
         "name": "MapRenderer::Draw4SidedDiagonalDownRight_4F0030",
-        "v96f_address": null,
+        "v96f_address": "0x46ec90",
         "v105_address": "0x4f0030"
     },
     {
@@ -7891,7 +7921,7 @@
     },
     {
         "name": "MapRenderer::DrawTriangularDiagonal_4F0340",
-        "v96f_address": null,
+        "v96f_address": "0x46ee40",
         "v105_address": "0x4f0340"
     },
     {
@@ -7953,6 +7983,11 @@
         "name": "MapRenderer::draw_lid",
         "v96f_address": null,
         "v105_address": "0x4f4d60"
+    },
+    {
+        "name": "MapRenderer::DrawPartialBlocks_4F6580",
+        "v96f_address": "0x471c30",
+        "v105_address": "0x4f6580"
     },
     {
         "name": "MapRenderer::DrawGradientSlope_4F6630",

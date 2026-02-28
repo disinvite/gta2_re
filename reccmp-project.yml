@@ -9,6 +9,7 @@ targets:
         - reccmp/96f-fix16.csv
         - reccmp/96f-functions.csv
         - reccmp/96f-library.csv
+        - reccmp/96f-variables.csv
         - reccmp/96f-widechar.csv
   '105':
     filename: 10.5.exe

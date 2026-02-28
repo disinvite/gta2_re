@@ -1,14 +1,62 @@
 // Fix16 functions for 9.6f
 address,type,symbol
 
+// ctor(s32,u8)
+401AD0,function,??0Fix16@@QAE@HE@Z
+
 // ctor(s32)
 401AF0,function,??0Fix16@@QAE@H@Z
 
+// operator f32()
+401B10,function,?ToFloat@Fix16@@QBEMXZ
+
+// operator+(Fix16)
+401B20,function,??HFix16@@QAE?AV0@ABV0@@Z
+
+// operator-(Fix16)
+401B40,function,??GFix16@@QBE?AV0@ABV0@@Z
+
+// operator*(Fix16)
+401B60,function,??DFix16@@QBE?AV0@ABV0@@Z
+
+// operator/(Fix16)
+401B90,function,??KFix16@@QAE?AV0@ABV0@@Z
+
+// operator*(s32)
+401BD0,function,??DFix16@@QBE?AV0@ABH@Z
+
+// operator/(s32)
+401BF0,function,??KFix16@@QAE?AV0@ABH@Z
+
+// operator-(negate)
+403780,function,??GFix16@@QBE?AV0@XZ
+
+// operator<(Fix16)
+4037E0,function,??MFix16@@QBEHABV0@@Z
+
+// operator>(Fix16)
+403800,function,??OFix16@@QBEHABV0@@Z
+
+// operator!=
+403820,function,??9Fix16@@QBEHABV0@@Z
+
 // ctor(u8)
 40CE30,function,??0Fix16@@QAE@E@Z
+
+// operator+=
+40E530,function,??YFix16@@QAEXABV0@@Z
+
+// operator-=
+40E550,function,??ZFix16@@QAE?AV0@ABV0@@Z
+
+// operator==
+40E570,function,??8Fix16@@QBEHABV0@@Z
 
 // ctor(u32)
 41F980,function,??0Fix16@@QAE@I@Z
 
 // ctor(u16)
 41F990,function,??0Fix16@@QAE@G@Z
+
+// operator s32()
+41F9D0,function,?ToInt@Fix16@@QBEHXZ

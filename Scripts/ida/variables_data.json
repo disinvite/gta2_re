@@ -1,0 +1,47 @@
+[
+    {
+        "name": "gViewCamera_676978",
+        "v96f_address": "0x5e3cc4",
+        "v105_address": "0x676978"
+    },
+    {
+        "name": "gLucid_hamilton_67E8E0",
+        "v96f_address": "0x5ec070",
+        "v105_address": "0x67e8e0"
+    },
+    {
+        "name": "dword_6F62B0",
+        "v96f_address": "0x6633ac",
+        "v105_address": "0x6f62b0"
+    },
+    {
+        "name": "gZCoord_6F63E0",
+        "v96f_address": "0x6633a0",
+        "v105_address": "0x6f63e0"
+    },
+    {
+        "name": "gBlockRight_6F63C6",
+        "v96f_address": "0x6633a4",
+        "v105_address": "0x6f63c6"
+    },
+    {
+        "name": "gXCoord_6F63AC",
+        "v96f_address": "0x663600",
+        "v105_address": "0x6f63ac"
+    },
+    {
+        "name": "gYCoord_6F63B8",
+        "v96f_address": "0x6636f0",
+        "v105_address": "0x6f63b8"
+    },
+    {
+        "name": "gTileVerts_6F65A8",
+        "v96f_address": "0x6632a0",
+        "v105_address": "0x6f65a8"
+    },
+    {
+        "name": "gpMapRenderer_6F66E4",
+        "v96f_address": "0x6633c8",
+        "v105_address": "0x6f66e4"
+    }
+]
