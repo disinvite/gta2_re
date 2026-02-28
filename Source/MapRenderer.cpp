@@ -54,6 +54,7 @@ DEFINE_GLOBAL(Fix16_Point, stru_6F62A0, 0x6F62A0);
 DEFINE_GLOBAL(Fix16_Point, stru_6F62A8, 0x6F62A8);
 DEFINE_GLOBAL(Fix16_Point, stru_6F6580, 0x6F6580);
 
+MATCH_FUNC(0x4EAE00)
 static inline void sub_46BD40(Fix16& x, Fix16& y, Vert* pVert)
 {
     set_vert_xyz_relative_to_cam_4EAD90(x, y, dword_6F62B0, pVert);
@@ -62,6 +63,7 @@ static inline void sub_46BD40(Fix16& x, Fix16& y, Vert* pVert)
     pVert->z = dword_6F656C.ToFloat();
 }
 
+MATCH_FUNC(0x4EAEA0)
 static inline void sub_46BDF0(Fix16& xpos, Fix16& ypos, Vert* pVert)
 {
     set_vert_xyz_relative_to_cam_4EAD90(xpos, ypos, gZCoord_6F63E0, pVert);
@@ -546,14 +548,14 @@ void MapRenderer::DrawLeftSide_4EA390(u16& left_word)
                 break;
             default:
                 // Flat blocks
-                MapRenderer::sub_4EAEA0(gXCoord_6F63AC, gYCoord_6F63B8, &gTileVerts_6F65A8[0]);
-                MapRenderer::sub_4EAE00(gXCoord_6F63AC, gYCoord_6F63B8, &gTileVerts_6F65A8[1]);
+                sub_46BDF0(gXCoord_6F63AC, gYCoord_6F63B8, &gTileVerts_6F65A8[0]);
+                sub_46BD40(gXCoord_6F63AC, gYCoord_6F63B8, &gTileVerts_6F65A8[1]);
                 if (gTileVerts_6F65A8[0].x > gTileVerts_6F65A8[1].x)
                 {
                     return;
                 }
-                MapRenderer::sub_4EAEA0(gXCoord_6F63AC, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[3]);
-                MapRenderer::sub_4EAE00(gXCoord_6F63AC, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[2]);
+                sub_46BDF0(gXCoord_6F63AC, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[3]);
+                sub_46BD40(gXCoord_6F63AC, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[2]);
                 dword_6F6560 = dword_620F24[left_word >> 13];
                 break;
         }
@@ -586,28 +588,6 @@ void __stdcall set_vert_xyz_relative_to_cam_4EAD90(Fix16 xCoord, Fix16 yCoord, F
     gTileVerts_6F65A8[next_idx].x = (xCoord + pCam->field_98_cam_pos2.field_0_x).ToFloat();
     gTileVerts_6F65A8[next_idx].y = (yCoord + pCam->field_98_cam_pos2.field_4_y).ToFloat();
     gTileVerts_6F65A8[next_idx].z = z_val.ToFloat();
-}
-
-// This function matches, but the offsets of dword_6F628C and dword_6F656C are wrong
-WIP_FUNC(0x4eae00)
-void MapRenderer::sub_4EAE00(Fix16& xpos, Fix16& ypos, Vert* pVert)
-{
-    set_vert_xyz_relative_to_cam_4EAD90(xpos, ypos, dword_6F62B0, pVert);
-    
-    pVert->x = xpos.ToFloat() * dword_6F628C.ToFloat() + (u32)gViewCamera_676978->field_70_screen_px_center_x;
-    pVert->y = ypos.ToFloat() * dword_6F628C.ToFloat() + (u32)gViewCamera_676978->field_74_screen_px_center_y;
-    pVert->z = dword_6F656C.ToFloat();
-}
-
-// This function matches, but the offsets of dword_6F633C and dword_6F6318 are wrong
-WIP_FUNC(0x4eaea0)
-void MapRenderer::sub_4EAEA0(Fix16& xCoord, Fix16& yCoord, Vert* pVert)
-{
-    set_vert_xyz_relative_to_cam_4EAD90(xCoord, yCoord, gZCoord_6F63E0, pVert);
-
-    pVert->x = (u32)gViewCamera_676978->field_70_screen_px_center_x + dword_6F633C.ToFloat() * xCoord.ToFloat();
-    pVert->y = (u32)gViewCamera_676978->field_74_screen_px_center_y + dword_6F633C.ToFloat() * yCoord.ToFloat();
-    pVert->z = dword_6F6318.ToFloat();
 }
 
 // https://decomp.me/scratch/mWsfM
@@ -733,14 +713,14 @@ void MapRenderer::DrawRightSide_4EAF40(u16& right_word)
                 break;
             default:
                 // Flat blocks
-                MapRenderer::sub_4EAEA0(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8, &gTileVerts_6F65A8[1]);
-                MapRenderer::sub_4EAE00(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8, &gTileVerts_6F65A8[0]);
+                sub_46BDF0(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8, &gTileVerts_6F65A8[1]);
+                sub_46BD40(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8, &gTileVerts_6F65A8[0]);
                 if (gTileVerts_6F65A8[0].x > gTileVerts_6F65A8[1].x)
                 {
                     return;
                 }
-                MapRenderer::sub_4EAEA0(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[2]);
-                MapRenderer::sub_4EAE00(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[3]);
+                sub_46BDF0(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[2]);
+                sub_46BD40(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[3]);
                 dword_6F6560 = dword_620F44[right_word >> 13];
                 break;
         }
@@ -891,14 +871,14 @@ void MapRenderer::DrawTopSide_4EBA60(u16& top_word)
                 break;
             default:
                 // Flat blocks
-                MapRenderer::sub_4EAEA0(gXCoord_6F63AC, gYCoord_6F63B8, &gTileVerts_6F65A8[0]);
-                MapRenderer::sub_4EAE00(gXCoord_6F63AC, gYCoord_6F63B8, &gTileVerts_6F65A8[3]);
+                sub_46BDF0(gXCoord_6F63AC, gYCoord_6F63B8, &gTileVerts_6F65A8[0]);
+                sub_46BD40(gXCoord_6F63AC, gYCoord_6F63B8, &gTileVerts_6F65A8[3]);
                 if (gTileVerts_6F65A8[0].y > gTileVerts_6F65A8[3].y)
                 {
                     return;
                 }
-                MapRenderer::sub_4EAEA0(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8, &gTileVerts_6F65A8[1]);
-                MapRenderer::sub_4EAE00(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8, &gTileVerts_6F65A8[2]);
+                sub_46BDF0(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8, &gTileVerts_6F65A8[1]);
+                sub_46BD40(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8, &gTileVerts_6F65A8[2]);
                 dword_6F6560 = dword_620F64[top_word >> 13];
                 break;
         }
@@ -1177,14 +1157,14 @@ void MapRenderer::draw_bottom_4ED290(u16& bottom_word)
                 break;
             default:
                 // Flat blocks
-                MapRenderer::sub_4EAEA0(gXCoord_6F63AC, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[3]);
-                MapRenderer::sub_4EAE00(gXCoord_6F63AC, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[0]);
+                sub_46BDF0(gXCoord_6F63AC, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[3]);
+                sub_46BD40(gXCoord_6F63AC, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[0]);
                 if (gTileVerts_6F65A8[0].y > gTileVerts_6F65A8[3].y)
                 {
                     return;
                 }
-                MapRenderer::sub_4EAEA0(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[2]);
-                MapRenderer::sub_4EAE00(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[1]);
+                sub_46BDF0(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[2]);
+                sub_46BD40(gXCoord_6F63AC + stru_6F6484.y, gYCoord_6F63B8 + stru_6F6484.y, &gTileVerts_6F65A8[1]);
                 dword_6F6560 = dword_620F84[bottom_word >> 13];
                 break;
         }
