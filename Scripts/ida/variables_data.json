@@ -35,6 +35,11 @@
         "v105_address": "0x6f63b8"
     },
     {
+        "name": "stru_6F6484",
+        "v96f_address": "0x66344c",
+        "v105_address": "0x6f6484"
+    },
+    {
         "name": "gTileVerts_6F65A8",
         "v96f_address": "0x6632a0",
         "v105_address": "0x6f65a8"
