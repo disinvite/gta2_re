@@ -250,7 +250,7 @@ void MapRenderer::set_shading_lev_4E9DB0(u8 shading_lev)
 
 // this function matches, but some "fcomps" offsets are wrong
 WIP_FUNC(0x4E9EE0)
-void MapRenderer::draw_4E9EE0(u16& word_side, const bool& bUnk, u8 colour)
+void MapRenderer::draw_4E9EE0(u16& word_side, const bool& bUnk, u8 &colour)
 {
     u16 texture_idx = gGtx_0x106C_703DD4->GetTile_5AA870(word_side & 0x3FF);
     if (texture_idx)
@@ -570,7 +570,7 @@ void MapRenderer::DrawLeftSide_4EA390(u16& left_word)
 }
 
 MATCH_FUNC(0x4ead90)
-void __stdcall set_vert_xyz_relative_to_cam_4EAD90(Fix16 xCoord, Fix16 yCoord, Fix16 z_val, Vert* pVerts)
+inline void __stdcall set_vert_xyz_relative_to_cam_4EAD90(Fix16 xCoord, Fix16 yCoord, Fix16 z_val, Vert* pVerts)
 {
     Camera_0xBC* pCam = gViewCamera_676978;
 
