@@ -59,6 +59,11 @@ jobs:
           Scripts/bin_comp/10.5.exe
         key: originals
 
+    - name: Restore stock VC6
+      run: |
+        move "3rdParty\gta2_re_compile_tools\VC98\Bin\CL.EXE" "3rdParty\gta2_re_compile_tools\VC98\Bin\XCL.EXE"
+        move "3rdParty\gta2_re_compile_tools\VC98\Bin\CL_REAL.EXE" "3rdParty\gta2_re_compile_tools\VC98\Bin\CL.EXE"
+
     - name: Build on Windows (Windows_VC6)
       run: |
         pip install -r requirements.txt
@@ -123,6 +128,11 @@ jobs:
           Scripts/bin_comp/9.6f.exe
           Scripts/bin_comp/10.5.exe
         key: originals
+
+    - name: Restore stock VC6
+      run: |
+        move "3rdParty\gta2_re_compile_tools\VC98\Bin\CL.EXE" "3rdParty\gta2_re_compile_tools\VC98\Bin\XCL.EXE"
+        move "3rdParty\gta2_re_compile_tools\VC98\Bin\CL_REAL.EXE" "3rdParty\gta2_re_compile_tools\VC98\Bin\CL.EXE"
 
     - name: Build on Windows (Windows_VC6)
       run: |
@@ -193,6 +203,11 @@ jobs:
           Scripts/bin_comp/9.6f.exe
           Scripts/bin_comp/10.5.exe
         key: originals
+
+    - name: Restore stock VC6
+      run: |
+        mv "3rdParty/gta2_re_compile_tools/VC98/Bin/CL.EXE" "3rdParty/gta2_re_compile_tools/VC98/Bin/XCL.EXE"
+        mv "3rdParty/gta2_re_compile_tools/VC98/Bin/CL_REAL.EXE" "3rdParty/gta2_re_compile_tools/VC98/Bin/CL.EXE"
 
     - name: Build on Linux
       run: |
