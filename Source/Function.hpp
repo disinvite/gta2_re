@@ -10,6 +10,10 @@
 // Pattern: 0x90, 0x90 0xB8 [addr bytes x4] 0xB8 [status bytes x4] 0x90 0x90
 #define FUNC_MARKER_ASM(addr, status) __asm nop __asm nop __asm mov eax, addr __asm mov eax, status __asm nop __asm nop
 
+#define COMMA ,
+#define LCURLY {
+#define RCURLY }
+
 #if defined(_MSC_VER)
     #define WIP_FUNC(addr)                                           \
         __declspec(naked) __declspec(dllexport) void Marker_##addr() \
@@ -51,8 +55,8 @@
                 __declspec(dllexport) type name[size];          \
                 GLOBAL(name, addr)
 
-            #define DEFINE_GLOBAL_ARRAY_INIT(type, name, size, addr, ...) \
-                __declspec(dllexport) type name[size] = {__VA_ARGS__};    \
+            #define DEFINE_GLOBAL_ARRAY_INIT(type, name, size, addr, va_args) \
+                __declspec(dllexport) type name[size] = {va_args};    \
                 GLOBAL(name, addr)
 
             #define EXTERN_GLOBAL(type, name) __declspec(dllexport) extern type name
@@ -64,7 +68,7 @@
             #define DEFINE_GLOBAL_INIT(type, name, value, addr) __declspec(dllimport) type name;
 
             #define DEFINE_GLOBAL_ARRAY(type, name, size, addr) __declspec(dllimport) type name[size]
-            #define DEFINE_GLOBAL_ARRAY_INIT(type, name, size, addr, ...) __declspec(dllimport) type name[size];
+            #define DEFINE_GLOBAL_ARRAY_INIT(type, name, size, addr, va_args) __declspec(dllimport) type name[size];
             // extern
             #define EXTERN_GLOBAL(type, name) __declspec(dllimport) extern type name
             #define EXTERN_GLOBAL_ARRAY(type, name, size) __declspec(dllimport) extern type name[size]
@@ -83,8 +87,8 @@
             type name[size];                                \
             GLOBAL(name, addr)
 
-        #define DEFINE_GLOBAL_ARRAY_INIT(type, name, size, addr, ...) \
-            type name[size] = {__VA_ARGS__};                          \
+        #define DEFINE_GLOBAL_ARRAY_INIT(type, name, size, addr, va_args) \
+            type name[size] = {va_args};                          \
             GLOBAL(name, addr)
 
         #define EXTERN_GLOBAL(type, name) extern type name
