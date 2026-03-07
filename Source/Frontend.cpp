@@ -280,31 +280,31 @@ DEFINE_GLOBAL_ARRAY_INIT(TgaInfo,
                          tgaArray_61F0C8,
                          25,
                          0x61F0C8,
-                         LCURLY "data\\frontend\\1.tga"             COMMA 347564 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\1_Options.tga"     COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\1_Play.tga"        COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\1_Quit.tga"        COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2.tga"             COMMA 347564 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_Bonus1.tga"      COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_Bonus2.tga"      COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_Bonus3.tga"      COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_League.tga"      COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_Level1.tga"      COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_Level2.tga"      COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_Level3.tga"      COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_Name.tga"        COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\2_Restart.tga"     COMMA 266924 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\3.tga"             COMMA 347564 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\3_Tables.tga"      COMMA 614444 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\GameComplete.tga"  COMMA 614444 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\LevelComplete.tga" COMMA 614444 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\MPLose.tga"        COMMA 614444 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\PlayerDead.tga"    COMMA 614444 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\Mask.tga"          COMMA 104300 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\Mask2.tga"         COMMA 53594  COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\Credits.tga"       COMMA 614444 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\Mask3.tga"         COMMA 130427 COMMA 0 RCURLY COMMA
-                         LCURLY "data\\frontend\\DemoInfo.tga"      COMMA 614939 COMMA 0 RCURLY);
+                         {"data\\frontend\\1.tga"             COMMA 347564 COMMA 0} COMMA
+                         {"data\\frontend\\1_Options.tga"     COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\1_Play.tga"        COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\1_Quit.tga"        COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2.tga"             COMMA 347564 COMMA 0} COMMA
+                         {"data\\frontend\\2_Bonus1.tga"      COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2_Bonus2.tga"      COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2_Bonus3.tga"      COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2_League.tga"      COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2_Level1.tga"      COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2_Level2.tga"      COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2_Level3.tga"      COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2_Name.tga"        COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\2_Restart.tga"     COMMA 266924 COMMA 0} COMMA
+                         {"data\\frontend\\3.tga"             COMMA 347564 COMMA 0} COMMA
+                         {"data\\frontend\\3_Tables.tga"      COMMA 614444 COMMA 0} COMMA
+                         {"data\\frontend\\GameComplete.tga"  COMMA 614444 COMMA 0} COMMA
+                         {"data\\frontend\\LevelComplete.tga" COMMA 614444 COMMA 0} COMMA
+                         {"data\\frontend\\MPLose.tga"        COMMA 614444 COMMA 0} COMMA
+                         {"data\\frontend\\PlayerDead.tga"    COMMA 614444 COMMA 0} COMMA
+                         {"data\\frontend\\Mask.tga"          COMMA 104300 COMMA 0} COMMA
+                         {"data\\frontend\\Mask2.tga"         COMMA 53594  COMMA 0} COMMA
+                         {"data\\frontend\\Credits.tga"       COMMA 614444 COMMA 0} COMMA
+                         {"data\\frontend\\Mask3.tga"         COMMA 130427 COMMA 0} COMMA
+                         {"data\\frontend\\DemoInfo.tga"      COMMA 614939 COMMA 0});
 
 STUB_FUNC(0x5D9910)
 EXPORT s32 __stdcall SetGamma_5D9910(s32 gamma)

@@ -11,8 +11,6 @@
 #define FUNC_MARKER_ASM(addr, status) __asm nop __asm nop __asm mov eax, addr __asm mov eax, status __asm nop __asm nop
 
 #define COMMA ,
-#define LCURLY {
-#define RCURLY }
 
 #if defined(_MSC_VER)
     #define WIP_FUNC(addr)                                           \
