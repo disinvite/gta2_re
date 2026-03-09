@@ -2240,9 +2240,11 @@ void MapRenderer::DrawGradientSlope_4F6630()
 
     if (!bSkip_slopes_67D505)
     {
-        u8 gradient_direction = update_and_get_gradient_direction(slope_idx);
+        dword_6F6480 = byte_6F5BA8[slope_idx].field_1_gradient_size;
+        dword_6F647C = byte_6F5BA8[slope_idx].field_2_gradient_level;
+        dword_6F646C.field_0_gradient_direction = byte_6F5BA8[slope_idx].field_0_gradient_direction;
 
-        switch (gradient_direction)
+        switch (dword_6F646C.field_0_gradient_direction)
         {
             case NORTH_1:
                 MapRenderer::DrawGradientSlopeNorthwards_4F0420();
