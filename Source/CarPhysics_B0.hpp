@@ -1,10 +1,10 @@
 #pragma once
 
+#include "CarInfo_808.hpp"
 #include "Car_BC.hpp"
 #include "Function.hpp"
 #include "ang16.hpp"
 #include "fix16.hpp"
-#include "CarInfo_808.hpp"
 
 class Sprite;
 class Car_BC;
@@ -16,10 +16,10 @@ class Car_78;
 struct Fix16_Point_POD;
 
 EXTERN_GLOBAL(Fix16, kFP16Zero_6FE20C);
-EXTERN_GLOBAL(ModelPhysics_48*, dword_6FE258);
+EXTERN_GLOBAL(ModelPhysics_48*, gCarInfo_48_6FE258);
 EXTERN_GLOBAL(Ang16, word_6FE00C);
 EXTERN_GLOBAL(Ang16, word_6FE154);
-EXTERN_GLOBAL(CarInfo_2C*, dword_6FE0E4);
+EXTERN_GLOBAL(CarInfo_2C*, gCarInfo_2C_6FE0E4);
 EXTERN_GLOBAL(Fix16, dword_6FE348);
 
 class CarPhysics_B0
@@ -74,16 +74,16 @@ class CarPhysics_B0
     EXPORT void BinarySearchCollisionTime_55C560(Fix16& a2, Fix16& a3);
     EXPORT void HandleMapBoundaryCollisionY_55C5C0(Fix16_Point& a2, Ang16& a3);
     EXPORT void HandleMapBoundaryCollisionX_55C820(Fix16_Point& a2, Ang16& a3);
-    EXPORT void DispatchCollision_55CA70(Fix16_Point a2, Ang16 a3);
+    EXPORT void DispatchCollision_55CA70(Fix16_Point& a2, Ang16 a3);
     EXPORT void ReplayAndDispatchCollision_55CBB0(Fix16 a2, Fix16 a3);
-    EXPORT void SpawnSkidSegment_55D200(s32 a2, Sprite_4C* a3, s32 a4, s32 a5);
-    EXPORT char_type UpdateWheelSkidEffects_55DC00();
+    EXPORT void SpawnSkidSegment_55D200(s32 box_idx, Fix16_Point arg_4, s32 surface);
+    EXPORT void UpdateWheelSkidEffects_55DC00();
     EXPORT void DoSkidmarks_55E260();
     EXPORT char_type StepMovementAndCollisions_55E470();
     EXPORT char_type CheckAndHandleCarAndTrailerCollisions_55EB80();
     EXPORT void ApplyForwardEngineForce_55EC30();
-    EXPORT s32 ApplyReverseEngineForce_55EF20();
-    EXPORT s32 ApplyTurningForce_55F020();
+    EXPORT void ApplyReverseEngineForce_55EF20();
+    EXPORT void ApplyTurningForce_55F020();
     EXPORT char_type ApplyMovementCommand_55F240();
     EXPORT char_type ProcessCollisionAndClampVelocity_55F280();
     EXPORT void StepPhysics_55F330();
@@ -95,12 +95,12 @@ class CarPhysics_B0
     EXPORT void ApplyAngularImpulse_55F970(Fix16 a2);
     EXPORT void ApplyForceScaledByMass_55F9A0(Fix16_Point_POD& pForce);
     EXPORT void ApplyImpulseWithTrailerRedirect_55FA10(Fix16_Point* a2);
-    EXPORT u32* ComputeFinalImpactDamage_55FA60(u32* a2, s32* a3, s32* a4, s32 a5);
+    EXPORT Fix16 ApplyImpactForcesAndDamage_55FA60(Fix16_Point* a3, Fix16_Point* a4, s32 base_dmg);
     EXPORT void AccumulateImpulse_55FC30(Fix16_Point* a2, s32 a3);
     EXPORT s32 HandleWorldCollision_55FD00(s32 a2);
     EXPORT Car_78* HandleCarCollision_55FF20(Car_BC* a2);
     EXPORT void HandleObjectCollision_5606C0(Object_2C* a2, char_type a3);
-    EXPORT void ProcessPedImpact_560B40(Char_B4* a2, Ang16& a3);
+    EXPORT void ProcessPedImpact_560B40(Char_B4* a2, u8 a3);
     EXPORT void UpdateLinearAndAngularAccel_560EB0();
     EXPORT void ApplyMovementStep_560F20(Fix16 a2);
     EXPORT void IntegrateAndClampVelocities_5610B0();
@@ -112,15 +112,21 @@ class CarPhysics_B0
     EXPORT Fix16 ComputeEngineTorque_561970();
     EXPORT Fix16 ComputeTorqueFromThrottle_561DD0();
 
+    bool IsVelocityAlignedWithHeading_40F840()
+    {
+        Ang16 v14 = (field_40_linvel_1.atan2_40ACD0() - field_58_theta);
+        return v14 <= word_6FE00C || v14 >= word_6FE154;
+    }
+
     Fix16 inline_ComputeTorqueFromThrottle_561DD0()
     {
         if (get_revs_561940() != 0)
         {
-            return dword_6FE0E4->field_14_half_thrust + ((field_60_gas_pedal * ((dword_6FE348 * dword_6FE0E4->field_18_fith_thrust)))) * 2;
+            return gCarInfo_2C_6FE0E4->field_14_half_thrust + ((field_60_gas_pedal * ((dword_6FE348 * gCarInfo_2C_6FE0E4->field_18_fith_thrust)))) * 2;
         }
         else
         {
-            return dword_6FE0E4->field_14_half_thrust + ((field_60_gas_pedal * ((dword_6FE348 * dword_6FE0E4->field_18_fith_thrust))));
+            return gCarInfo_2C_6FE0E4->field_14_half_thrust + ((field_60_gas_pedal * ((dword_6FE348 * gCarInfo_2C_6FE0E4->field_18_fith_thrust))));
         }
     }
 
@@ -128,11 +134,11 @@ class CarPhysics_B0
     {
         if (get_revs_561940())
         {
-            return dword_6FE0E4->field_14_half_thrust + (dword_6FE0E4->field_18_fith_thrust * this->field_60_gas_pedal) * 2;
+            return gCarInfo_2C_6FE0E4->field_14_half_thrust + (gCarInfo_2C_6FE0E4->field_18_fith_thrust * this->field_60_gas_pedal) * 2;
         }
         else
         {
-            return dword_6FE0E4->field_14_half_thrust + dword_6FE0E4->field_18_fith_thrust * this->field_60_gas_pedal;
+            return gCarInfo_2C_6FE0E4->field_14_half_thrust + gCarInfo_2C_6FE0E4->field_18_fith_thrust * this->field_60_gas_pedal;
         }
     }
 
@@ -142,9 +148,9 @@ class CarPhysics_B0
     EXPORT void ApplyThrottleInput_562480();
     EXPORT void ApplyBrakePhysics_5624F0();
     EXPORT void UpdateSteeringAngle_562560();
-    EXPORT s32 IsGasPedalPressedEnough_5626A0();
+    EXPORT bool IsGasPedalPressedEnough_5626A0();
     EXPORT Fix16 MinGasPedalPressure_5626C0();
-    EXPORT char_type ApplyArrowSteerAssist_5626F0();
+    EXPORT void ApplyArrowSteerAssist_5626F0();
     EXPORT void StabilizeVelocityAtSpeed_562910();
     EXPORT void RotateVelocity_562C20(const Ang16& a2);
     EXPORT void EnforceGearSensitiveMaxSpeed_562D00();
