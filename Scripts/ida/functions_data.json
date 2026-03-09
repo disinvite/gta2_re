@@ -7896,7 +7896,7 @@
     },
     {
         "name": "MapRenderer::DrawGradientSlopeNorthwards_4F0420",
-        "v96f_address": null,
+        "v96f_address": "0x46ef10",
         "v105_address": "0x4f0420"
     },
     {
@@ -7906,17 +7906,17 @@
     },
     {
         "name": "MapRenderer::DrawGradientSlopeSouthwards_4F1660",
-        "v96f_address": null,
+        "v96f_address": "0x46f370",
         "v105_address": "0x4f1660"
     },
     {
         "name": "MapRenderer::DrawGradientSlopeWestwards_4F22F0",
-        "v96f_address": null,
+        "v96f_address": "0x46f7c0",
         "v105_address": "0x4f22f0"
     },
     {
         "name": "MapRenderer::DrawGradientSlopeEastwards_4F33B0",
-        "v96f_address": null,
+        "v96f_address": "0x46fc10",
         "v105_address": "0x4f33b0"
     },
     {
