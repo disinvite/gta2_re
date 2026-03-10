@@ -44,10 +44,10 @@ address,type,symbol
 40CE30,function,??0Fix16@@QAE@E@Z
 
 // operator+=
-40E530,function,??YFix16@@QAEXABV0@@Z
+40E530,function,??YFix16@@QAEAAV0@ABV0@@Z
 
 // operator-=
-40E550,function,??ZFix16@@QAE?AV0@ABV0@@Z
+40E550,function,??ZFix16@@QAEAAV0@ABV0@@Z
 
 // operator==
 40E570,function,??8Fix16@@QBEHABV0@@Z
@@ -60,3 +60,9 @@ address,type,symbol
 
 // operator s32()
 41F9D0,function,?ToInt@Fix16@@QBEHXZ
+
+// GetFracValue
+42A630,function,?GetFracValue@Fix16@@QBE?AV1@XZ
+
+// GetRoundValue
+462EA0,function,?GetRoundValue@Fix16@@QBE?AV1@XZ
