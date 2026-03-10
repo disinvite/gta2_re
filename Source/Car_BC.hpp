@@ -341,6 +341,9 @@ class Trailer
         0;
     }
 
+    // FUNCTION: 96f 0x49efb0
+    char_type GetField0() const { return field_0; }
+
     char_type field_0;
     char_type field_1;
     char_type field_2;

@@ -242,7 +242,7 @@ void CarPhysics_B0::EnforceTrailerControlLimits_559B50()
     Trailer* pTrailer = this->field_5C_pCar->field_64_pTrailer;
     if (pTrailer)
     {
-        if (pTrailer->field_0)
+        if (pTrailer->GetField0())
         {
             if (this->field_94_is_backward_gas_on)
             {
