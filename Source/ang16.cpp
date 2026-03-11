@@ -2,11 +2,10 @@
 #include "Function.hpp"
 #include <cmath>
 
-// TODO: init these angles
-DEFINE_GLOBAL(Ang16, dword_6F677C, 0x6F677C);
-DEFINE_GLOBAL(Ang16, word_6F680C, 0x6F680C);
-DEFINE_GLOBAL(Ang16, dword_6F6800, 0x6F6800);
-DEFINE_GLOBAL(Ang16, word_6F67DC, 0x6F67DC);
+DEFINE_GLOBAL_INIT(Ang16, dword_6F677C, Ang16(0xB4), 0x6F677C);
+DEFINE_GLOBAL_INIT(Ang16, word_6F680C, Ang16(0x4EC), 0x6F680C);
+DEFINE_GLOBAL_INIT(Ang16, dword_6F6800, Ang16(0x21C), 0x6F6800);
+DEFINE_GLOBAL_INIT(Ang16, word_6F67DC, Ang16(0x384), 0x6F67DC);
 
 EXTERN_GLOBAL(Ang16, word_669156);
 
@@ -85,4 +84,19 @@ s32 __stdcall Ang16::GetAngleFace_4F78F0(Ang16& a1)
         return 3; //  East
     }
     return a1 < word_6F67DC ? 1 : 4; // word_6F67DC = 225°  ,  1 = South, 4 = West
+}
+
+MATCH_FUNC(0x405B60)
+Fix16 __stdcall Ang16::NormalizeAngleDeltaScaled_405B60(Ang16& a2, Ang16& a3, Ang16& a4)
+{
+    Ang16 d = a3 - a2;
+    if (d > word_669156)
+    {
+        d = -d;
+        return d.divideBy_40E640(a4);
+    }
+    else
+    {
+        return d.divideBy_40E640(a4);
+    }
 }

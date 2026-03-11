@@ -30,11 +30,11 @@ EXTERN_GLOBAL(Ang16, kZeroAng_6F8F68);
 DEFINE_GLOBAL(Object_5C*, gObject_5C_6F8F84, 0x6F8F84);
 DEFINE_GLOBAL(s32, dword_6F8F88, 0x6f8f88);
 DEFINE_GLOBAL(s32, dword_6F8F90, 0x6F8F90);
-DEFINE_GLOBAL(Ang16, word_6F8D62, 0x6F8D62);
+DEFINE_GLOBAL_INIT(Ang16, word_6F8D62, Ang16(0x2D0), 0x6F8D62);
 
 DEFINE_GLOBAL(Fix16_Point, stru_6F8EF0, 0x6F8EF0);
 DEFINE_GLOBAL(Fix16, kFpZero_6F8E10, 0x6F8E10);
-DEFINE_GLOBAL(Fix16, k_dword_6F8C9C, 0x6F8C9C);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6F8C9C, Fix16(0x100, 0), 0x6F8C9C);
 
 DEFINE_GLOBAL(u8, byte_6F8C68, 0x6F8C68);
 DEFINE_GLOBAL(u8, byte_6F8C4C, 0x6F8C4C);
@@ -45,30 +45,30 @@ DEFINE_GLOBAL(u32, dword_6F8DC0, 0x6F8DC0);
 DEFINE_GLOBAL(u32, dword_6F8F0C, 0x6F8F0C);
 DEFINE_GLOBAL(u8, byte_6F8EDC, 0x6F8EDC);
 
-DEFINE_GLOBAL(Ang16, word_6F8D8C, 0x6F8D8C);
-DEFINE_GLOBAL(Ang16, dword_6F8D80, 0x6F8D80);
-DEFINE_GLOBAL(Ang16, word_6F8D54, 0x6F8D54);
-DEFINE_GLOBAL(Ang16, dword_6F8CD0, 0x6F8CD0);
+DEFINE_GLOBAL_INIT(Ang16, word_6F8D8C, Ang16(0x4EC), 0x6F8D8C);
+DEFINE_GLOBAL_INIT(Ang16, dword_6F8D80, Ang16(0x21C), 0x6F8D80);
+DEFINE_GLOBAL_INIT(Ang16, word_6F8D54, Ang16(0x384), 0x6F8D54);
+DEFINE_GLOBAL_INIT(Ang16, dword_6F8CD0, Ang16(0xB4), 0x6F8CD0);
 
 DEFINE_GLOBAL(Sprite*, dword_6F8F8C, 0x6F8F8C);
 DEFINE_GLOBAL(u8, byte_6F8F94, 0x6F8F94);
-DEFINE_GLOBAL(Fix16, dword_6F8F5C, 0x6F8F5C);
-DEFINE_GLOBAL(Fix16, dword_6F8DA8, 0x6F8DA8);
-DEFINE_GLOBAL(Fix16, dword_6F8E14, 0x6F8E14);
-DEFINE_GLOBAL(Fix16, k_dword_6F8C58, 0x6F8C58);
-DEFINE_GLOBAL(u8, byte_623EC4, 0x623EC4);
+DEFINE_GLOBAL_INIT(Fix16, dword_6F8F5C, Fix16(0x200, 0), 0x6F8F5C);
+DEFINE_GLOBAL_INIT(Fix16, dword_6F8DA8, Fix16(0xFFFFFFF8, 0), 0x6F8DA8);
+DEFINE_GLOBAL_INIT(Fix16, dword_6F8E14, Fix16(0x4000, 0), 0x6F8E14);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6F8C58, Fix16(0x666, 0), 0x6F8C58);
+DEFINE_GLOBAL_INIT(u8, byte_623EC4, 1, 0x623EC4);
 
 DEFINE_GLOBAL_INIT(Fix16, dword_6F8DC8, Fix16(256, 0), 0x6F8DC8);
-DEFINE_GLOBAL_INIT(Fix16, dword_6F8CE8, Fix16(12), 0x6F8CE8);
+DEFINE_GLOBAL_INIT(Fix16, dword_6F8CE8, Fix16(0x48000, 0), 0x6F8CE8);
 DEFINE_GLOBAL_INIT(Fix16, dword_6F8CEC, Fix16(1), 0x6F8CEC);
 DEFINE_GLOBAL_INIT(Fix16, dword_6F8ECC, dword_6F8DC8, 0x6F8ECC);
 
-DEFINE_GLOBAL(Ang16, word_6F8C88, 0x6F8C88); // TODO: Init via func 0x5269F0
-DEFINE_GLOBAL(Ang16, word_6F8D88, 0x6F8D88); // TODO: Init via func 0x526E70
+DEFINE_GLOBAL_INIT(Ang16, word_6F8C88, Ang16(0x168), 0x6F8C88); // TODO: Init via func 0x5269F0
+DEFINE_GLOBAL_INIT(Ang16, word_6F8D88, Ang16(0x438), 0x6F8D88); // TODO: Init via func 0x526E70
 
-DEFINE_GLOBAL(Fix16, dword_6F8CF0, 0x6F8CF0);
-DEFINE_GLOBAL(Fix16, k_dword_6F8BFC, 0x6F8BFC);
-DEFINE_GLOBAL(Fix16, dword_6F8D10, 0x6F8D10);
+DEFINE_GLOBAL_INIT(Fix16, dword_6F8CF0, Fix16(0x40, 0), 0x6F8CF0);
+DEFINE_GLOBAL_INIT(Fix16, k_dword_6F8BFC, Fix16(0x1FF00, 0), 0x6F8BFC);
+DEFINE_GLOBAL_INIT(Fix16, dword_6F8D10, Fix16(0x2000, 0), 0x6F8D10);
 
 DEFINE_GLOBAL_INIT(u8, byte_6771DC, 0, 0x6771DC);
 
@@ -371,24 +371,6 @@ void Object_2C::ResolveCollisionWithPed_5229B0(Char_B4* a2, Fix16_Point* a3, s32
     NOT_IMPLEMENTED;
 }
 
-// TODO: Probably move
-STUB_FUNC(0x55F3B0)
-EXPORT s32* __stdcall ComputeLineLineIntersection_55F3B0(s32* a1,
-                                                         s32 a2,
-                                                         s32 a3,
-                                                         s32* a4,
-                                                         s32 a5,
-                                                         s32 a6,
-                                                         Fix16_Point* a7,
-                                                         Fix16_Point* a8,
-                                                         s32 a9,
-                                                         s32 a10,
-                                                         s32 a11)
-{
-    NOT_IMPLEMENTED;
-    return 0;
-}
-
 STUB_FUNC(0x522b20)
 void Object_2C::ResolveCollisionWithWorld_522B20(s32* f18, s32* a3, s32* a4)
 {
@@ -425,23 +407,23 @@ void Object_2C::HandleCollision_522E10(Fix16_Point* a4)
         {
             u8 a7;
             u8 a8;
+            u8 a9;
             Fix16_Point v13;
-            field_4->FindCollisionIntersectionPoint_5A2710(&v13, gRozza_679188.field_20_pSprite, *a4, field_4->field_0, &a7, &a8);
+            field_4->FindCollisionIntersectionPoint_5A2710(&v13, gRozza_679188.field_20_pSprite, *a4, field_4->field_0, &a7, &a8, &a9);
             Car_BC* pCar = gRozza_679188.field_20_pSprite->AsCar_40FEB0();
             if (pCar)
             {
                 pCar->SetupCarPhysicsAndSpriteBinding_43BCA0();
                 pCar->field_58_physics->SetCurrentCarInfoAndModelPhysics_562EF0();
                 stru_6FE1A0 = v13;
-                pCar->field_58_physics->HandleObjectCollision_5606C0(this, a8); // a4?
+                pCar->field_58_physics->HandleObjectCollision_5606C0(this, a9); // a4?
             }
             else
             {
                 Char_B4* pChar = gRozza_679188.field_20_pSprite->AsCharB4_40FEA0();
                 if (pChar)
                 {
-                    s32 v12; // ??
-                    ResolveCollisionWithPed_5229B0(pChar, &v13, v12);
+                    ResolveCollisionWithPed_5229B0(pChar, &v13, a8);
                     HandleImpact_528E50(gRozza_679188.field_20_pSprite);
                 }
                 else
@@ -1517,10 +1499,234 @@ char_type Object_2C::HandleRotationStateTransition_528240(s32 current, s32 desir
     return 0;
 }
 
-STUB_FUNC(0x5283c0)
+WIP_FUNC(0x5283c0)
 void Object_2C::TickObject_5283C0(s32 obj_type)
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    if (obj_type)
+    {
+        if (obj_type < 39 || obj_type > 42) // sub_482400
+        {
+            if (obj_type == 259)
+            {
+                gParticle_8_6FD5E8->EmitImpactParticles_53FE40(field_4->field_14_xy.x,
+                                                               field_4->field_14_xy.y,
+                                                               field_4->field_1C_zpos,
+                                                               (gSin_table_667A80[field_4->field_0.rValue] * k_dword_6F8C9C),
+                                                               (gCos_table_669260[field_4->field_0.rValue] * k_dword_6F8C9C));
+                Object_2C::sub_5290A0();
+            }
+            else
+            {
+                Phi_74* pPhi = gPhi_8CA8_6FCF00->GetObjectDefinition_534360(obj_type);
+                if (field_8->field_5C == pPhi->field_5C ||
+                    !Object_2C::HandleRotationStateTransition_528240(field_8->field_5C, pPhi->field_5C))
+                {
+                    if (!byte_6F8C4C && !byte_6F8C68)
+                    {
+                        Object_2C::RemoveFromCollisionBuckets_527D00();
+                    }
+                    field_4->FreeSprite4CChildren_59FAD0();
+
+                    switch (pPhi->field_34_behavior_type)
+                    {
+                        case object_behavior_type::behavior_0:
+                        case object_behavior_type::behavior_1:
+                        case object_behavior_type::behavior_6:
+                        case object_behavior_type::behavior_10:
+                        case object_behavior_type::behavior_12:
+                            Object_2C::sub_527F10();
+                            Object_2C::InitializeObject_527630(obj_type,
+                                                               this->field_4->field_14_xy.x,
+                                                               this->field_4->field_14_xy.y,
+                                                               this->field_4->field_1C_zpos,
+                                                               this->field_4->field_0);
+                            if (this->field_10_obj_3c)
+                            {
+                                return;
+                            }
+                            break;
+
+                        case object_behavior_type::behavior_2:
+                        case object_behavior_type::behavior_8:
+                        {
+                            if (field_10_obj_3c)
+                            {
+                                if (!field_10_obj_3c->field_0.field_0_p18)
+                                {
+                                    gObject_3C_Pool_6F8F7C->DeAllocate(field_10_obj_3c);
+                                    --gObj3C_id_6F8E54;
+                                    ++dword_6F8F0C;
+                                    this->field_10_obj_3c = 0;
+                                }
+                            }
+
+                            s32 bUnknown;
+                            if (this->field_C_pAny.o8)
+                            {
+                                bUnknown = 0;
+                            }
+                            else
+                            {
+                                bUnknown = 1;
+                                Object_8* pNewObj8 = gObject_8_Pool_6F8F78->Allocate();
+                                ++dword_6F8F18;
+                                this->field_C_pAny.o8 = pNewObj8;
+                            }
+
+                            if (pPhi->field_65 != field_8->field_65 || bUnknown)
+                            {
+                                this->field_C_pAny.o8->field_4_timer = pPhi->field_65;
+                                this->field_C_pAny.o8->field_7_anim_speed_counter = 0;
+                                this->field_C_pAny.o8->field_6_frame_counter = 0;
+                            }
+                            else if (pPhi->field_6C_sprite_anim_speed < field_8->field_6C_sprite_anim_speed)
+                            {
+                                this->field_C_pAny.o8->field_7_anim_speed_counter = 0;
+                            }
+                            Object_2C::InitializeObject_527630(obj_type,
+                                                               this->field_4->field_14_xy.x,
+                                                               this->field_4->field_14_xy.y,
+                                                               this->field_4->field_1C_zpos,
+                                                               this->field_4->field_0);
+                            field_4->set_id_lazy_4206C0(this->field_8->field_1E + this->field_C_pAny.o8->field_7_anim_speed_counter);
+                            break;
+                        }
+
+                        case object_behavior_type::behavior_3:
+                        case object_behavior_type::behavior_7:
+                            if (!this->field_10_obj_3c)
+                            {
+                                Object_3C* pNew3C_ = gObject_3C_Pool_6F8F7C->Allocate();
+                                ++gObj3C_id_6F8E54;
+                                pNew3C_->field_C = 0;
+                                pNew3C_->field_18 = 0;
+                                pNew3C_->field_4 = kZeroAng_6F8F68;
+                                pNew3C_->field_28 = 0;
+                                pNew3C_->field_38 = 0;
+                                pNew3C_->field_34 = 2;
+                                pNew3C_->field_24 = 0;
+                                pNew3C_->field_2F = 0;
+                                pNew3C_->field_30_bSkipAnim = 0;
+                                pNew3C_->field_20 = field_14_id;
+                                this->field_10_obj_3c = pNew3C_;
+                            }
+
+                            if (field_C_pAny.o8)
+                            {
+                                gObject_8_Pool_6F8F78->DeAllocate(field_C_pAny.o8);
+                                --dword_6F8F18;
+                                ++dword_6F8DC0;
+                                this->field_C_pAny.o8 = 0;
+                            }
+
+                            this->field_10_obj_3c->field_18 = pPhi->field_14_friction;
+                            this->field_10_obj_3c->field_1C = kFpZero_6F8E10;
+                            this->field_10_obj_3c->field_10 = kFpZero_6F8E10;
+                            this->field_10_obj_3c->field_28 = pPhi->field_65;
+                            Object_2C::InitializeObject_527630(obj_type,
+                                                               this->field_4->field_14_xy.x,
+                                                               this->field_4->field_14_xy.y,
+                                                               this->field_4->field_1C_zpos,
+                                                               this->field_4->field_0);
+                            break;
+
+                        case object_behavior_type::behavior_4:
+                        case object_behavior_type::behavior_9:
+                        {
+                            if (!this->field_10_obj_3c)
+                            {
+                                Object_3C* pNew3C = gObject_3C_Pool_6F8F7C->Allocate();
+                                ++gObj3C_id_6F8E54;
+                                pNew3C->field_C = 0;
+                                pNew3C->field_18 = 0;
+                                pNew3C->field_4 = kZeroAng_6F8F68;
+                                pNew3C->field_28 = 0;
+                                pNew3C->field_38 = 0;
+                                pNew3C->field_34 = 2;
+                                pNew3C->field_24 = 0;
+                                pNew3C->field_2F = 0;
+                                pNew3C->field_30_bSkipAnim = 0;
+                                pNew3C->field_20 = field_14_id;
+                                this->field_10_obj_3c = pNew3C;
+                            }
+
+                            s32 bUnknown2;
+                            if (this->field_C_pAny.o8)
+                            {
+                                bUnknown2 = 0;
+                            }
+                            else
+                            {
+                                bUnknown2 = 1;
+                                Object_8* pNewObj8 = gObject_8_Pool_6F8F78->Allocate();
+                                ++dword_6F8F18;
+                                this->field_C_pAny.o8 = pNewObj8;
+                            }
+
+                            if (pPhi->field_65 != field_8->field_65 || bUnknown2)
+                            {
+                                this->field_C_pAny.o8->field_4_timer = pPhi->field_65;
+                                this->field_C_pAny.o8->field_7_anim_speed_counter = 0;
+                                this->field_C_pAny.o8->field_6_frame_counter = 0;
+                            }
+                            else if (pPhi->field_6C_sprite_anim_speed < field_8->field_6C_sprite_anim_speed)
+                            {
+                                this->field_C_pAny.o8->field_7_anim_speed_counter = 0;
+                            }
+
+                            Object_2C::InitializeObject_527630(obj_type,
+                                                               this->field_4->field_14_xy.x,
+                                                               this->field_4->field_14_xy.y,
+                                                               this->field_4->field_1C_zpos,
+                                                               this->field_4->field_0);
+                            field_4->set_id_lazy_4206C0(this->field_8->field_1E + this->field_C_pAny.o8->field_7_anim_speed_counter);
+                            this->field_10_obj_3c->field_18 = pPhi->field_14_friction;
+                            this->field_10_obj_3c->field_1C = kFpZero_6F8E10;
+                            this->field_10_obj_3c->field_10 = kFpZero_6F8E10;
+                            break;
+                        }
+
+                        default:
+                            break;
+                    }
+
+                    //LABEL_48:
+                    if (!pPhi->field_61 && !this->field_25)
+                    {
+                        Object_2C::PoolTake_522360();
+                    }
+                    if (!byte_6F8C68)
+                    {
+                        byte_6F8F40 = 1;
+                        Object_2C::AssignToBucket_527AE0();
+                    }
+                    //break;
+                }
+            }
+        }
+        else
+        {
+            s32 ped_id = gVarrok_7F8_703398->field_0[field_26_varrok_idx].field_0_ped_id;
+            s32 type_or_state = sub_526830(obj_type);
+            Object_2C* pExplosion = gObject_5C_6F8F84->CreateExplosion_52A3D0(field_4->field_14_xy.x,
+                                                                              field_4->field_14_xy.y,
+                                                                              field_4->field_1C_zpos,
+                                                                              kZeroAng_6F8F68,
+                                                                              type_or_state,
+                                                                              ped_id);
+            if (pExplosion)
+            {
+                pExplosion->SetDamageOwner_529080(this->field_26_varrok_idx);
+            }
+            Object_2C::sub_5290A0();
+        }
+    }
+    else
+    {
+        Object_2C::sub_5290A0();
+    }
 }
 
 MATCH_FUNC(0x5288B0)

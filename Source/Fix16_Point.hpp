@@ -23,6 +23,12 @@ struct Fix16_Point_POD
         return x == gFix16_6777CC && y == gFix16_6777CC;
     }
 
+    // For some reason uses another constant
+    inline bool IsNull() const
+    {
+        return x == kFP16Zero_6FE20C && y == kFP16Zero_6FE20C;
+    }
+
     void ApplyDeadZone_49E3C0()
     {
         Fix16 total = (Fix16::Abs(x) + Fix16::Abs(y));
@@ -38,6 +44,8 @@ struct Fix16_Point_POD
     {
         return Fix16::atan2_fixed_405320(y, x);
     }
+
+    Fix16 GetLength_453590();
 
     // None inline exists in 10.5 at 0x453590
     inline Fix16 GetLength_41E260()
@@ -94,6 +102,15 @@ struct Fix16_Point_POD
         return *this;
     }
 
+    // FUNCTION: 96f 0x4828c0
+    Fix16_Point_POD& Fix16_Point_POD::operator-=(Fix16_Point_POD& other)
+    {
+        x -= other.x;
+        y -= other.y;
+        return *this;
+    }
+
+
     // Operator* for Fix16 ?
     void MultiplyByFix16_49E3A0(Fix16 factor)
     {
@@ -147,7 +164,7 @@ class Fix16_Point : public Fix16_Point_POD
         y = (rhs.y);
     }
 
-    Fix16_Point(Fix16& a1, Fix16& a2)
+    Fix16_Point(const Fix16& a1, const Fix16& a2)
     {
         x = a1;
         y = a2;
@@ -216,9 +233,14 @@ class Fix16_Point : public Fix16_Point_POD
         return Fix16_Point(x * in, y * in);
     }
 
+    Fix16_Point operator-() const
+    {
+        return Fix16_Point(-x, -y);
+    }    
+
     // 10.0 0x442CB0
     Fix16_Point operator/(Fix16& in);
-    
+
     Fix16_Point NormalizeSafe_442AD0();
 
     Ang16 atan2_40ACD0();

@@ -23,8 +23,8 @@ DEFINE_GLOBAL(s32, line_number_676258, 0x676258);
 DEFINE_GLOBAL(u32, processed_output_676250, 0x676250);
 DEFINE_GLOBAL(s32, modelPhyArrLen_675F90, 0x675F90);
 DEFINE_GLOBAL(u8*, modelPhyArrPtr_675F98, 0x675F98);
-DEFINE_GLOBAL_INIT(Fix16, dword_677F54, Fix16(1), 0x677F54);
-DEFINE_GLOBAL_INIT(Fix16, dword_677D78, Fix16(1), 0x677D78);
+DEFINE_GLOBAL_INIT(Fix16, dword_677F54, Fix16(0x4000, 0), 0x677F54);
+DEFINE_GLOBAL_INIT(Fix16, dword_677D78, Fix16(0x1000, 0), 0x677D78);
 DEFINE_GLOBAL_INIT(Fix16, dword_677D74, Fix16(0x666, 0), 0x677D74);
 DEFINE_GLOBAL_INIT(Fix16, DAT_6761A4, Fix16(0), 0x6761a4);
 DEFINE_GLOBAL_ARRAY(char, Buffer_675FD4, 80, 0x675FD4);
@@ -33,18 +33,18 @@ DEFINE_GLOBAL_ARRAY_INIT(char*,
                          error_table_61A6D4,
                          13,
                          0x61A6D4,
-                         "Invalid integer",
-                         "Number too big",
-                         "Write error",
-                         "EOF in comment",
-                         "Token too big",
-                         "Input file not found",
-                         "Can't open output file",
-                         "Invalid long integer",
-                         "Invalid hex integer",
-                         "Invalid hex long integer",
-                         "Invalid f32",
-                         "Output too big",
+                         "Invalid integer" COMMA
+                         "Number too big" COMMA
+                         "Write error" COMMA
+                         "EOF in comment" COMMA
+                         "Token too big" COMMA
+                         "Input file not found" COMMA
+                         "Can't open output file" COMMA
+                         "Invalid long integer" COMMA
+                         "Invalid hex integer" COMMA
+                         "Invalid hex long integer" COMMA
+                         "Invalid f32" COMMA
+                         "Output too big" COMMA
                          "Unknown error");
 
 MATCH_FUNC(0x440860)

@@ -8,7 +8,6 @@
     #define INLINE_MODE __forceinline
 #endif
 
-
 class Fix16;
 
 EXTERN_GLOBAL(Fix16, kFP16Zero_6FE20C);
@@ -67,7 +66,7 @@ class Fix16
         return Fix16(value, 0);
     }
 
-    Fix16 operator-=(const Fix16& other)
+    Fix16& operator-=(const Fix16& other)
     {
         mValue -= other.mValue;
         return *this;
@@ -79,15 +78,23 @@ class Fix16
         return Fix16(value, 0);
     }
 
-    void operator+=(const Fix16& other)
+    Fix16& operator+=(const Fix16& other)
     {
         mValue += other.mValue;
+        return *this;
     }
 
     Fix16 operator*(const Fix16& in) const
     {
         s32 value = (s32)((mValue * (__int64)in.mValue) >> 14);
         return Fix16(value, 0);
+    }
+
+    // 10.5 non inline addr is 0x562430
+    Fix16& operator*=(const Fix16& rhs)
+    {
+        mValue = (s32)((mValue * (__int64)rhs.mValue) >> 14);
+        return *this;
     }
 
     // 10.5 is 0x561DB0
@@ -337,12 +344,39 @@ class Fix16
     }
 
     // https://decomp.me/scratch/MqQPJ
-    inline static Fix16 __stdcall MaxAbsDistance_42A6B0(Fix16 x1, Fix16 y1, Fix16 x2, Fix16 y2) 
+    inline static Fix16 __stdcall MaxAbsDistance_42A6B0(Fix16 x1, Fix16 y1, Fix16 x2, Fix16 y2)
     {
         Fix16 diff_x = x2 - x1;
         Fix16 diff_y = y2 - y1;
 
         return Fix16::Max(Fix16::Abs(diff_x), Fix16::Abs(diff_y));
+    }
+
+    // NOTE: 10.5 function - matched but inlined
+    static inline Fix16 __stdcall ClampToRangeFlexible_55EEE0(Fix16& a2, Fix16& a3, Fix16& a4)
+    {
+        if (a2 > a3)
+        {
+            if ((a2 <= a4))
+            {
+                return a4;
+            }
+            else
+            {
+                return a2;
+            }
+        }
+        else
+        {
+            if (a3 > a4)
+            {
+                return a3;
+            }
+            else
+            {
+                return a4;
+            }
+        }
     }
 
     EXPORT static class Ang16 __stdcall atan2_fixed_405320(Fix16& pMaybeX_FP16, Fix16& pMaybeY_FP16);

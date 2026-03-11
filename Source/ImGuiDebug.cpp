@@ -34,6 +34,7 @@
 #include "sound_obj.hpp"
 #include "root_sound.hpp"
 #include "ExplodingScore_100.hpp"
+#include "CarAI_78.hpp"
 #include <stdarg.h>
 
 #include "HookLoader.hpp"
@@ -191,6 +192,21 @@ static void EnableBoot2MapDebugOptions()
 
     bSkip_traffic_lights_67D4EC = true;
     bSkip_trains_67D550 = true;
+
+    bSkip_dummies_67D4EF = true;
+    bSkip_police_67D4F9 = true;
+    bSkip_fire_engines_67D53A = true;
+    bSkip_user_67D506 = true;
+    bSkip_buses_67D558 = true;
+    bSkip_recycling_67D575 = true;
+    bSkip_particles_67D64D = true;
+    bSkip_ambulance_67D6C9 = true;
+    
+    //bSkip_audio_67D6BE = true;
+
+    // bSkip_slopes_67D505
+    // bSkip_window_check_67D54E
+    // 
 }
 
 static Sprite* GetPedSprite(Ped* pPed)
@@ -1234,7 +1250,7 @@ void CC ImGuiDebugDraw()
                     if (!pNewCar->field_5C)
                     {
                         printf("Alloc AI (?)\n");
-                        pNewCar->field_5C = gCar_78_Pool_677CF8->Allocate();
+                        pNewCar->field_5C = gCarAI_78_Pool_677CF8->Allocate();
                     }
                     pNewCar->field_5C->SetCar_453BF0(pNewCar);
                     pNewCar->SpawnDriverPed();
@@ -1726,24 +1742,24 @@ void CC ImGuiDebugDraw()
                     ImGui::TreePop();
                 }
 
-                if (ImGui::TreeNode("Garox_1E34_L"))
+                if (ImGui::TreeNode("Hud_Brief_704"))
                 {
-                    Garox_1E34_L* pGarox_1E34_L = &gHud_2B00_706620->field_DC;
+                    Hud_Brief_704* pHud_Brief_704 = &gHud_2B00_706620->field_DC;
 
-                    if (pGarox_1E34_L)
+                    if (pHud_Brief_704)
                     {
-                        ImGui::Value("field_500", pGarox_1E34_L->field_500);
-                        ImGui::InputS16("field_502_face_idx", &pGarox_1E34_L->field_502_face_idx, 1, 1);
-                        ImGui::Value("field_504_tick_timer", pGarox_1E34_L->field_504_tick_timer);
-                        ImGui::Value("field_506", pGarox_1E34_L->field_506);
-                        ImGui::Value("field_508_num_lines", pGarox_1E34_L->field_508_num_lines);
-                        ImGui::Value("field_50C", pGarox_1E34_L->field_50C);
-                        ImGui::Value("field_510_time_to_show", pGarox_1E34_L->field_510_time_to_show);
-                        ImGui::Value("field_514_upward_timer", pGarox_1E34_L->field_514_upward_timer);
-                        ImGui::Value("field_51C", pGarox_1E34_L->field_51C);
-                        ImGui::Value("field_6EC", pGarox_1E34_L->field_6EC);
-                        ImGui::Value("field_6F0", pGarox_1E34_L->field_6F0);
-                        ImGui::Value("field_6F4", pGarox_1E34_L->field_6F4);
+                        ImGui::Value("field_500", pHud_Brief_704->field_500);
+                        ImGui::InputS16("field_502_face_idx", &pHud_Brief_704->field_502_face_idx, 1, 1);
+                        ImGui::Value("field_504_tick_timer", pHud_Brief_704->field_504_tick_timer);
+                        ImGui::Value("field_506", pHud_Brief_704->field_506);
+                        ImGui::Value("field_508_num_lines", pHud_Brief_704->field_508_num_lines);
+                        ImGui::Value("field_50C", pHud_Brief_704->field_50C);
+                        ImGui::Value("field_510_time_to_show", pHud_Brief_704->field_510_time_to_show);
+                        ImGui::Value("field_514_upward_timer", pHud_Brief_704->field_514_upward_timer);
+                        ImGui::Value("field_51C", pHud_Brief_704->field_51C);
+                        ImGui::Value("field_6EC", pHud_Brief_704->field_6EC);
+                        ImGui::Value("field_6F0", pHud_Brief_704->field_6F0);
+                        ImGui::Value("field_6F4", pHud_Brief_704->field_6F4);
                     }
 
                     ImGui::TreePop();
