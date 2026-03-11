@@ -45,6 +45,8 @@ struct Fix16_Point_POD
         return Fix16::atan2_fixed_405320(y, x);
     }
 
+    Fix16 GetLength_453590();
+
     // None inline exists in 10.5 at 0x453590
     inline Fix16 GetLength_41E260()
     {
@@ -99,6 +101,15 @@ struct Fix16_Point_POD
         y += other.y;
         return *this;
     }
+
+    // FUNCTION: 96f 0x4828c0
+    Fix16_Point_POD& Fix16_Point_POD::operator-=(Fix16_Point_POD& other)
+    {
+        x -= other.x;
+        y -= other.y;
+        return *this;
+    }
+
 
     // Operator* for Fix16 ?
     void MultiplyByFix16_49E3A0(Fix16 factor)

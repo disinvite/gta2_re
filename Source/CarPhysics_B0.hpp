@@ -12,7 +12,7 @@ class Trailer;
 class Sprite_4C;
 class Ped;
 class ModelPhysics_48;
-class Car_78;
+class CarAI_78;
 struct Fix16_Point_POD;
 
 EXTERN_GLOBAL(Fix16, kFP16Zero_6FE20C);
@@ -21,6 +21,7 @@ EXTERN_GLOBAL(Ang16, word_6FE00C);
 EXTERN_GLOBAL(Ang16, word_6FE154);
 EXTERN_GLOBAL(CarInfo_2C*, gCarInfo_2C_6FE0E4);
 EXTERN_GLOBAL(Fix16, dword_6FE348);
+EXTERN_GLOBAL(Fix16, dword_677794);
 
 class CarPhysics_B0
 {
@@ -98,7 +99,7 @@ class CarPhysics_B0
     EXPORT Fix16 ApplyImpactForcesAndDamage_55FA60(Fix16_Point* a3, Fix16_Point* a4, s32 base_dmg);
     EXPORT void AccumulateImpulse_55FC30(Fix16_Point* a2, s32 a3);
     EXPORT s32 HandleWorldCollision_55FD00(s32 a2);
-    EXPORT Car_78* HandleCarCollision_55FF20(Car_BC* a2);
+    EXPORT CarAI_78* HandleCarCollision_55FF20(Car_BC* a2);
     EXPORT void HandleObjectCollision_5606C0(Object_2C* a2, char_type a3);
     EXPORT void ProcessPedImpact_560B40(Char_B4* a2, u8 a3);
     EXPORT void UpdateLinearAndAngularAccel_560EB0();
@@ -122,11 +123,13 @@ class CarPhysics_B0
     {
         if (get_revs_561940() != 0)
         {
-            return gCarInfo_2C_6FE0E4->field_14_half_thrust + ((field_60_gas_pedal * ((dword_6FE348 * gCarInfo_2C_6FE0E4->field_18_fith_thrust)))) * 2;
+            return gCarInfo_2C_6FE0E4->field_14_half_thrust +
+                ((field_60_gas_pedal * ((dword_6FE348 * gCarInfo_2C_6FE0E4->field_18_fith_thrust)))) * 2;
         }
         else
         {
-            return gCarInfo_2C_6FE0E4->field_14_half_thrust + ((field_60_gas_pedal * ((dword_6FE348 * gCarInfo_2C_6FE0E4->field_18_fith_thrust))));
+            return gCarInfo_2C_6FE0E4->field_14_half_thrust +
+                ((field_60_gas_pedal * ((dword_6FE348 * gCarInfo_2C_6FE0E4->field_18_fith_thrust))));
         }
     }
 
@@ -140,6 +143,18 @@ class CarPhysics_B0
         {
             return gCarInfo_2C_6FE0E4->field_14_half_thrust + gCarInfo_2C_6FE0E4->field_18_fith_thrust * this->field_60_gas_pedal;
         }
+    }
+
+    bool CarPhysics_B0::sub_421100()
+    {
+        if (field_98_surface_type == 8)
+        {
+            if (field_40_linvel_1.GetLength_41E260() <= dword_677794)
+            {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     EXPORT Fix16 CalculateFrontWheelForce_561E50();
@@ -205,6 +220,18 @@ class CarPhysics_B0
     {
         return field_40_linvel_1.x == kFP16Zero_6FE20C && field_40_linvel_1.y == kFP16Zero_6FE20C &&
             field_74_ang_vel_rad == kFP16Zero_6FE20C;
+    }
+
+    // FUNCTION: 96f 0x49f4e0
+    inline void Field40Add(Fix16_Point_POD& pt)
+    {
+        field_40_linvel_1 += pt;
+    }
+
+    // FUNCTION: 96f 0x49f4f0
+    inline void Field40Subtract(Fix16_Point_POD& pt)
+    {
+        field_40_linvel_1 -= pt;
     }
 
     EXPORT Fix16 vec_len_552DE0(); // Char_B4.cpp func

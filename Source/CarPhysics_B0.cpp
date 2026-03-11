@@ -10,6 +10,7 @@
 #include "debug.hpp"
 #include "map_0x370.hpp"
 #include "rng.hpp"
+#include "CarAI_78.hpp"
 
 DEFINE_GLOBAL(CarPhyisicsPool*, gCarPhysicsPool_6FE3E0, 0x6FE3E0);
 DEFINE_GLOBAL(CarInfo_2C*, gCarInfo_2C_6FE0E4, 0x6FE0E4);
@@ -149,6 +150,9 @@ DEFINE_GLOBAL_INIT(Ang16, word_6FE3B8, Ang16(4), 0x6FE3B8); // Only exists so th
 DEFINE_GLOBAL_INIT(Ang16, word_6FE058, word_6FE3B8.sub_401CB0(Fix16(45)), 0x6FE058);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FE37C, dword_6FE1C4, 0x6FE37C);
 DEFINE_GLOBAL_INIT(Fix16, dword_6FE004, Fix16(0x1C00, 0), 0x6FE004);
+
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE2B0, k_dword_6FE210 - dword_6FE320, 0x6FE2B0);
+DEFINE_GLOBAL_INIT(Fix16, dword_6FE340, dword_6FE218 + dword_6FDFF8, 0x6FE340);
 
 MATCH_FUNC(0x559E90)
 Fix16 CarPhysics_B0::ComputeZPosition_559E90()
@@ -1933,10 +1937,53 @@ LABEL_13:
     this->field_AA_sbw = 1;
 }
 
-STUB_FUNC(0x55ef20)
+WIP_FUNC(0x55ef20)
 void CarPhysics_B0::ApplyReverseEngineForce_55EF20()
 {
-    NOT_IMPLEMENTED;
+    WIP_IMPLEMENTED;
+
+    Ang16 theta = this->field_58_theta;
+    if (field_94_is_backward_gas_on)
+    {
+        theta += k_word_6FE12A;
+    }
+
+    if (stru_6FE1F0.y > kFP16Zero_6FE20C)
+    {
+        if (theta > word_6FE00C && theta >= k_word_6FE12A)
+        {
+            if (theta < k_word_6FE12A)
+            {
+                ApplyAngularImpulse_55F970(k_dword_6FDFA4);
+            }
+            else if (theta > k_word_6FE12A && theta < word_6FE154)
+            {
+                ApplyAngularImpulse_55F970(-k_dword_6FDFA4);
+            }
+        }
+        else
+        {
+            if (theta > k_word_6FE12A && theta < word_6FE154)
+            {
+                ApplyAngularImpulse_55F970(k_dword_6FDFA4);
+            }
+        }
+    }
+    else
+    {
+        // Moving backwards or stationary
+        if (theta < word_6FE00C)
+        {
+            ApplyAngularImpulse_55F970(k_dword_6FDFA4);
+        }
+        else if (theta > word_6FE154)
+        {
+            ApplyAngularImpulse_55F970(-k_dword_6FDFA4);
+        }
+    }
+
+    ApplyForceScaledByMass_55F9A0(stru_6FE1F0.NormalizeSafe_442AD0() * stru_6FDF80);
+    this->field_AA_sbw = 1;
 }
 
 STUB_FUNC(0x55f020)
@@ -2223,7 +2270,7 @@ s32 CarPhysics_B0::HandleWorldCollision_55FD00(s32 a2)
 }
 
 STUB_FUNC(0x55ff20)
-Car_78* CarPhysics_B0::HandleCarCollision_55FF20(Car_BC* a2)
+CarAI_78* CarPhysics_B0::HandleCarCollision_55FF20(Car_BC* a2)
 {
     NOT_IMPLEMENTED;
     return 0;
@@ -2672,11 +2719,114 @@ Fix16 CarPhysics_B0::CalculateFrontWheelForce_561E50()
     }
 }
 
-STUB_FUNC(0x5620d0)
+WIP_FUNC(0x5620d0)
 Fix16 CarPhysics_B0::CalculateRearWheelForce_5620D0()
 {
-    NOT_IMPLEMENTED;
-    return Fix16(0);
+    WIP_IMPLEMENTED;
+
+    Fix16_Point wheel_point;
+    wheel_point.x = 0;
+    wheel_point.y = gCarInfo_2C_6FE0E4->field_8_rear_wheel_offset;
+
+    if (IsInAir_55A0B0())
+    {
+        return kFP16Zero_6FE20C;
+    }
+
+    Fix16 v5 = gCarInfo_2C_6FE0E4->field_20_front_drive_bias * ComputeEngineTorque_561970();
+    Fix16 v7 = k_dword_6FE210;
+
+    if (field_AD_turn_direction)
+    {
+        v7 = k_dword_6FE210 - gCarInfo_48_6FE258->field_14_turn_in;
+    }
+
+    Fix16 pointing_ang_rad;
+    Fix16 brake_force1;
+    Fix16 brake_force2;
+    Fix16 brake_force3;
+    Fix16 new_x;
+
+    if (field_A0)
+    {
+        if (field_A0 <= 0 || field_A0 > 2)
+        {
+            // wtf ??
+            //new_x = pOut;
+            //brake_force2 = pOut;
+            //brake_force3 = pOut;
+            //pointing_ang_rad = pOut;
+        }
+        else
+        {
+            brake_force2 = kFP16Zero_6FE20C;
+            if (v5 == kFP16Zero_6FE20C)
+            {
+                pointing_ang_rad = this->field_78_pointing_ang_rad;
+                new_x = kFP16Zero_6FE20C;
+                brake_force1 = kFP16Zero_6FE20C;
+                brake_force3 = kFP16Zero_6FE20C;
+                this->field_A8_hand_brake_force = 0;
+            }
+            else
+            {
+                new_x = (v7 * dword_6FE3D0);
+                brake_force1 = dword_6FE3D4;
+                Fix16 v13 = dword_6FE3C4 * 3;
+                if (field_A0 == 1)
+                {
+                    pointing_ang_rad = (this->field_78_pointing_ang_rad - dword_6FE3C4 * 30);
+                    brake_force3 = kFP16Zero_6FE20C;
+                    this->field_A8_hand_brake_force = 0;
+                }
+                else // 2 ?
+                {
+                    pointing_ang_rad = this->field_78_pointing_ang_rad;
+                    this->field_A8_hand_brake_force = 0;
+                    pointing_ang_rad = (pointing_ang_rad + v13 * 10);
+                    brake_force3 = brake_force2;
+                }
+            }
+        }
+    }
+    else
+    {
+        brake_force1 = dword_6FE3D4;
+        brake_force2 = (dword_6FE0D8 * dword_6FE2B0);
+
+        if (field_92_is_hand_brake_on)
+        {
+            if (field_A8_hand_brake_force != (char)0x80)
+            {
+                field_A8_hand_brake_force++;
+            }
+            new_x = (gCarInfo_48_6FE258->field_20_handbrake_slide_value * (v7 * dword_6FE3D0));
+            pointing_ang_rad = this->field_78_pointing_ang_rad;
+            brake_force3 = (gCarInfo_48_6FE258->field_10_brake_friction * this->field_A8_hand_brake_force) / (128);
+        }
+        else
+        {
+            this->field_A8_hand_brake_force = 0;
+            Fix16 v16 = (v7 * dword_6FE3D0);
+            pointing_ang_rad = this->field_78_pointing_ang_rad;
+            new_x = v16;
+            brake_force3 = kFP16Zero_6FE20C;
+        }
+    }
+
+    Fix16_Point v25;
+    v25.x = new_x;
+    v25.y = brake_force1 + brake_force2 + brake_force3;
+    v25.x *= gCarInfo_48_6FE258->field_1C_rear_end_stability;
+    v25.y *= gCarInfo_48_6FE258->field_1C_rear_end_stability;
+
+    Fix16 vec_len = field_40_linvel_1.GetLength_2();
+    Fix16 v21 = (dword_6FE228 * dword_6FE340);
+
+    Ang16 t = Ang16::Fix16_To_Ang16_40F540(((dword_6FE228 - vec_len) / v21) * pointing_ang_rad);
+    Ang16 tt = this->field_58_theta - t;
+
+    return ApplyDriveForce_5615D0(wheel_point, tt, v25, v5);
 }
 
 WIP_FUNC(0x562480)
@@ -2777,7 +2927,7 @@ void CarPhysics_B0::ApplyArrowSteerAssist_5626F0()
 {
     Fix16 theta_fp = Ang16::Ang16_to_Fix16(field_58_theta);
     dword_6FE0B0 = kFP16Zero_6FE20C;
-    Car_78* pAi = this->field_5C_pCar->field_5C;
+    CarAI_78* pAi = this->field_5C_pCar->field_5C;
     if ((!pAi || (pAi->field_24_flags & 0x2000) != 0) && this->field_78_pointing_ang_rad == kFP16Zero_6FE20C)
     {
         if (IsGasPedalPressedEnough_5626A0())
@@ -2793,21 +2943,25 @@ void CarPhysics_B0::ApplyArrowSteerAssist_5626F0()
                     {
                         if ((pBlock->field_A_arrows & 0x33) != 0)
                         {
-                            if (theta_fp <= dword_6FE10C - k_dword_6FE134 || theta_fp >= k_dword_6FE134 + dword_6FE10C)
+                            if (theta_fp > dword_6FE10C - k_dword_6FE134 && theta_fp < k_dword_6FE134 + dword_6FE10C)
+                            {
+                                dword_6FE0B0 = dword_6FE10C - theta_fp;
+                            }
+                            else
                             {
                                 if (theta_fp > dword_6FE278 - k_dword_6FE134 && theta_fp < dword_6FE278 + k_dword_6FE134)
                                 {
                                     dword_6FE0B0 = dword_6FE278 - theta_fp;
                                 }
                             }
-                            else
-                            {
-                                dword_6FE0B0 = dword_6FE10C - theta_fp;
-                            }
                         }
                         else if ((pBlock->field_A_arrows & 0xCC) != 0)
                         {
-                            if (theta_fp <= k_dword_6FE260 - k_dword_6FE134 || theta_fp >= k_dword_6FE260 + k_dword_6FE134)
+                            if (theta_fp > k_dword_6FE260 - k_dword_6FE134 && theta_fp < k_dword_6FE260 + k_dword_6FE134)
+                            {
+                                dword_6FE0B0 = k_dword_6FE260 - theta_fp;
+                            }
+                            else
                             {
                                 if (theta_fp > k_dword_6FE314 - k_dword_6FE134)
                                 {
@@ -2821,10 +2975,6 @@ void CarPhysics_B0::ApplyArrowSteerAssist_5626F0()
                                         dword_6FE0B0 = -theta_fp;
                                     }
                                 }
-                            }
-                            else
-                            {
-                                dword_6FE0B0 = k_dword_6FE260 - theta_fp;
                             }
                         }
 
@@ -2840,10 +2990,9 @@ void CarPhysics_B0::ApplyArrowSteerAssist_5626F0()
                             }
                             else
                             {
-                                theta_fp = -theta_fp;
-                                if (dword_6FE0B0 < theta_fp)
+                                if (dword_6FE0B0 < -theta_fp)
                                 {
-                                    dword_6FE0B0 = theta_fp;
+                                    dword_6FE0B0 = -theta_fp;
                                 }
                             }
 
@@ -2855,7 +3004,7 @@ void CarPhysics_B0::ApplyArrowSteerAssist_5626F0()
                                     Player* pPlayer = pDriver->field_15C_player;
                                     if (pPlayer)
                                     {
-                                        if (pPlayer->field_0_bIsUser)
+                                        if (pPlayer->IsUser_41DC70())
                                         {
                                             gHud_2B00_706620->field_650.sub_5D1F50(L"snap", 0, 64, word_706600, 1);
                                         }
@@ -3047,9 +3196,48 @@ bool CarPhysics_B0::ProcessCarPhysicsStateMachine_562FE0()
 
     switch (field_8C_state)
     {
-        case 0:
-            bCol1 = CheckAndHandleCarAndTrailerCollisions_55EB80();
+        case 1:
+            stru_6FDF50.x.mValue = 0;
+            stru_6FDF50.y.mValue = 0;
+            bCol2 = CheckAndHandleCarAndTrailerCollisions_55EB80();
+            ApplyForcedSteering_559DD0();
+            EnforceTrailerControlLimits_559B50();
+            UpdateSteeringAngle_562560();
+            ApplyInputsAndIntegratePhysics_562F30();
+            StabilizeVelocityAtSpeed_562910();
+            EnforceGearSensitiveMaxSpeed_562D00();
+            Field40Add(stru_6FDF50);
+            ApplyArrowSteerAssist_5626F0();
             ScarePedsOnDrivingFast_559C30();
+            bCol3 = ProcessCollisionAndClampVelocity_55F280() | bCol2;
+            bCol4 = CheckPendingCollision_55F360() | bCol3;
+            DoSkidmarks_55E260();
+            Field40Subtract(stru_6FDF50);
+            this->field_74_ang_vel_rad -= dword_6FE0B0;
+            break;
+        case 2:
+            stru_6FDF50.x.mValue = 0;
+            stru_6FDF50.y.mValue = 0;
+            bCol5 = CheckAndHandleCarAndTrailerCollisions_55EB80();
+            EnforceTrailerControlLimits_559B50();
+            UpdateSteeringAngle_562560();
+            ApplyInputsAndIntegratePhysics_562F30();
+            StabilizeVelocityAtSpeed_562910();
+            EnforceGearSensitiveMaxSpeed_562D00();
+            Field40Add(stru_6FDF50);
+            ApplyArrowSteerAssist_5626F0();
+            ScarePedsOnDrivingFast_559C30();
+            bCol6 = ProcessCollisionAndClampVelocity_55F280() | bCol5;
+            bCol4 = CheckPendingCollision_55F360() | bCol6;
+            DoSkidmarks_55E260();
+            Field40Subtract(stru_6FDF50);
+            this->field_74_ang_vel_rad -= dword_6FE0B0;
+            break;
+        case 3:
+            bCol1 = CheckAndHandleCarAndTrailerCollisions_55EB80();
+            ApplyInputsAndIntegratePhysics_562F30();
+            ScarePedsOnDrivingFast_559C30();
+            CheckPendingCollision_55F360();
             bCol7 = ProcessCollisionAndClampVelocity_55F280() | bCol1;
             bCol4 = CheckPendingCollision_55F360() | bCol7;
             DoSkidmarks_55E260();
@@ -3063,52 +3251,9 @@ bool CarPhysics_B0::ProcessCarPhysicsStateMachine_562FE0()
                 this->field_8C_state = 1; // sub_4212A0
             }
             break;
-        case 1:
-            stru_6FDF50.x.mValue = 0;
-            stru_6FDF50.y.mValue = 0;
-            bCol2 = CheckAndHandleCarAndTrailerCollisions_55EB80();
-            ApplyForcedSteering_559DD0();
-            EnforceTrailerControlLimits_559B50();
-            UpdateSteeringAngle_562560();
-            ApplyInputsAndIntegratePhysics_562F30();
-            StabilizeVelocityAtSpeed_562910();
-            EnforceGearSensitiveMaxSpeed_562D00();
-            this->field_40_linvel_1.x.mValue += stru_6FDF50.x.mValue;
-            this->field_40_linvel_1.y.mValue += stru_6FDF50.y.mValue;
-            ApplyArrowSteerAssist_5626F0();
-            ScarePedsOnDrivingFast_559C30();
-            bCol3 = ProcessCollisionAndClampVelocity_55F280() | bCol2;
-            bCol4 = CheckPendingCollision_55F360() | bCol3;
-            DoSkidmarks_55E260();
-            this->field_40_linvel_1.x.mValue -= stru_6FDF50.x.mValue;
-            this->field_40_linvel_1.y.mValue -= stru_6FDF50.y.mValue;
-            this->field_74_ang_vel_rad -= dword_6FE0B0;
-            break;
-        case 2:
-            stru_6FDF50.x.mValue = 0;
-            stru_6FDF50.y.mValue = 0;
-            bCol5 = CheckAndHandleCarAndTrailerCollisions_55EB80();
-            EnforceTrailerControlLimits_559B50();
-            UpdateSteeringAngle_562560();
-            ApplyInputsAndIntegratePhysics_562F30();
-            StabilizeVelocityAtSpeed_562910();
-            EnforceGearSensitiveMaxSpeed_562D00();
-            this->field_40_linvel_1.x.mValue += stru_6FDF50.x.mValue;
-            this->field_40_linvel_1.y.mValue += stru_6FDF50.y.mValue;
-            ApplyArrowSteerAssist_5626F0();
-            ScarePedsOnDrivingFast_559C30();
-            bCol6 = ProcessCollisionAndClampVelocity_55F280() | bCol5;
-            bCol4 = CheckPendingCollision_55F360() | bCol6;
-            DoSkidmarks_55E260();
-            this->field_40_linvel_1.x.mValue -= stru_6FDF50.x.mValue;
-            this->field_40_linvel_1.y.mValue -= stru_6FDF50.y.mValue;
-            this->field_74_ang_vel_rad -= dword_6FE0B0;
-            break;
-        case 3:
+        case 0:
             bCol1 = CheckAndHandleCarAndTrailerCollisions_55EB80();
-            ApplyInputsAndIntegratePhysics_562F30();
             ScarePedsOnDrivingFast_559C30();
-            CheckPendingCollision_55F360();
             bCol7 = ProcessCollisionAndClampVelocity_55F280() | bCol1;
             bCol4 = CheckPendingCollision_55F360() | bCol7;
             DoSkidmarks_55E260();

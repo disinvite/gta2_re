@@ -66,7 +66,7 @@ class Fix16
         return Fix16(value, 0);
     }
 
-    Fix16 operator-=(const Fix16& other)
+    Fix16& operator-=(const Fix16& other)
     {
         mValue -= other.mValue;
         return *this;
@@ -78,15 +78,23 @@ class Fix16
         return Fix16(value, 0);
     }
 
-    void operator+=(const Fix16& other)
+    Fix16& operator+=(const Fix16& other)
     {
         mValue += other.mValue;
+        return *this;
     }
 
     Fix16 operator*(const Fix16& in) const
     {
         s32 value = (s32)((mValue * (__int64)in.mValue) >> 14);
         return Fix16(value, 0);
+    }
+
+    // 10.5 non inline addr is 0x562430
+    Fix16& operator*=(const Fix16& rhs)
+    {
+        mValue = (s32)((mValue * (__int64)rhs.mValue) >> 14);
+        return *this;
     }
 
     // 10.5 is 0x561DB0
