@@ -516,7 +516,7 @@
     },
     {
         "name": "sound_obj::sub_413120",
-        "v96f_address": null,
+        "v96f_address": "0x4274c0",
         "v105_address": "0x413120"
     },
     {
@@ -4206,7 +4206,7 @@
     },
     {
         "name": "PurpleDoom::CheckAndHandleAllCollisionsForSprite_477C30",
-        "v96f_address": null,
+        "v96f_address": "0x4474e0",
         "v105_address": "0x477c30"
     },
     {
@@ -11996,7 +11996,7 @@
     },
     {
         "name": "CarPhysics_B0::IsNotMoving_5599D0",
-        "v96f_address": null,
+        "v96f_address": "0x49f170",
         "v105_address": "0x5599d0"
     },
     {
@@ -12211,7 +12211,7 @@
     },
     {
         "name": "CarPhysics_B0::UpdateWheelSkidEffects_55DC00",
-        "v96f_address": null,
+        "v96f_address": "0x4a0290",
         "v105_address": "0x55dc00"
     },
     {
@@ -12456,7 +12456,7 @@
     },
     {
         "name": "CarPhysics_B0::MinGasPedalPressure_5626C0",
-        "v96f_address": null,
+        "v96f_address": "0x49ea00",
         "v105_address": "0x5626c0"
     },
     {
@@ -16211,7 +16211,7 @@
     },
     {
         "name": "Hud_Pager_C4::sub_5D1B10",
-        "v96f_address": null,
+        "v96f_address": "0x4c8aa0",
         "v105_address": "0x5d1b10"
     },
     {
@@ -16226,17 +16226,17 @@
     },
     {
         "name": "Hud_Pager_C4::operator_equals",
-        "v96f_address": null,
+        "v96f_address": "0x4c6110",
         "v105_address": "0x5d1e10"
     },
     {
         "name": "Garox_1700_L::sub_5D1EB0",
-        "v96f_address": null,
+        "v96f_address": "0x4c8be0",
         "v105_address": "0x5d1eb0"
     },
     {
         "name": "Garox_1700_L::sub_5D1F50",
-        "v96f_address": null,
+        "v96f_address": "0x4c8c20",
         "v105_address": "0x5d1f50"
     },
     {

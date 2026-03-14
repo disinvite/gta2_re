@@ -497,12 +497,11 @@ char_type CarPhysics_B0::IsAccelerationOrReverseOn_55A180()
         {
             return (pCarPhysics->field_93_is_forward_gas_on || pCarPhysics->field_94_is_backward_gas_on);
         }
+
+        return false;
     }
-    else
-    {
-        return (field_93_is_forward_gas_on || field_94_is_backward_gas_on);
-    }
-    return 0;
+
+    return (field_93_is_forward_gas_on || field_94_is_backward_gas_on);
 }
 
 // 9.6f 0x49F760
@@ -2277,14 +2276,14 @@ void CarPhysics_B0::StepPhysics_55F330()
 MATCH_FUNC(0x55f360)
 char_type CarPhysics_B0::CheckPendingCollision_55F360()
 {
-    if ((this->field_5C_pCar->field_78_flags & 0x2000) != 0)
+    if (this->field_5C_pCar->test_f78_0x2000_414f70())
     {
         gCar_6C_677930->field_60 = 1;
         if (gPurpleDoom_1_679208->CheckAndHandleAllCollisionsForSprite_477C30(field_5C_pCar->field_50_car_sprite, 2))
         {
             return 1;
         }
-        this->field_5C_pCar->field_78_flags &= ~0x2000u;
+        this->field_5C_pCar->clear_f78_0x2000_49efd0();
     }
     return 0;
 }

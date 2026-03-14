@@ -591,29 +591,68 @@ class Car_BC
         field_8_damaged_areas.set_bit(CarDeltaBitsEnum::BottomLeftRoofLight_15);
     }
 
+    // FUNCTION: 96f 0x411930
+    bool test_f78_bits_411930(u16 bits)
+    {
+        if (this->field_78_flags & bits) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // FUNCTION: 96f 0x414f60
+    bool test_f78_0x100_414f60()
+    {
+        return Car_BC::test_f78_bits_411930(0x100);
+    }
+
+    // FUNCTION: 96f 0x414f70
+    bool test_f78_0x2000_414f70()
+    {
+        return Car_BC::test_f78_bits_411930(0x2000);
+    }
+
+    // FUNCTION: 96f 0x421890
     void add_f78_bits_421890(u16 bits)
     {
         this->field_78_flags |= bits;
     }
 
+    // FUNCTION: 96f 0x4218c0
     void set_f78_0x100_4218C0()
     {
         Car_BC::add_f78_bits_421890(0x100);
     }
 
+    // FUNCTION: 96f 0x4218d0
     void set_f78_0x400_4218D0()
     {
         Car_BC::add_f78_bits_421890(0x400);
     }
 
+    // FUNCTION: 96f 0x4218a0
     void set_f78_0x8_4218A0()
     {
         Car_BC::add_f78_bits_421890(8);
     }
 
+    // FUNCTION: 96f 0x4218b0
     void set_f78_0x40_4218B0()
     {
         Car_BC::add_f78_bits_421890(0x40);
+    }
+
+    // FUNCTION: 96f 0x4761f0
+    void clear_f78_bits_4761f0(u16 bits)
+    {
+        this->field_78_flags &= ~bits;
+    }
+
+    // FUNCTION: 96f 0x49efd0
+    void clear_f78_0x2000_49efd0()
+    {
+        clear_f78_bits_4761f0(0x2000);
     }
 
     inline s32 GetCarKind_4343B0()

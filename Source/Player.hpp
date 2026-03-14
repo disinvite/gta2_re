@@ -205,6 +205,7 @@ class Player
     // 0x56A940
     EXPORT ~Player();
 
+    // FUNCTION: 96f 0x41dc70
     inline u8 IsUser_41DC70()
     {
         return field_0_bIsUser;

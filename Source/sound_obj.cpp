@@ -4447,7 +4447,7 @@ char_type sound_obj::SelectObjectImpactSound_413120(Rozza_A* pObj, s32 interacti
                 if (interactionType == 3)
                 {
                     rnd_1 = this->field_1454_anRandomTable[1];
-                    if ((pObj->field_10->field_78_flags & 0x100) != 0)
+                    if (pObj->field_10->test_f78_0x100_414f60())
                     {
                         samp_idx = rnd_1 % 3 + 46;
                     }
